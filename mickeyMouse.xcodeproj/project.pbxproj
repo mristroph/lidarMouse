@@ -1,0 +1,243 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		31EEC90B1672FB0100EEB995 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC90A1672FB0100EEB995 /* Foundation.framework */; };
+		31EEC90E1672FB0100EEB995 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC90D1672FB0100EEB995 /* main.m */; };
+		31EEC9121672FB0100EEB995 /* mickeyMouse.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 31EEC9111672FB0100EEB995 /* mickeyMouse.1 */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		31EEC9041672FB0100EEB995 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				31EEC9121672FB0100EEB995 /* mickeyMouse.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		31EEC9061672FB0100EEB995 /* mickeyMouse */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mickeyMouse; sourceTree = BUILT_PRODUCTS_DIR; };
+		31EEC90A1672FB0100EEB995 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		31EEC90D1672FB0100EEB995 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		31EEC9101672FB0100EEB995 /* mickeyMouse-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "mickeyMouse-Prefix.pch"; sourceTree = "<group>"; };
+		31EEC9111672FB0100EEB995 /* mickeyMouse.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = mickeyMouse.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		31EEC9031672FB0100EEB995 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31EEC90B1672FB0100EEB995 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		31EEC8FB1672FB0100EEB995 = {
+			isa = PBXGroup;
+			children = (
+				31EEC90C1672FB0100EEB995 /* mickeyMouse */,
+				31EEC9091672FB0100EEB995 /* Frameworks */,
+				31EEC9071672FB0100EEB995 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		31EEC9071672FB0100EEB995 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9061672FB0100EEB995 /* mickeyMouse */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		31EEC9091672FB0100EEB995 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC90A1672FB0100EEB995 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		31EEC90C1672FB0100EEB995 /* mickeyMouse */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC90D1672FB0100EEB995 /* main.m */,
+				31EEC9111672FB0100EEB995 /* mickeyMouse.1 */,
+				31EEC90F1672FB0100EEB995 /* Supporting Files */,
+			);
+			path = mickeyMouse;
+			sourceTree = "<group>";
+		};
+		31EEC90F1672FB0100EEB995 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9101672FB0100EEB995 /* mickeyMouse-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		31EEC9051672FB0100EEB995 /* mickeyMouse */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31EEC9151672FB0100EEB995 /* Build configuration list for PBXNativeTarget "mickeyMouse" */;
+			buildPhases = (
+				31EEC9021672FB0100EEB995 /* Sources */,
+				31EEC9031672FB0100EEB995 /* Frameworks */,
+				31EEC9041672FB0100EEB995 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = mickeyMouse;
+			productName = mickeyMouse;
+			productReference = 31EEC9061672FB0100EEB995 /* mickeyMouse */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		31EEC8FD1672FB0100EEB995 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = "Rob Mayoff";
+			};
+			buildConfigurationList = 31EEC9001672FB0100EEB995 /* Build configuration list for PBXProject "mickeyMouse" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 31EEC8FB1672FB0100EEB995;
+			productRefGroup = 31EEC9071672FB0100EEB995 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				31EEC9051672FB0100EEB995 /* mickeyMouse */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		31EEC9021672FB0100EEB995 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31EEC90E1672FB0100EEB995 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		31EEC9131672FB0100EEB995 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		31EEC9141672FB0100EEB995 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		31EEC9161672FB0100EEB995 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "mickeyMouse/mickeyMouse-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		31EEC9171672FB0100EEB995 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "mickeyMouse/mickeyMouse-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		31EEC9001672FB0100EEB995 /* Build configuration list for PBXProject "mickeyMouse" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31EEC9131672FB0100EEB995 /* Debug */,
+				31EEC9141672FB0100EEB995 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		31EEC9151672FB0100EEB995 /* Build configuration list for PBXNativeTarget "mickeyMouse" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31EEC9161672FB0100EEB995 /* Debug */,
+				31EEC9171672FB0100EEB995 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 31EEC8FD1672FB0100EEB995 /* Project object */;
+}
