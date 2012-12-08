@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Application.h"
+
 #import "urg_sensor.h"
 #import "urg_utils.h"
 #import "open_urg_sensor.h"
@@ -14,6 +16,11 @@
 int main(int argc, const char * argv[])
 {
     @autoreleasepool {
+
+        Application *application = [[Application alloc] init];
+        (void)application;
+        return 0;
+
         urg_t urg;
 
         if (open_urg_sensor(&urg, 0, NULL) < 0) {

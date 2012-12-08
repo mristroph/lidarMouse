@@ -23,6 +23,9 @@
 		31EEC9901672FF7C00EEB995 /* open_urg_sensor.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC93A1672FCA600EEB995 /* open_urg_sensor.c */; };
 		31EEC991167300FD00EEB995 /* open_urg_sensor.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC93A1672FCA600EEB995 /* open_urg_sensor.c */; };
 		31EEC9921673010F00EEB995 /* liburg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC96F1672FD4100EEB995 /* liburg.a */; };
+		31EEC99C167333E500EEB995 /* Lidar2DManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC99B167333E500EEB995 /* Lidar2DManager.m */; };
+		31EEC99E1673367100EEB995 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC99D1673367100EEB995 /* IOKit.framework */; };
+		31EEC9A416733A8600EEB995 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9A316733A8600EEB995 /* Application.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -113,6 +116,11 @@
 		31EEC96A1672FCA600EEB995 /* compile.bat */ = {isa = PBXFileReference; lastKnownFileType = text; path = compile.bat; sourceTree = "<group>"; };
 		31EEC96F1672FD4100EEB995 /* liburg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liburg.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		31EEC9831672FE3400EEB995 /* calculate_xy */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = calculate_xy; sourceTree = BUILT_PRODUCTS_DIR; };
+		31EEC99A167333E500EEB995 /* Lidar2DManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lidar2DManager.h; sourceTree = "<group>"; };
+		31EEC99B167333E500EEB995 /* Lidar2DManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lidar2DManager.m; sourceTree = "<group>"; };
+		31EEC99D1673367100EEB995 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		31EEC9A216733A8500EEB995 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
+		31EEC9A316733A8600EEB995 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +128,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31EEC99E1673367100EEB995 /* IOKit.framework in Frameworks */,
 				31EEC90B1672FB0100EEB995 /* Foundation.framework in Frameworks */,
 				31EEC9921673010F00EEB995 /* liburg.a in Frameworks */,
 			);
@@ -146,6 +155,7 @@
 		31EEC8FB1672FB0100EEB995 = {
 			isa = PBXGroup;
 			children = (
+				31EEC99D1673367100EEB995 /* IOKit.framework */,
 				31EEC90C1672FB0100EEB995 /* mickeyMouse */,
 				31EEC9181672FCA600EEB995 /* urg_library-1.0.3 */,
 				31EEC9091672FB0100EEB995 /* Frameworks */,
@@ -177,6 +187,10 @@
 				31EEC90D1672FB0100EEB995 /* main.m */,
 				31EEC9111672FB0100EEB995 /* mickeyMouse.1 */,
 				31EEC90F1672FB0100EEB995 /* Supporting Files */,
+				31EEC99A167333E500EEB995 /* Lidar2DManager.h */,
+				31EEC99B167333E500EEB995 /* Lidar2DManager.m */,
+				31EEC9A216733A8500EEB995 /* Application.h */,
+				31EEC9A316733A8600EEB995 /* Application.m */,
 			);
 			path = mickeyMouse;
 			sourceTree = "<group>";
@@ -465,6 +479,8 @@
 			files = (
 				31EEC90E1672FB0100EEB995 /* main.m in Sources */,
 				31EEC991167300FD00EEB995 /* open_urg_sensor.c in Sources */,
+				31EEC99C167333E500EEB995 /* Lidar2DManager.m in Sources */,
+				31EEC9A416733A8600EEB995 /* Application.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

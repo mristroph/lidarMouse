@@ -1,0 +1,31 @@
+/*
+Created by Rob Mayoff on 12/8/12.
+Copyright (c) 2012 Rob Mayoff. All rights reserved.
+*/
+
+#import <Foundation/Foundation.h>
+
+@class Lidar2DDevice;
+@protocol  Lidar2DManagerDelegate;
+
+@interface Lidar2DManager : NSObject
+
+// Once I am started, I send messages to my delegate on the main run loop.
+ @property (nonatomic, weak) id<Lidar2DManagerDelegate> delegate;
+
+// I schedule myself to run on the main run loop in the default mode, if I'm not already scheduled.  I notify my delegate of any already-connected devices before returning.
+- (void)start;
+
+// I deschedule myself if I am scheduled.  I do this automatically if I am deallocated.
+- (void)stop;
+
+@end
+
+
+@protocol Lidar2DManagerDelegate <NSObject>
+
+- (void)lidar2DManager:(Lidar2DManager *)manager didReceiveError:(NSError *)error;
+
+- (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(Lidar2DDevice *)device;
+
+@end
