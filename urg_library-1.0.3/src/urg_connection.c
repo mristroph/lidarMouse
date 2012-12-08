@@ -23,7 +23,7 @@ int connection_open(urg_connection_t *connection,
 
     case URG_ETHERNET:
         return tcpclient_open(&connection->tcpclient,
-                              device, baudrate_or_port);
+                              device, (int)baudrate_or_port);
         break;
     }
     return -1;

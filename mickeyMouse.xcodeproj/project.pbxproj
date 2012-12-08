@@ -10,6 +10,14 @@
 		31EEC90B1672FB0100EEB995 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC90A1672FB0100EEB995 /* Foundation.framework */; };
 		31EEC90E1672FB0100EEB995 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC90D1672FB0100EEB995 /* main.m */; };
 		31EEC9121672FB0100EEB995 /* mickeyMouse.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 31EEC9111672FB0100EEB995 /* mickeyMouse.1 */; };
+		31EEC9731672FD5200EEB995 /* urg_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9461672FCA600EEB995 /* urg_connection.c */; };
+		31EEC9741672FD5200EEB995 /* urg_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9471672FCA600EEB995 /* urg_debug.c */; };
+		31EEC9751672FD5200EEB995 /* urg_ring_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9481672FCA600EEB995 /* urg_ring_buffer.c */; };
+		31EEC9761672FD5200EEB995 /* urg_sensor.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9491672FCA600EEB995 /* urg_sensor.c */; };
+		31EEC9771672FD5200EEB995 /* urg_serial.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC94A1672FCA600EEB995 /* urg_serial.c */; };
+		31EEC9791672FD5200EEB995 /* urg_serial_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC94C1672FCA600EEB995 /* urg_serial_utils.c */; };
+		31EEC97D1672FD5200EEB995 /* urg_tcpclient.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9501672FCA600EEB995 /* urg_tcpclient.c */; };
+		31EEC97E1672FD5200EEB995 /* urg_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9511672FCA600EEB995 /* urg_utils.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,6 +39,75 @@
 		31EEC90D1672FB0100EEB995 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		31EEC9101672FB0100EEB995 /* mickeyMouse-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "mickeyMouse-Prefix.pch"; sourceTree = "<group>"; };
 		31EEC9111672FB0100EEB995 /* mickeyMouse.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = mickeyMouse.1; sourceTree = "<group>"; };
+		31EEC9191672FCA600EEB995 /* AUTHORS.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = AUTHORS.txt; sourceTree = "<group>"; };
+		31EEC91A1672FCA600EEB995 /* COPYRIGHT.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = COPYRIGHT.txt; sourceTree = "<group>"; };
+		31EEC91C1672FCA600EEB995 /* urg_connection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = urg_connection.h; sourceTree = "<group>"; };
+		31EEC91D1672FCA600EEB995 /* urg_debug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = urg_debug.h; sourceTree = "<group>"; };
+		31EEC91E1672FCA600EEB995 /* urg_detect_os.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = urg_detect_os.h; sourceTree = "<group>"; };
+		31EEC91F1672FCA600EEB995 /* urg_errno.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = urg_errno.h; sourceTree = "<group>"; };
+		31EEC9201672FCA600EEB995 /* urg_ring_buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = urg_ring_buffer.h; sourceTree = "<group>"; };
+		31EEC9211672FCA600EEB995 /* urg_sensor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = urg_sensor.h; sourceTree = "<group>"; };
+		31EEC9221672FCA600EEB995 /* urg_serial.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = urg_serial.h; sourceTree = "<group>"; };
+		31EEC9231672FCA600EEB995 /* urg_serial_utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = urg_serial_utils.h; sourceTree = "<group>"; };
+		31EEC9241672FCA600EEB995 /* urg_tcpclient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = urg_tcpclient.h; sourceTree = "<group>"; };
+		31EEC9251672FCA600EEB995 /* urg_utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = urg_utils.h; sourceTree = "<group>"; };
+		31EEC9261672FCA600EEB995 /* Install.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Install.txt; sourceTree = "<group>"; };
+		31EEC9271672FCA600EEB995 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		31EEC9281672FCA600EEB995 /* Readme.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Readme.txt; sourceTree = "<group>"; };
+		31EEC9291672FCA600EEB995 /* Releasenotes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Releasenotes.txt; sourceTree = "<group>"; };
+		31EEC92B1672FCA600EEB995 /* calculate_xy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = calculate_xy; sourceTree = "<group>"; };
+		31EEC92C1672FCA600EEB995 /* calculate_xy.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = calculate_xy.c; sourceTree = "<group>"; };
+		31EEC92D1672FCA600EEB995 /* find_port */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = find_port; sourceTree = "<group>"; };
+		31EEC92E1672FCA600EEB995 /* find_port.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = find_port.c; sourceTree = "<group>"; };
+		31EEC92F1672FCA600EEB995 /* get_distance */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = get_distance; sourceTree = "<group>"; };
+		31EEC9301672FCA600EEB995 /* get_distance.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = get_distance.c; sourceTree = "<group>"; };
+		31EEC9311672FCA600EEB995 /* get_distance_intensity */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = get_distance_intensity; sourceTree = "<group>"; };
+		31EEC9321672FCA600EEB995 /* get_distance_intensity.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = get_distance_intensity.c; sourceTree = "<group>"; };
+		31EEC9331672FCA600EEB995 /* get_multiecho */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = get_multiecho; sourceTree = "<group>"; };
+		31EEC9341672FCA600EEB995 /* get_multiecho.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = get_multiecho.c; sourceTree = "<group>"; };
+		31EEC9351672FCA600EEB995 /* get_multiecho_intensity */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = get_multiecho_intensity; sourceTree = "<group>"; };
+		31EEC9361672FCA600EEB995 /* get_multiecho_intensity.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = get_multiecho_intensity.c; sourceTree = "<group>"; };
+		31EEC9371672FCA600EEB995 /* ld_setupapi.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ld_setupapi.sh; sourceTree = "<group>"; };
+		31EEC9381672FCA600EEB995 /* ld_wsock.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ld_wsock.sh; sourceTree = "<group>"; };
+		31EEC9391672FCA600EEB995 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		31EEC93A1672FCA600EEB995 /* open_urg_sensor.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = open_urg_sensor.c; sourceTree = "<group>"; };
+		31EEC93B1672FCA600EEB995 /* open_urg_sensor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = open_urg_sensor.h; sourceTree = "<group>"; };
+		31EEC93C1672FCA600EEB995 /* open_urg_sensor.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = open_urg_sensor.o; sourceTree = "<group>"; };
+		31EEC93D1672FCA600EEB995 /* reboot_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = reboot_test.c; sourceTree = "<group>"; };
+		31EEC93E1672FCA600EEB995 /* sensor_parameter */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = sensor_parameter; sourceTree = "<group>"; };
+		31EEC93F1672FCA600EEB995 /* sensor_parameter.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sensor_parameter.c; sourceTree = "<group>"; };
+		31EEC9401672FCA600EEB995 /* sync_time_stamp */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = sync_time_stamp; sourceTree = "<group>"; };
+		31EEC9411672FCA600EEB995 /* sync_time_stamp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sync_time_stamp.c; sourceTree = "<group>"; };
+		31EEC9421672FCA600EEB995 /* timeout_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = timeout_test.c; sourceTree = "<group>"; };
+		31EEC9441672FCA600EEB995 /* liburg_c.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = liburg_c.a; sourceTree = "<group>"; };
+		31EEC9451672FCA600EEB995 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		31EEC9461672FCA600EEB995 /* urg_connection.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_connection.c; sourceTree = "<group>"; };
+		31EEC9471672FCA600EEB995 /* urg_debug.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_debug.c; sourceTree = "<group>"; };
+		31EEC9481672FCA600EEB995 /* urg_ring_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_ring_buffer.c; sourceTree = "<group>"; };
+		31EEC9491672FCA600EEB995 /* urg_sensor.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_sensor.c; sourceTree = "<group>"; };
+		31EEC94A1672FCA600EEB995 /* urg_serial.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_serial.c; sourceTree = "<group>"; };
+		31EEC94B1672FCA600EEB995 /* urg_serial_linux.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_serial_linux.c; sourceTree = "<group>"; };
+		31EEC94C1672FCA600EEB995 /* urg_serial_utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_serial_utils.c; sourceTree = "<group>"; };
+		31EEC94D1672FCA600EEB995 /* urg_serial_utils_linux.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_serial_utils_linux.c; sourceTree = "<group>"; };
+		31EEC94E1672FCA600EEB995 /* urg_serial_utils_windows.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_serial_utils_windows.c; sourceTree = "<group>"; };
+		31EEC94F1672FCA600EEB995 /* urg_serial_windows.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_serial_windows.c; sourceTree = "<group>"; };
+		31EEC9501672FCA600EEB995 /* urg_tcpclient.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_tcpclient.c; sourceTree = "<group>"; };
+		31EEC9511672FCA600EEB995 /* urg_utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = urg_utils.c; sourceTree = "<group>"; };
+		31EEC9521672FCA600EEB995 /* urg_c-config */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "urg_c-config"; sourceTree = "<group>"; };
+		31EEC9531672FCA600EEB995 /* urg_c-config.in */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "urg_c-config.in"; sourceTree = "<group>"; };
+		31EEC9561672FCA600EEB995 /* calculate_xy.vcproj */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = calculate_xy.vcproj; sourceTree = "<group>"; };
+		31EEC9581672FCA600EEB995 /* find_port.vcproj */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = find_port.vcproj; sourceTree = "<group>"; };
+		31EEC95A1672FCA600EEB995 /* get_distance.vcproj */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = get_distance.vcproj; sourceTree = "<group>"; };
+		31EEC95C1672FCA600EEB995 /* get_distance_intensity.vcproj */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = get_distance_intensity.vcproj; sourceTree = "<group>"; };
+		31EEC95E1672FCA600EEB995 /* get_multiecho.vcproj */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = get_multiecho.vcproj; sourceTree = "<group>"; };
+		31EEC9601672FCA600EEB995 /* get_multiecho_intensity.vcproj */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = get_multiecho_intensity.vcproj; sourceTree = "<group>"; };
+		31EEC9621672FCA600EEB995 /* sensor_parameter.vcproj */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = sensor_parameter.vcproj; sourceTree = "<group>"; };
+		31EEC9641672FCA600EEB995 /* sync_time_stamp.vcproj */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = sync_time_stamp.vcproj; sourceTree = "<group>"; };
+		31EEC9661672FCA600EEB995 /* urg.vcproj */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = urg.vcproj; sourceTree = "<group>"; };
+		31EEC9671672FCA600EEB995 /* urg.sln */ = {isa = PBXFileReference; lastKnownFileType = text; path = urg.sln; sourceTree = "<group>"; };
+		31EEC9691672FCA600EEB995 /* cleanobj.bat */ = {isa = PBXFileReference; lastKnownFileType = text; path = cleanobj.bat; sourceTree = "<group>"; };
+		31EEC96A1672FCA600EEB995 /* compile.bat */ = {isa = PBXFileReference; lastKnownFileType = text; path = compile.bat; sourceTree = "<group>"; };
+		31EEC96F1672FD4100EEB995 /* libliburg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libliburg.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +119,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		31EEC96C1672FD4100EEB995 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -49,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				31EEC90C1672FB0100EEB995 /* mickeyMouse */,
+				31EEC9181672FCA600EEB995 /* urg_library-1.0.3 */,
 				31EEC9091672FB0100EEB995 /* Frameworks */,
 				31EEC9071672FB0100EEB995 /* Products */,
 			);
@@ -58,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				31EEC9061672FB0100EEB995 /* mickeyMouse */,
+				31EEC96F1672FD4100EEB995 /* libliburg.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -88,7 +174,204 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		31EEC9181672FCA600EEB995 /* urg_library-1.0.3 */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9191672FCA600EEB995 /* AUTHORS.txt */,
+				31EEC91A1672FCA600EEB995 /* COPYRIGHT.txt */,
+				31EEC91B1672FCA600EEB995 /* include */,
+				31EEC9261672FCA600EEB995 /* Install.txt */,
+				31EEC9271672FCA600EEB995 /* Makefile */,
+				31EEC9281672FCA600EEB995 /* Readme.txt */,
+				31EEC9291672FCA600EEB995 /* Releasenotes.txt */,
+				31EEC92A1672FCA600EEB995 /* samples */,
+				31EEC9431672FCA600EEB995 /* src */,
+				31EEC9521672FCA600EEB995 /* urg_c-config */,
+				31EEC9531672FCA600EEB995 /* urg_c-config.in */,
+				31EEC9541672FCA600EEB995 /* visual_cpp */,
+				31EEC9681672FCA600EEB995 /* windowsexe */,
+			);
+			path = "urg_library-1.0.3";
+			sourceTree = "<group>";
+		};
+		31EEC91B1672FCA600EEB995 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC91C1672FCA600EEB995 /* urg_connection.h */,
+				31EEC91D1672FCA600EEB995 /* urg_debug.h */,
+				31EEC91E1672FCA600EEB995 /* urg_detect_os.h */,
+				31EEC91F1672FCA600EEB995 /* urg_errno.h */,
+				31EEC9201672FCA600EEB995 /* urg_ring_buffer.h */,
+				31EEC9211672FCA600EEB995 /* urg_sensor.h */,
+				31EEC9221672FCA600EEB995 /* urg_serial.h */,
+				31EEC9231672FCA600EEB995 /* urg_serial_utils.h */,
+				31EEC9241672FCA600EEB995 /* urg_tcpclient.h */,
+				31EEC9251672FCA600EEB995 /* urg_utils.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		31EEC92A1672FCA600EEB995 /* samples */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC92B1672FCA600EEB995 /* calculate_xy */,
+				31EEC92C1672FCA600EEB995 /* calculate_xy.c */,
+				31EEC92D1672FCA600EEB995 /* find_port */,
+				31EEC92E1672FCA600EEB995 /* find_port.c */,
+				31EEC92F1672FCA600EEB995 /* get_distance */,
+				31EEC9301672FCA600EEB995 /* get_distance.c */,
+				31EEC9311672FCA600EEB995 /* get_distance_intensity */,
+				31EEC9321672FCA600EEB995 /* get_distance_intensity.c */,
+				31EEC9331672FCA600EEB995 /* get_multiecho */,
+				31EEC9341672FCA600EEB995 /* get_multiecho.c */,
+				31EEC9351672FCA600EEB995 /* get_multiecho_intensity */,
+				31EEC9361672FCA600EEB995 /* get_multiecho_intensity.c */,
+				31EEC9371672FCA600EEB995 /* ld_setupapi.sh */,
+				31EEC9381672FCA600EEB995 /* ld_wsock.sh */,
+				31EEC9391672FCA600EEB995 /* Makefile */,
+				31EEC93A1672FCA600EEB995 /* open_urg_sensor.c */,
+				31EEC93B1672FCA600EEB995 /* open_urg_sensor.h */,
+				31EEC93C1672FCA600EEB995 /* open_urg_sensor.o */,
+				31EEC93D1672FCA600EEB995 /* reboot_test.c */,
+				31EEC93E1672FCA600EEB995 /* sensor_parameter */,
+				31EEC93F1672FCA600EEB995 /* sensor_parameter.c */,
+				31EEC9401672FCA600EEB995 /* sync_time_stamp */,
+				31EEC9411672FCA600EEB995 /* sync_time_stamp.c */,
+				31EEC9421672FCA600EEB995 /* timeout_test.c */,
+			);
+			path = samples;
+			sourceTree = "<group>";
+		};
+		31EEC9431672FCA600EEB995 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9441672FCA600EEB995 /* liburg_c.a */,
+				31EEC9451672FCA600EEB995 /* Makefile */,
+				31EEC9461672FCA600EEB995 /* urg_connection.c */,
+				31EEC9471672FCA600EEB995 /* urg_debug.c */,
+				31EEC9481672FCA600EEB995 /* urg_ring_buffer.c */,
+				31EEC9491672FCA600EEB995 /* urg_sensor.c */,
+				31EEC94A1672FCA600EEB995 /* urg_serial.c */,
+				31EEC94B1672FCA600EEB995 /* urg_serial_linux.c */,
+				31EEC94C1672FCA600EEB995 /* urg_serial_utils.c */,
+				31EEC94D1672FCA600EEB995 /* urg_serial_utils_linux.c */,
+				31EEC94E1672FCA600EEB995 /* urg_serial_utils_windows.c */,
+				31EEC94F1672FCA600EEB995 /* urg_serial_windows.c */,
+				31EEC9501672FCA600EEB995 /* urg_tcpclient.c */,
+				31EEC9511672FCA600EEB995 /* urg_utils.c */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		31EEC9541672FCA600EEB995 /* visual_cpp */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9551672FCA600EEB995 /* calculate_xy */,
+				31EEC9571672FCA600EEB995 /* find_port */,
+				31EEC9591672FCA600EEB995 /* get_distance */,
+				31EEC95B1672FCA600EEB995 /* get_distance_intensity */,
+				31EEC95D1672FCA600EEB995 /* get_multiecho */,
+				31EEC95F1672FCA600EEB995 /* get_multiecho_intensity */,
+				31EEC9611672FCA600EEB995 /* sensor_parameter */,
+				31EEC9631672FCA600EEB995 /* sync_time_stamp */,
+				31EEC9651672FCA600EEB995 /* urg */,
+				31EEC9671672FCA600EEB995 /* urg.sln */,
+			);
+			path = visual_cpp;
+			sourceTree = "<group>";
+		};
+		31EEC9551672FCA600EEB995 /* calculate_xy */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9561672FCA600EEB995 /* calculate_xy.vcproj */,
+			);
+			path = calculate_xy;
+			sourceTree = "<group>";
+		};
+		31EEC9571672FCA600EEB995 /* find_port */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9581672FCA600EEB995 /* find_port.vcproj */,
+			);
+			path = find_port;
+			sourceTree = "<group>";
+		};
+		31EEC9591672FCA600EEB995 /* get_distance */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC95A1672FCA600EEB995 /* get_distance.vcproj */,
+			);
+			path = get_distance;
+			sourceTree = "<group>";
+		};
+		31EEC95B1672FCA600EEB995 /* get_distance_intensity */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC95C1672FCA600EEB995 /* get_distance_intensity.vcproj */,
+			);
+			path = get_distance_intensity;
+			sourceTree = "<group>";
+		};
+		31EEC95D1672FCA600EEB995 /* get_multiecho */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC95E1672FCA600EEB995 /* get_multiecho.vcproj */,
+			);
+			path = get_multiecho;
+			sourceTree = "<group>";
+		};
+		31EEC95F1672FCA600EEB995 /* get_multiecho_intensity */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9601672FCA600EEB995 /* get_multiecho_intensity.vcproj */,
+			);
+			path = get_multiecho_intensity;
+			sourceTree = "<group>";
+		};
+		31EEC9611672FCA600EEB995 /* sensor_parameter */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9621672FCA600EEB995 /* sensor_parameter.vcproj */,
+			);
+			path = sensor_parameter;
+			sourceTree = "<group>";
+		};
+		31EEC9631672FCA600EEB995 /* sync_time_stamp */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9641672FCA600EEB995 /* sync_time_stamp.vcproj */,
+			);
+			path = sync_time_stamp;
+			sourceTree = "<group>";
+		};
+		31EEC9651672FCA600EEB995 /* urg */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9661672FCA600EEB995 /* urg.vcproj */,
+			);
+			path = urg;
+			sourceTree = "<group>";
+		};
+		31EEC9681672FCA600EEB995 /* windowsexe */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC9691672FCA600EEB995 /* cleanobj.bat */,
+				31EEC96A1672FCA600EEB995 /* compile.bat */,
+			);
+			path = windowsexe;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		31EEC96D1672FD4100EEB995 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		31EEC9051672FB0100EEB995 /* mickeyMouse */ = {
@@ -107,6 +390,23 @@
 			productName = mickeyMouse;
 			productReference = 31EEC9061672FB0100EEB995 /* mickeyMouse */;
 			productType = "com.apple.product-type.tool";
+		};
+		31EEC96E1672FD4100EEB995 /* liburg */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31EEC9701672FD4100EEB995 /* Build configuration list for PBXNativeTarget "liburg" */;
+			buildPhases = (
+				31EEC96B1672FD4100EEB995 /* Sources */,
+				31EEC96C1672FD4100EEB995 /* Frameworks */,
+				31EEC96D1672FD4100EEB995 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = liburg;
+			productName = liburg;
+			productReference = 31EEC96F1672FD4100EEB995 /* libliburg.a */;
+			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
 
@@ -130,6 +430,7 @@
 			projectRoot = "";
 			targets = (
 				31EEC9051672FB0100EEB995 /* mickeyMouse */,
+				31EEC96E1672FD4100EEB995 /* liburg */,
 			);
 		};
 /* End PBXProject section */
@@ -140,6 +441,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				31EEC90E1672FB0100EEB995 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31EEC96B1672FD4100EEB995 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31EEC9731672FD5200EEB995 /* urg_connection.c in Sources */,
+				31EEC9741672FD5200EEB995 /* urg_debug.c in Sources */,
+				31EEC9751672FD5200EEB995 /* urg_ring_buffer.c in Sources */,
+				31EEC9761672FD5200EEB995 /* urg_sensor.c in Sources */,
+				31EEC9771672FD5200EEB995 /* urg_serial.c in Sources */,
+				31EEC9791672FD5200EEB995 /* urg_serial_utils.c in Sources */,
+				31EEC97D1672FD5200EEB995 /* urg_tcpclient.c in Sources */,
+				31EEC97E1672FD5200EEB995 /* urg_utils.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,6 +533,22 @@
 			};
 			name = Release;
 		};
+		31EEC9711672FD4100EEB995 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		31EEC9721672FD4100EEB995 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -234,6 +566,14 @@
 			buildConfigurations = (
 				31EEC9161672FB0100EEB995 /* Debug */,
 				31EEC9171672FB0100EEB995 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		31EEC9701672FD4100EEB995 /* Build configuration list for PBXNativeTarget "liburg" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31EEC9711672FD4100EEB995 /* Debug */,
+				31EEC9721672FD4100EEB995 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};

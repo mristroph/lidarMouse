@@ -138,7 +138,7 @@ int serial_write(urg_serial_t *serial, const char *data, int size)
         return -1;
     }
     //fprintf(stderr, "write: %s\n", data);
-    return write(serial->fd, data, size);
+    return (int)write(serial->fd, data, size);
 }
 
 
@@ -181,7 +181,7 @@ static int internal_receive(char data[], int data_size_max,
         }
 
         require_n = data_size_max - filled;
-        read_n = read(serial->fd, &data[filled], require_n);
+        read_n = (int)read(serial->fd, &data[filled], require_n);
         if (read_n <= 0) {
             /* 読み出しエラー。現在までの受信内容で戻る */
             break;
