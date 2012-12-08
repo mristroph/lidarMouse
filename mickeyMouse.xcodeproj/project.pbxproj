@@ -20,6 +20,7 @@
 		31EEC97E1672FD5200EEB995 /* urg_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9511672FCA600EEB995 /* urg_utils.c */; };
 		31EEC98D1672FE4700EEB995 /* calculate_xy.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC92C1672FCA600EEB995 /* calculate_xy.c */; };
 		31EEC98F1672FE8A00EEB995 /* liburg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC96F1672FD4100EEB995 /* liburg.a */; };
+		31EEC9901672FF7C00EEB995 /* open_urg_sensor.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC93A1672FCA600EEB995 /* open_urg_sensor.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -483,6 +484,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31EEC98D1672FE4700EEB995 /* calculate_xy.c in Sources */,
+				31EEC9901672FF7C00EEB995 /* open_urg_sensor.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
