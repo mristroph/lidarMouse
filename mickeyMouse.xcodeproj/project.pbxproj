@@ -21,6 +21,8 @@
 		31EEC98D1672FE4700EEB995 /* calculate_xy.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC92C1672FCA600EEB995 /* calculate_xy.c */; };
 		31EEC98F1672FE8A00EEB995 /* liburg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC96F1672FD4100EEB995 /* liburg.a */; };
 		31EEC9901672FF7C00EEB995 /* open_urg_sensor.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC93A1672FCA600EEB995 /* open_urg_sensor.c */; };
+		31EEC991167300FD00EEB995 /* open_urg_sensor.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC93A1672FCA600EEB995 /* open_urg_sensor.c */; };
+		31EEC9921673010F00EEB995 /* liburg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC96F1672FD4100EEB995 /* liburg.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -119,6 +121,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31EEC90B1672FB0100EEB995 /* Foundation.framework in Frameworks */,
+				31EEC9921673010F00EEB995 /* liburg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,6 +464,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31EEC90E1672FB0100EEB995 /* main.m in Sources */,
+				31EEC991167300FD00EEB995 /* open_urg_sensor.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
