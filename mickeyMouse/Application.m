@@ -5,6 +5,7 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 
 #import "Application.h"
 #import "Lidar2DManager.h"
+#import "Lidar2D.h"
 
 @interface Application () <Lidar2DManagerDelegate>
 @end
@@ -29,8 +30,11 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
     exit(1);
 }
 
-- (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(Lidar2DDevice *)device {
+- (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(id<Lidar2DProxy>)device {
     NSLog(@"Lidar2DManager %@ connected device %@", manager, device);
+    [device performBlockAndWait:^(id<Lidar2D> device) {
+        NSLog(@"device.error=%@", device.error);
+    }];
 }
 
 @end

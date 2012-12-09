@@ -3,22 +3,28 @@ Created by Rob Mayoff on 12/8/12.
 Copyright (c) 2012 Rob Mayoff. All rights reserved.
 */
 
+#import "Lidar2D.h"
 #import "Lidar2DManager.h"
+#import "Lidar2D_managerAccess.h"
 #import <IOKit/IOKitLib.h>
 #import <IOKit/usb/IOUSBLib.h>
+#import <IOKit/serial/IOSerialKeys.h>
 #import <mach/mach.h>
+
+@interface Lidar2DManager ()
+@end
 
 @implementation Lidar2DManager {
     IONotificationPortRef notificationPort_;
-    BOOL isScheduled_ : 1;
+    CFRunLoopRef runLoop_;
 }
 
-static void firstMatchCallback(void *refcon, io_iterator_t iterator);
+static void firstMatchCallback(__unsafe_unretained Lidar2DManager *refcon, io_iterator_t iterator);
 
 #pragma mark - Public API
 
 - (void)start {
-    if (isScheduled_)
+    if (self.isStarted)
         return;
 
     if (!_delegate) {
@@ -31,21 +37,25 @@ static void firstMatchCallback(void *refcon, io_iterator_t iterator);
         [self failWithAction:@"Creating I/O notification port"];
     }
 
+    runLoop_ = CFRunLoopGetCurrent();
+    CFRunLoopAddSource(runLoop_, IONotificationPortGetRunLoopSource(notificationPort_), kCFRunLoopDefaultMode);
+
     NSMutableDictionary *filter = [self ioServiceMatchingFilter];
     io_iterator_t iterator;
-    kern_return_t rc = IOServiceAddMatchingNotification(notificationPort_, kIOFirstMatchNotification, CFBridgingRetain(filter), firstMatchCallback, (__bridge void *)self, &iterator);
+    kern_return_t rc = IOServiceAddMatchingNotification(notificationPort_, kIOFirstMatchNotification, CFBridgingRetain(filter), (IOServiceMatchingCallback)firstMatchCallback, (__bridge void *)self, &iterator);
     if (rc != KERN_SUCCESS) {
         [self failWithAction:@"Registering for device match notifications" kernelReturnCode:rc];
         return;
     }
-    [self didMatchDevicesWithIterator:iterator];
+    firstMatchCallback(self, iterator);
 }
 
 - (void)stop {
-    if (!isScheduled_)
+    if (!self.isStarted)
         return;
 
     if (notificationPort_) {
+        CFRunLoopRemoveSource(CFRunLoopGetCurrent(), IONotificationPortGetRunLoopSource(notificationPort_), kCFRunLoopDefaultMode);
         IONotificationPortDestroy(notificationPort_);
     }
 }
@@ -56,11 +66,17 @@ static void firstMatchCallback(void *refcon, io_iterator_t iterator);
 
 #pragma mark - Implementation details
 
+- (BOOL)isStarted {
+    return runLoop_ != NULL;
+}
+
 - (void)failWithAction:(NSString *)action kernelReturnCode:(kern_return_t)kernelReturnCode {
     NSError *error = [NSError errorWithDomain:NSMachErrorDomain code:kernelReturnCode userInfo:@{
         NSLocalizedDescriptionKey: @(mach_error_string(kernelReturnCode))
     }];
-    [_delegate lidar2DManager:self didReceiveError:error];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_delegate lidar2DManager:self didReceiveError:error];
+    });
 }
 
 - (void)failWithAction:(NSString *)action {
@@ -68,30 +84,30 @@ static void firstMatchCallback(void *refcon, io_iterator_t iterator);
     [_delegate lidar2DManager:self didReceiveError:error];
 }
 
+- (void)didFirstMatchDeviceWithDevicePath:(NSString *)path {
+    if (!self.isStarted)
+        return;
+
+    Lidar2DDevice *device = [[Lidar2DDevice alloc] initWithDevicePath:path];
+    [_delegate lidar2DManager:self didConnectToDevice:device];
+}
+
 - (NSMutableDictionary *)ioServiceMatchingFilter {
-    NSMutableDictionary *filter = (__bridge NSMutableDictionary *)(IOServiceMatching(kIOUSBDeviceClassName));
+    NSMutableDictionary *filter = CFBridgingRelease(IOServiceMatching(kIOUSBDeviceClassName));
     filter[@kUSBVendorID] = @0x15d1;
     filter[@kUSBProductID] = @0x0;
     return filter;
 }
 
-- (void)didMatchDevicesWithIterator:(io_iterator_t)iterator {
+static void firstMatchCallback(__unsafe_unretained Lidar2DManager *unsafe_self, io_iterator_t iterator) {
+    Lidar2DManager *self = unsafe_self;
     io_object_t device;
     while ((device = IOIteratorNext(iterator))) {
-        [self dumpObject:device];
+        NSString *path = CFBridgingRelease(IORegistryEntrySearchCFProperty(device, kIOServicePlane, CFSTR(kIODialinDeviceKey), NULL, kIORegistryIterateRecursively));
+        NSLog(@"device path = %@", path);
+        [self didFirstMatchDeviceWithDevicePath:path];
         IOObjectRelease(device);
     }
-}
-
-- (void)dumpObject:(io_object_t)object {
-    NSString *className = CFBridgingRelease(IOObjectCopyClass(object));
-    NSLog(@"%u class = %@", object, className);
-    NSString *property = CFBridgingRelease(IORegistryEntryCreateCFProperty(object, CFSTR(kUSBDevicePropertyLocationID), NULL, 0));
-    NSLog(@"%u locationID = %x", object, property.intValue);
-}
-
-static void firstMatchCallback(void *refcon, io_iterator_t iterator) {
-    [(__bridge Lidar2DManager *)refcon didMatchDevicesWithIterator:iterator];
 }
 
 @end
