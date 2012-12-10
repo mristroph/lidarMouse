@@ -246,7 +246,9 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
     static const NSUInteger kTimestampEncodingLength = 4;
 
     if (chunk.length != kTimestampEncodingLength) {
-        *errorOut = [NSError errorWithDomain:SCIP20ErrorDomain code:SCIP20ErrorCode_PayloadDecodingFailed userInfo:@{ @"chunk": chunk }];
+        if (errorOut) {
+            *errorOut = [NSError errorWithDomain:SCIP20ErrorDomain code:SCIP20ErrorCode_PayloadDecodingFailed userInfo:@{ @"chunk": chunk }];
+        }
         return 0;
     }
     char const *p = chunk.bytes;
