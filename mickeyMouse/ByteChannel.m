@@ -90,12 +90,15 @@ static size_t readWithDeadline(int fd, char *buffer, size_t capacity, CFAbsolute
 
 @end
 
+static int millisecondsUntilDeadline(CFAbsoluteTime deadline) {
+    return MAX(0, (int)ceil((deadline - CFAbsoluteTimeGetCurrent()) * 1000));
+}
+
 static size_t writeWithDeadline(int fd, char const *buffer, size_t length, CFAbsoluteTime deadline) {
     struct pollfd pfd = { .fd = fd, .events = POLLOUT };
     size_t offset = 0;
     while (offset < length) {
-        int millisecondsLeft = MAX(0, (int)ceil((deadline - CFAbsoluteTimeGetCurrent()) * 1000));
-        ssize_t rc = poll(&pfd, 1, millisecondsLeft);
+        ssize_t rc = poll(&pfd, 1, millisecondsUntilDeadline(deadline));
         if (rc < 0)
             break;
         if (rc == 0) {
@@ -115,7 +118,7 @@ static size_t writeWithDeadline(int fd, char const *buffer, size_t length, CFAbs
 
 static size_t readWithDeadline(int fd, char *buffer, size_t capacity, CFAbsoluteTime deadline) {
     struct pollfd pfd = { .fd = fd, .events = POLLIN };
-    ssize_t rc = poll(&pfd, 1, (int)ceil((deadline - CFAbsoluteTimeGetCurrent()) * 1000));
+    ssize_t rc = poll(&pfd, 1, millisecondsUntilDeadline(deadline));
     if (rc < 0)
         return 0;
     if (rc == 0) {
