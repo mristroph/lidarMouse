@@ -30,7 +30,7 @@ static size_t readWithDeadline(int fd, char *buffer, size_t capacity, CFAbsolute
 }
 
 - (BOOL)sendData:(NSData *)data withTimeout:(CFTimeInterval)timeout {
-    size_t bytesWritten = writeWithDeadline(fd_, data.bytes, data.length, timeout);
+    size_t bytesWritten = writeWithDeadline(fd_, data.bytes, data.length, CFAbsoluteTimeGetCurrent() + timeout);
     if (bytesWritten == data.length)
         return YES;
     _error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:nil];
@@ -94,7 +94,7 @@ static size_t writeWithDeadline(int fd, char const *buffer, size_t length, CFAbs
     struct pollfd pfd = { .fd = fd, .events = POLLOUT };
     size_t offset = 0;
     while (offset < length) {
-        int millisecondsLeft = (int)ceil((deadline - CFAbsoluteTimeGetCurrent()) * 1000);
+        int millisecondsLeft = MAX(0, (int)ceil((deadline - CFAbsoluteTimeGetCurrent()) * 1000));
         ssize_t rc = poll(&pfd, 1, millisecondsLeft);
         if (rc < 0)
             break;
