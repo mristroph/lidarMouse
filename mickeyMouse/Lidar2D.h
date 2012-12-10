@@ -9,10 +9,15 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 
 @property (nonatomic, readonly) NSString *devicePath;
 
-// This is an error I have encountered, or nil.  Set this to nil after handling the error if you want to keep using me and detect more errors.  You need to check this immediately after creation.  If it is non-nil, don't try to use me for anything else.
+// This is an error I have encountered, or nil.  Set this to nil after handling the error if you want to try to keep using me.
 @property (nonatomic, strong) NSError *error;
 
 @property (nonatomic, readonly) NSString *serialNumber;
+
+typedef void (^Lidar2DDataSnapshotBlock)(NSData *data, BOOL *stop);
+
+// I ask the device to send me sensor data continuously.  Each time I receive a complete snapshot, I call `block`.  If `block` sets `*stop` to YES, I tell the device to stop sending me data and return.  If I encounter an error, I tell the device to stop sending me data and return.  Check `error` after I return.
+- (void)forEachStreamingDataSnapshot:(Lidar2DDataSnapshotBlock)block;
 
 @end
 
@@ -25,3 +30,7 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 - (void)performBlockAndWait:(void (^)(id<Lidar2D> device))block;
 
 @end
+
+extern NSString *const Lidar2DErrorDomain;
+extern NSString *const Lidar2DErrorStatusKey;
+extern NSString *const Lidar2DErrorExpectedStatusKey;

@@ -5,10 +5,15 @@
 
 #import "Lidar2D.h"
 #import "Lidar2D_managerAccess.h"
+#import "SCIP20Channel.h"
+#import "ByteChannel.h"
 #import <termios.h>
-#import <poll.h>
 
-static NSString *const Lidar2DErrorDomain = @"Lidar2DErrorDomain";
+NSString *const Lidar2DErrorDomain = @"Lidar2DErrorDomain";
+NSString *const Lidar2DErrorStatusKey = @"status";
+NSString *const Lidar2DErrorExpectedStatusKey = @"expectedStatus";
+static NSString *const SCIP20Status_OK = @"00";
+static NSString *const SCIP20Status_StreamingData = @"99";
 
 static int const kWriteTimeoutInMilliseconds = 1000;
 static int const kReadTimeoutInMilliseconds = 1000;
@@ -22,19 +27,11 @@ static size_t readWithTimeoutInMilliseconds(int fd, char *buffer, size_t capacit
 @implementation Lidar2DDevice {
     NSString *path_;
     dispatch_queue_t queue_;
+    SCIP20Channel *channel_;
     int fd_;
-    NSInputStream *inputStream_;
-    uint64_t commandNumber_;
-
-    char inputBuffer_[8192];
-    ssize_t inputBufferReadOffset_;
-    ssize_t inputBufferWriteOffset_;
 }
 
 - (void)dealloc {
-    if (fd_ != -1) {
-        close(fd_);
-    }
     dispatch_release(queue_);
 }
 
@@ -66,7 +63,73 @@ static size_t readWithTimeoutInMilliseconds(int fd, char *buffer, size_t capacit
 
 #pragma mark - Public API - Lidar2D
 
-#pragma mark - Implementation details
+@synthesize devicePath = _devicePath;
+@synthesize error = _error;
+@synthesize serialNumber = _serialNumber;
+
+- (void)forEachStreamingDataSnapshot:(Lidar2DDataSnapshotBlock)block {
+    if ([self startStreamingData]) {
+        [self readStreamingDataWithBlock:block];
+        [self stopStreamingData];
+    }
+}
+
+#pragma mark - Implementation details - streaming data
+
+- (BOOL)startStreamingData {
+    static NSString *const kCommand = @"MD0000076800001";
+    __block BOOL ok = YES;
+    [channel_ sendCommand:kCommand ignoringSpuriousResponses:NO onEmptyResponse:^(NSString *status) {
+        ok = [self checkOKStatus:status];
+    } onError:^(NSError *error) {
+        _error = error;
+        ok = NO;
+    }];
+    return ok;
+}
+
+- (void)readStreamingDataWithBlock:(Lidar2DDataSnapshotBlock)block {
+    for (__block BOOL stop = NO; !stop; ) {
+        [channel_ receiveStreamingResponseWithDataEncodingLength:3 onResponse:^(NSString *command, NSString *status, NSData *data) {
+            if ([self checkStatus:status isEqualToStatus:SCIP20Status_StreamingData]) {
+                block(data, &stop);
+            } else {
+                stop = YES;
+            }
+        } onError:^(NSError *error) {
+            _error = error;
+            stop = YES;
+        }];
+    }
+}
+
+- (void)stopStreamingData {
+    [channel_ sendCommand:@"QT" ignoringSpuriousResponses:YES onEmptyResponse:^(NSString *status) {
+        [self checkOKStatus:status];
+    } onError:^(NSError *error) {
+        if (!_error) {
+            _error = error;
+        }
+    }];
+}
+
+- (BOOL)checkOKStatus:(NSString *)status {
+    return [self checkStatus:status isEqualToStatus:SCIP20Status_OK];
+}
+
+- (BOOL)checkStatus:(NSString *)status isEqualToStatus:(NSString *)expectedStatus {
+    if ([status isEqualToString:expectedStatus])
+        return YES;
+    if (!_error) {
+        _error = [NSError errorWithDomain:Lidar2DErrorDomain code:0 userInfo:@{
+            Lidar2DErrorStatusKey: status,
+            Lidar2DErrorExpectedStatusKey: expectedStatus
+        }];
+    }
+    return NO;
+}
+
+#pragma mark - Implementation details - error handling
 
 // I return NO to make it easy to call me and then return NO.
 - (BOOL)setPosixErrorWithAction:(NSString *)action {
@@ -90,11 +153,14 @@ static size_t readWithTimeoutInMilliseconds(int fd, char *buffer, size_t capacit
     return NO;
 }
 
+#pragma mark - Implementation details - connecting to device
+
 - (void)connectToDevice {
     YES
     && [self openFile]
     && [self configureTerminalSettings]
-    && [self sendVVAndReadResponse];
+    && [self initSCIP20Channel]
+    && [self readDeviceDictionaries];
 }
 
 - (BOOL)openFile {
@@ -130,146 +196,59 @@ static size_t readWithTimeoutInMilliseconds(int fd, char *buffer, size_t capacit
     return YES;
 }
 
-- (BOOL)sendVVAndReadResponse {
-    if (![self sendCommandAndReceiveEcho:"VV"]
-        || ![self receiveAndCheckStatus:"00P"])
-        return NO;
-    while (true) {
-        NSData *data = [self readLine];
-        if (!data)
-            return NO;
-        if (data.length == 0)
-            return YES;
-        NSLog(@"line=%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-    }
-}
-
-- (BOOL)sendCommandAndReceiveEcho:(char const *)command {
-    char buffer[100];
-    size_t bytesToWrite = [self lengthOfBuffer:buffer capacity:sizeof buffer byFormattingCommand:command];
-    return [self sendBytes:buffer length:bytesToWrite]
-        && [self readAndMatchBytes:buffer length:bytesToWrite];
-}
-
-- (size_t)lengthOfBuffer:(char *)buffer capacity:(size_t)capacity byFormattingCommand:(char const *)command {
-    ++commandNumber_;
-    int length = snprintf(buffer, capacity, "%s;%016llu\n", command, commandNumber_);
-    if (length >= capacity) {
-        [NSException raise:NSInvalidArgumentException format:@"command too long for buffer: %s", command];
-        abort();
-    }
-    return length;
-}
-
-- (BOOL)sendBytes:(char const *)buffer length:(size_t)length {
-    ssize_t rc = writeWithTimeoutInMilliseconds(fd_, buffer, length, kWriteTimeoutInMilliseconds);
-    return rc == length ? YES : [self setPosixErrorWithAction:@"sending command"];
-}
-
-- (BOOL)readAndMatchBytes:(char const *)buffer length:(size_t)length {
-    for (size_t i = 0; i < length; ++i) {
-        if (![self readAndMatchByte:buffer[i]]) {
-            [self setErrorWithAction:@"command echo is incorrect"];
-        }
-    }
+- (BOOL)initSCIP20Channel {
+    ByteChannel *byteChannel = [[ByteChannel alloc] initWithFileDescriptor:fd_];
+    channel_ = [[SCIP20Channel alloc] initWithByteChannel:byteChannel];
     return YES;
 }
 
-- (BOOL)readAndMatchByte:(char)expectedByte {
-    char actualByte;
-    if (![self readByte:&actualByte])
-        return NO;
-    return expectedByte == actualByte ? YES : [self setErrorWithAction:@"matching input"];
+- (BOOL)readDeviceDictionaries {
+    return YES
+    && [self readVersionDictionary]
+    && [self readSpecificationsDictionary]
+    && [self readStateDictionary];
 }
 
-- (BOOL)receiveAndCheckStatus:(char const *)status {
-    for (char const *p = status; *p; ++p) {
-        if (![self readAndMatchByte:*p])
-            return NO;
-    }
-    return [self readAndMatchByte:'\n'];
+- (BOOL)readVersionDictionary {
+    __block BOOL ok = YES;
+    [channel_ sendCommand:@"VV" onDictionaryResponse:^(NSString *status, NSDictionary *info) {
+        if (![self checkOKStatus:status])
+            return;
+        NSLog(@"device version: %@", info);
+        _serialNumber = info[@"SERI"];
+    } onError:^(NSError *error) {
+        _error = error;
+        ok = NO;
+    }];
+    return ok;
 }
 
-- (BOOL)readByte:(char *)byteOut {
-    if (inputBufferReadOffset_ >= inputBufferWriteOffset_) {
-        if (![self fillInputBuffer])
-            return NO;
-    }
-    *byteOut = inputBuffer_[inputBufferReadOffset_++];
-    return YES;
+- (BOOL)readSpecificationsDictionary {
+    __block BOOL ok = YES;
+    [channel_ sendCommand:@"PP" onDictionaryResponse:^(NSString *status, NSDictionary *info) {
+        if (![self checkOKStatus:status])
+            return;
+        NSLog(@"device specifications: %@", info);
+    } onError:^(NSError *error) {
+        _error = error;
+        ok = NO;
+    }];
+    return ok;
 }
 
-- (NSData *)readLine {
-    NSMutableData *data = [[NSMutableData alloc] init];
-    while (true) {
-        char byte;
-        if (![self readByte:&byte])
-            return NO;
-        if (byte == '\n')
-            return data;
-        [data appendBytes:&byte length:1];
-    }
-}
-
-- (BOOL)fillInputBuffer {
-    if (inputBufferReadOffset_ > 0 && inputBufferWriteOffset_ > inputBufferReadOffset_) {
-        memmove(inputBuffer_, inputBuffer_ + inputBufferReadOffset_, inputBufferWriteOffset_ - inputBufferReadOffset_);
-        inputBufferWriteOffset_ -= inputBufferReadOffset_;
-        inputBufferReadOffset_ = 0;
-    }
-    ssize_t rc = readWithTimeoutInMilliseconds(fd_, inputBuffer_ + inputBufferWriteOffset_, (sizeof inputBuffer_) - inputBufferWriteOffset_, kReadTimeoutInMilliseconds);
-    if (rc == 0) {
-        return [self setPosixErrorWithAction:@"reading from the device"];
-    }
-    inputBufferWriteOffset_ += rc;
-    return YES;
+- (BOOL)readStateDictionary {
+    __block BOOL ok = YES;
+    [channel_ sendCommand:@"PP" onDictionaryResponse:^(NSString *status, NSDictionary *info) {
+        if (![self checkOKStatus:status])
+            return;
+        NSLog(@"device state: %@", info);
+    } onError:^(NSError *error) {
+        _error = error;
+        ok = NO;
+    }];
+    return ok;
 }
 
 @end
-
-static size_t writeWithTimeoutInMilliseconds(int fd, char const *buffer, size_t length, int timeout) {
-    struct pollfd pfd = { .fd = fd, .events = POLLOUT };
-    size_t offset = 0;
-    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent() + timeout / 1000.0;
-    while (offset < length) {
-        ssize_t rc = poll(&pfd, 1, timeout);
-        if (rc < 0)
-            break;
-        if (rc == 0) {
-            errno = EAGAIN;
-            break;
-        }
-
-        rc = write(fd, buffer + offset, length - offset);
-        if (rc < 1)
-            break;
-
-        offset += rc;
-        CFTimeInterval timeRemaining = endTime - CFAbsoluteTimeGetCurrent();
-        timeout = (int)ceil(timeRemaining * 1000);
-    }
-
-    return offset;
-}
-
-static size_t readWithTimeoutInMilliseconds(int fd, char *buffer, size_t capacity, int timeout) {
-    struct pollfd pfd = { .fd = fd, .events = POLLIN };
-    ssize_t rc = poll(&pfd, 1, timeout);
-    if (rc < 0)
-        return 0;
-    if (rc == 0) {
-        errno = EAGAIN;
-        return 0;
-    }
-
-    rc = read(fd, buffer, capacity);
-    if (rc < 0)
-        return 0;
-    if (rc == 0) {
-        errno = 0;
-        return 0;
-    }
-    return rc;
-}
 
 
