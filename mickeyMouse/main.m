@@ -19,6 +19,7 @@ int main(int argc, const char * argv[])
 
         Application *application = [[Application alloc] init];
         (void)application;
+        CFRunLoopRun();
         return 0;
 
         urg_t urg;
