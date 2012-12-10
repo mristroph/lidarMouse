@@ -56,7 +56,7 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
     } onError:errorBlock];
 }
 
-- (void)sendCommand:(NSString *)command responseDataEncodingLength:(int)encodingLength onResponse:(SCIP20DataResponseBlock)responseBlock onError:(SCIP20ErrorBlock)errorBlock {
+- (void)sendCommand:(NSString *)command responseDataEncodingLength:(NSUInteger)encodingLength onResponse:(SCIP20DataResponseBlock)responseBlock onError:(SCIP20ErrorBlock)errorBlock {
     [self sendCommand:command ignoringSpuriousResponses:NO onResponse:^(NSString *status, NSArray *payloadChunks) {
         NSError *error;
         NSData *data = [self dataByDecodingPayloadChunks:payloadChunks withEncodingLength:encodingLength error:&error];
@@ -258,7 +258,7 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
     return timestamp;
 }
 
-- (NSData *)dataByDecodingPayloadChunks:(NSArray *)chunks withEncodingLength:(int)encodingLength error:(NSError **)errorOut {
+- (NSData *)dataByDecodingPayloadChunks:(NSArray *)chunks withEncodingLength:(NSUInteger)encodingLength error:(NSError **)errorOut {
     NSMutableData *data = [[NSMutableData alloc] init];
     NSUInteger bytesToDecode = encodingLength;
     NSUInteger decodedValue = 0;

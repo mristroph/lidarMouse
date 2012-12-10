@@ -13,8 +13,9 @@
 #import "urg_utils.h"
 #import "open_urg_sensor.h"
 
-int main(int argc, const char * argv[])
-{
+int main(int argc, const char * argv[]) {
+    (void)argc; (void)argv;
+
     @autoreleasepool {
 
         Application *application = [[Application alloc] init];

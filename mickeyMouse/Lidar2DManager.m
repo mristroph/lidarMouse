@@ -72,6 +72,7 @@ static void firstMatchCallback(__unsafe_unretained Lidar2DManager *refcon, io_it
 
 - (void)failWithAction:(NSString *)action kernelReturnCode:(kern_return_t)kernelReturnCode {
     NSError *error = [NSError errorWithDomain:NSMachErrorDomain code:kernelReturnCode userInfo:@{
+        @"action": action,
         NSLocalizedDescriptionKey: @(mach_error_string(kernelReturnCode))
     }];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -80,7 +81,7 @@ static void firstMatchCallback(__unsafe_unretained Lidar2DManager *refcon, io_it
 }
 
 - (void)failWithAction:(NSString *)action {
-    NSError *error = [NSError errorWithDomain:NSMachErrorDomain code:0 userInfo:nil];
+    NSError *error = [NSError errorWithDomain:NSMachErrorDomain code:0 userInfo:@{ @"action": action }];
     [_delegate lidar2DManager:self didReceiveError:error];
 }
 

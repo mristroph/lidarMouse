@@ -27,6 +27,7 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 #pragma mark - Lidar2DManagerDelegate protocol
 
 - (void)lidar2DManager:(Lidar2DManager *)manager didReceiveError:(NSError *)error {
+    (void)manager;
     NSLog(@"error: Lidar2DManager: %@", error);
     exit(1);
 }

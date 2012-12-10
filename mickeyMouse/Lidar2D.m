@@ -18,12 +18,6 @@ static NSString *const SCIP20Status_StreamingData = @"99";
 static int const kWriteTimeoutInMilliseconds = 1000;
 static int const kReadTimeoutInMilliseconds = 1000;
 
-// Spend up to `timeout` milliseconds trying to write the buffer to the file descriptor.  You must set the file to non-blocking mode before calling me.  I always return the number of bytes written.  If I return a number less than `length`, check `errno`.  I set `errno` to `EAGAIN` if the time expires.
-static size_t writeWithTimeoutInMilliseconds(int fd, char const *buffer, size_t length, int timeout);
-
-// Spend up to `timeout` milliseconds trying to read from the file descriptor.  You must set the file to non-blocking mode before calling me.   I always return the number of bytes read.  As soon as I read any bytes, I return.  I don't wait for more bytes after I've put some in the buffer.  On EOF, I set `errno` to zero and return zero.  On timeout, I set `errno` to `EAGAIN` and return zero.  On any other error, I leave the system error code in `errno` and return zero.
-static size_t readWithTimeoutInMilliseconds(int fd, char *buffer, size_t capacity, int timeout);
-
 @implementation Lidar2DDevice {
     NSString *path_;
     dispatch_queue_t queue_;
@@ -43,6 +37,7 @@ static size_t readWithTimeoutInMilliseconds(int fd, char *buffer, size_t capacit
         fd_ = -1;
         queue_ = dispatch_queue_create([[NSString stringWithFormat:@"Lidar2D-%@", path] UTF8String], 0);
         [self performBlock:^(id<Lidar2D> device) {
+            (void)device;
             [self connectToDevice];
         }];
     }
@@ -91,6 +86,8 @@ static size_t readWithTimeoutInMilliseconds(int fd, char *buffer, size_t capacit
 - (void)readStreamingDataWithBlock:(Lidar2DDataSnapshotBlock)block {
     for (__block BOOL stop = NO; !stop; ) {
         [channel_ receiveStreamingResponseWithDataEncodingLength:3 onResponse:^(NSString *command, NSString *status, NSUInteger timestamp, NSData *data) {
+            (void)command; (void)timestamp;
+
             if ([self checkStatus:status isEqualToStatus:SCIP20Status_StreamingData]) {
                 block(data, &stop);
             } else {

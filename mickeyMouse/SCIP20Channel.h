@@ -36,7 +36,7 @@ typedef void (^SCIP20StreamingDataResponseBlock)(NSString *command, NSString *st
 - (void)sendCommand:(NSString *)command ignoringSpuriousResponses:(BOOL)ignoringSpuriousResponses onEmptyResponse:(SCIP20EmptyResponseBlock)responseBlock onError:(SCIP20ErrorBlock)errorBlock;
 
 // Send the given command (which must not include the “String Characters” field or terminating newline.  I expect a response with data encoded in the 2-character, 3-character, or 4-character encoding, depending on the `encodingLength` argument.  If I receive a valid response, I pass the response status and decoded data to `responseBlock`.  Otherwise, I call `errorBlock`.
-- (void)sendCommand:(NSString *)command responseDataEncodingLength:(int)encodingLength onResponse:(SCIP20DataResponseBlock)responseBlock onError:(SCIP20ErrorBlock)errorBlock;
+- (void)sendCommand:(NSString *)command responseDataEncodingLength:(NSUInteger)encodingLength onResponse:(SCIP20DataResponseBlock)responseBlock onError:(SCIP20ErrorBlock)errorBlock;
 
 // Send the given command (which must not include the “String Characters” field or terminating newline.  I expect a response with a dictionary. If I receive a valid response, I pass the response status and decoded dictionary to `responseBlock`.  Otherwise, I call `errorBlock`.
 - (void)sendCommand:(NSString *)command onDictionaryResponse:(SCIP20DictionaryResponseBlock)responseBlock onError:(SCIP20ErrorBlock)errorBlock;

@@ -27,6 +27,7 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
     }
 
     [device forEachStreamingDataSnapshot:^(NSData *data, BOOL *stop) {
+        *stop = NO;
         NSLog(@"data=%@", data);
     }];
 
