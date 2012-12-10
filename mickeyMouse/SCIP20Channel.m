@@ -108,6 +108,7 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
         [self readResponsePacketWithBlock:^(NSData *echoLine, NSString *status, NSArray *payloadChunks) {
             if ([echoLine isEqualToData:commandPacket]) {
                 responseBlock(status, payloadChunks);
+                waitingForResponse = NO;
                 return;
             }
 
@@ -193,7 +194,12 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
         [self readChecksummedLineWithDataBlock:^(NSData *data) {
             [chunks addObject:data];
             shouldKeepReading = YES;
-        } onEmptyLine:nil onError:errorBlock];
+        } onEmptyLine:^{
+            shouldKeepReading = NO;
+        } onError:^(NSError *error) {
+            shouldKeepReading = NO;
+            errorBlock(error);
+        }];
     } while (ok && shouldKeepReading);
     return ok;
 }
