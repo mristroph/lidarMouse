@@ -238,7 +238,7 @@ static size_t readWithTimeoutInMilliseconds(int fd, char *buffer, size_t capacit
 
 - (BOOL)readStateDictionary {
     __block BOOL ok = YES;
-    [channel_ sendCommand:@"PP" onDictionaryResponse:^(NSString *status, NSDictionary *info) {
+    [channel_ sendCommand:@"II" onDictionaryResponse:^(NSString *status, NSDictionary *info) {
         if (![self checkOKStatus:status])
             return;
         NSLog(@"device state: %@", info);
