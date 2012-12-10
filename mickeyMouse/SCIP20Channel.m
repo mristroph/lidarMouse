@@ -183,9 +183,9 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
     if (!error)
         return YES;
     channel_.error = nil;
-    error = [NSError errorWithDomain:SCIP20ErrorDomain code:SCIP20ErrorCode_CommunicationFailed userInfo:@{
+    errorBlock([NSError errorWithDomain:SCIP20ErrorDomain code:SCIP20ErrorCode_CommunicationFailed userInfo:@{
                 NSUnderlyingErrorKey: error
-             }];
+             }]);
     return NO;
 }
 
