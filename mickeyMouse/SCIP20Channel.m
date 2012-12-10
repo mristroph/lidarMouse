@@ -264,7 +264,8 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
     NSUInteger decodedValue = 0;
     for (NSData *chunk in chunks) {
         char const *p = chunk.bytes;
-        for (NSUInteger i = 0; i < chunk.length; ++i, ++p) {
+        char const *end = p + chunk.length;
+        for ( ; p != end; ++p) {
             decodedValue = (decodedValue << 6) | (*p - 0x30);
             --bytesToDecode;
             if (bytesToDecode == 0) {
@@ -273,7 +274,7 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
             }
         }
     }
-    if (bytesToDecode > 0) {
+    if (bytesToDecode != encodingLength) {
         if (errorOut) {
             *errorOut = [NSError errorWithDomain:SCIP20ErrorDomain code:SCIP20ErrorCode_PayloadDecodingFailed userInfo:@{
                 @"payload": chunks,
