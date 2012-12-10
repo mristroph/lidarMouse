@@ -90,7 +90,7 @@ static size_t readWithTimeoutInMilliseconds(int fd, char *buffer, size_t capacit
 
 - (void)readStreamingDataWithBlock:(Lidar2DDataSnapshotBlock)block {
     for (__block BOOL stop = NO; !stop; ) {
-        [channel_ receiveStreamingResponseWithDataEncodingLength:3 onResponse:^(NSString *command, NSString *status, NSData *data) {
+        [channel_ receiveStreamingResponseWithDataEncodingLength:3 onResponse:^(NSString *command, NSString *status, NSUInteger timestamp, NSData *data) {
             if ([self checkStatus:status isEqualToStatus:SCIP20Status_StreamingData]) {
                 block(data, &stop);
             } else {

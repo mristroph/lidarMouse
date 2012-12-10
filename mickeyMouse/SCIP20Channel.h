@@ -11,6 +11,7 @@ typedef enum {
     SCIP20ErrorCode_Unknown,
     SCIP20ErrorCode_CommunicationFailed,
     SCIP20ErrorCode_MissingStatusLine,
+    SCIP20ErrorCode_MissingTimestampLine,
     SCIP20ErrorCode_Desynchronized,
     SCIP20ErrorCode_UnexpectedPayload,
     SCIP20ErrorCode_PayloadDecodingFailed
@@ -22,7 +23,7 @@ typedef void (^SCIP20ErrorBlock)(NSError *error);
 typedef void (^SCIP20EmptyResponseBlock)(NSString *status);
 typedef void (^SCIP20DataResponseBlock)(NSString *status, NSData *data);
 typedef void (^SCIP20DictionaryResponseBlock)(NSString *status, NSDictionary *info);
-typedef void (^SCIP20StreamingDataResponseBlock)(NSString *command, NSString *status, NSData *data);
+typedef void (^SCIP20StreamingDataResponseBlock)(NSString *command, NSString *status, NSUInteger timestamp, NSData *data);
 
 @interface SCIP20Channel : NSObject
 

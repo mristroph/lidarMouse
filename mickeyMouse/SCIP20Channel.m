@@ -82,12 +82,27 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
 
 - (void)receiveStreamingResponseWithDataEncodingLength:(int)encodingLength onResponse:(SCIP20StreamingDataResponseBlock)responseBlock onError:(SCIP20ErrorBlock)errorBlock {
     [self readResponsePacketWithBlock:^(NSData *echoLine, NSString *status, NSArray *payloadChunks) {
+        if (payloadChunks.count < 1) {
+            errorBlock([NSError errorWithDomain:SCIP20ErrorDomain code:SCIP20ErrorCode_MissingTimestampLine userInfo:@{
+                @"echoLine": echoLine,
+                @"status": status,
+                @"payload": payloadChunks
+            }]);
+            return;
+        }
+
         NSError *error;
-        NSData *data = [self dataByDecodingPayloadChunks:payloadChunks withEncodingLength:encodingLength error:&error];
-        if (data) {
-            NSString *echo = commandFromEchoLine(echoLine);
-            responseBlock(echo, status, data);
-        } else {
+        NSUInteger timestamp = [self timestampByDecodingChunk:payloadChunks[0] error:&error];
+        
+        if (!error) {
+            NSData *data = [self dataByDecodingPayloadChunks:[payloadChunks subarrayWithRange:NSMakeRange(1, payloadChunks.count-1)] withEncodingLength:encodingLength error:&error];
+            if (data) {
+                NSString *echo = commandFromEchoLine(echoLine);
+                responseBlock(echo, status, timestamp, data);
+            }
+        }
+
+        if (error) {
             errorBlock(error);
         }
     } onError:errorBlock];
@@ -226,6 +241,22 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
 }
 
 #pragma mark - Implementation details - payload decoding
+
+- (NSUInteger)timestampByDecodingChunk:(NSData *)chunk error:(NSError **)errorOut {
+    static const NSUInteger kTimestampEncodingLength = 4;
+
+    if (chunk.length != kTimestampEncodingLength) {
+        *errorOut = [NSError errorWithDomain:SCIP20ErrorDomain code:SCIP20ErrorCode_PayloadDecodingFailed userInfo:@{ @"chunk": chunk }];
+        return 0;
+    }
+    char const *p = chunk.bytes;
+    char const *end = p + kTimestampEncodingLength;
+    NSUInteger timestamp = 0;
+    for ( ; p != end; ++p) {
+        timestamp = (timestamp << 6) | (*p - 0x30);
+    }
+    return timestamp;
+}
 
 - (NSData *)dataByDecodingPayloadChunks:(NSArray *)chunks withEncodingLength:(int)encodingLength error:(NSError **)errorOut {
     NSMutableData *data = [[NSMutableData alloc] init];
