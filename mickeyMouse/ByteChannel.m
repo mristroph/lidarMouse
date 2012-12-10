@@ -30,7 +30,6 @@ static size_t readWithDeadline(int fd, char *buffer, size_t capacity, CFAbsolute
 }
 
 - (BOOL)sendData:(NSData *)data withTimeout:(CFTimeInterval)timeout {
-    NSLog(@"sendData:%@", data);
     size_t bytesWritten = writeWithDeadline(fd_, data.bytes, data.length, CFAbsoluteTimeGetCurrent() + timeout);
     if (bytesWritten == data.length)
         return YES;
