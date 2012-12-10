@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		31D72B52167548F300230548 /* SCIP20Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B51167548F300230548 /* SCIP20Channel.m */; };
 		31D72B5616755C9600230548 /* ByteChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B5516755C9600230548 /* ByteChannel.m */; };
+		31D72B6316767A0C00230548 /* MickeyMouse.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B6216767A0C00230548 /* MickeyMouse.m */; };
 		31EEC90B1672FB0100EEB995 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC90A1672FB0100EEB995 /* Foundation.framework */; };
 		31EEC90E1672FB0100EEB995 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC90D1672FB0100EEB995 /* main.m */; };
 		31EEC9731672FD5200EEB995 /* urg_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9461672FCA600EEB995 /* urg_connection.c */; };
@@ -57,6 +58,8 @@
 		31D72B51167548F300230548 /* SCIP20Channel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCIP20Channel.m; sourceTree = "<group>"; };
 		31D72B5416755C9600230548 /* ByteChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ByteChannel.h; sourceTree = "<group>"; };
 		31D72B5516755C9600230548 /* ByteChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ByteChannel.m; sourceTree = "<group>"; };
+		31D72B6116767A0C00230548 /* MickeyMouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MickeyMouse.h; sourceTree = "<group>"; };
+		31D72B6216767A0C00230548 /* MickeyMouse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MickeyMouse.m; sourceTree = "<group>"; };
 		31EEC9061672FB0100EEB995 /* mickeyMouse */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mickeyMouse; sourceTree = BUILT_PRODUCTS_DIR; };
 		31EEC90A1672FB0100EEB995 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		31EEC90D1672FB0100EEB995 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -210,6 +213,8 @@
 				31EEC90D1672FB0100EEB995 /* main.m */,
 				31EEC9A216733A8500EEB995 /* Application.h */,
 				31EEC9A316733A8600EEB995 /* Application.m */,
+				31D72B6116767A0C00230548 /* MickeyMouse.h */,
+				31D72B6216767A0C00230548 /* MickeyMouse.m */,
 				31EEC90F1672FB0100EEB995 /* Supporting Files */,
 				31D72B531675500800230548 /* Lidar2D */,
 			);
@@ -505,6 +510,7 @@
 				31EEC9A71673D82F00EEB995 /* Lidar2D.m in Sources */,
 				31D72B52167548F300230548 /* SCIP20Channel.m in Sources */,
 				31D72B5616755C9600230548 /* ByteChannel.m in Sources */,
+				31D72B6316767A0C00230548 /* MickeyMouse.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
