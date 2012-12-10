@@ -77,7 +77,7 @@ static size_t readWithTimeoutInMilliseconds(int fd, char *buffer, size_t capacit
 #pragma mark - Implementation details - streaming data
 
 - (BOOL)startStreamingData {
-    static NSString *const kCommand = @"MD0000076800001";
+    static NSString *const kCommand = @"MD0000076800000";
     __block BOOL ok = YES;
     [channel_ sendCommand:kCommand ignoringSpuriousResponses:NO onEmptyResponse:^(NSString *status) {
         ok = [self checkOKStatus:status];
