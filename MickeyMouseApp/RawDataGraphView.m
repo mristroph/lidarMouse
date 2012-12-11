@@ -25,6 +25,10 @@
     return YES;
 }
 
+- (BOOL)isFlipped {
+    return YES;
+}
+
 - (void)drawRect:(NSRect)dirtyRect {
     [[NSColor whiteColor] setFill];
     NSRectFill(dirtyRect);
@@ -38,6 +42,7 @@
     for (NSUInteger i = 0; i < levelCount; ++i)  {
         maxLevel = MAX(maxLevel, levels[i]);
     }
+    maxLevel = MIN(maxLevel, 1000U);
 
     CGContextRef gc = [[NSGraphicsContext currentContext] graphicsPort];
     CGContextSaveGState(gc); {
