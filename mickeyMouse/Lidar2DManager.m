@@ -23,6 +23,8 @@ static void firstMatchCallback(__unsafe_unretained Lidar2DManager *refcon, io_it
 
 #pragma mark - Public API
 
+@synthesize delegate = _delegate;
+
 - (void)start {
     if (self.isStarted)
         return;
