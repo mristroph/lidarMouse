@@ -72,7 +72,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
 #pragma mark - Implementation details - streaming data
 
 - (BOOL)startStreamingData {
-    static NSString *const kCommand = @"MD0000076800000";
+    static NSString *const kCommand = @"MD0044072500000";
     __block BOOL ok = YES;
     [channel_ sendCommand:kCommand ignoringSpuriousResponses:NO onEmptyResponse:^(NSString *status) {
         ok = [self checkOKStatus:status];
