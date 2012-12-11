@@ -37,33 +37,24 @@
         return;
 
     uint32_t const *levels = (uint32_t const *)_data.bytes;
-    NSUInteger levelCount = _data.length / sizeof *levels;
-    NSUInteger maxLevel = 0;
-    for (NSUInteger i = 0; i < levelCount; ++i)  {
-        maxLevel = MAX(maxLevel, levels[i]);
-    }
-    maxLevel = MIN(maxLevel, 1000U);
+    CGFloat levelCount = _data.length / sizeof *levels;
 
     CGContextRef gc = [[NSGraphicsContext currentContext] graphicsPort];
     CGContextSaveGState(gc); {
         NSRect bounds = self.bounds;
-        CGContextTranslateCTM(gc, bounds.origin.x, bounds.origin.y);
-        CGContextScaleCTM(gc, bounds.size.width / levelCount, bounds.size.height / maxLevel);
+        CGContextTranslateCTM(gc, CGRectGetMidX(bounds), CGRectGetMidY(bounds));
 
         NSBezierPath *path = [NSBezierPath bezierPath];
-        [path moveToPoint:CGPointZero];
-        for (NSUInteger i = 0; i < levelCount; ++i) {
-            [path lineToPoint:CGPointMake(i, levels[i])];
-            [path lineToPoint:CGPointMake(i+1, levels[i])];
+        uint32_t const *pLevel = levels;
+        CGFloat const indexToDegrees= 239.77 / levelCount;
+        CGFloat const baseDegrees = 30;
+        for (CGFloat i = 0; i < levelCount; ++i, ++pLevel) {
+            [path moveToPoint:CGPointZero];
+            [path appendBezierPathWithArcWithCenter:CGPointZero radius:*pLevel / 10.0 startAngle:baseDegrees + i * indexToDegrees endAngle:baseDegrees + (i + 1) * indexToDegrees clockwise:NO];
+            [path closePath];
         }
-        [path lineToPoint:CGPointMake(levelCount, 0)];
-        [path closePath];
         [[NSColor colorWithDeviceHue:0 saturation:0.7 brightness:0.95 alpha:1] setFill];
         [path fill];
-        [[NSColor colorWithDeviceHue:0 saturation:0.9 brightness:0.8 alpha:1] setStroke];
-        path.lineJoinStyle = NSMiterLineJoinStyle;
-        path.lineWidth = 2;
-        [path stroke];
     } CGContextRestoreGState(gc);
 }
 
