@@ -10,6 +10,21 @@
 		31D72B52167548F300230548 /* SCIP20Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B51167548F300230548 /* SCIP20Channel.m */; };
 		31D72B5616755C9600230548 /* ByteChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B5516755C9600230548 /* ByteChannel.m */; };
 		31D72B6316767A0C00230548 /* MickeyMouse.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B6216767A0C00230548 /* MickeyMouse.m */; };
+		31D72B6B1676A0EB00230548 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D72B6A1676A0EB00230548 /* Cocoa.framework */; };
+		31D72B751676A0EB00230548 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 31D72B731676A0EB00230548 /* InfoPlist.strings */; };
+		31D72B771676A0EB00230548 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B761676A0EB00230548 /* main.m */; };
+		31D72B7B1676A0EB00230548 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 31D72B791676A0EB00230548 /* Credits.rtf */; };
+		31D72B7E1676A0EB00230548 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B7D1676A0EB00230548 /* AppDelegate.m */; };
+		31D72B811676A0EC00230548 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31D72B7F1676A0EC00230548 /* MainMenu.xib */; };
+		31D72B871676A23400230548 /* RawDataGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B861676A23400230548 /* RawDataGraphView.m */; };
+		31D72B881676A24E00230548 /* Lidar2DManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC99B167333E500EEB995 /* Lidar2DManager.m */; };
+		31D72B891676A24E00230548 /* Lidar2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9A61673D82E00EEB995 /* Lidar2D.m */; };
+		31D72B8A1676A24E00230548 /* SCIP20Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B51167548F300230548 /* SCIP20Channel.m */; };
+		31D72B8B1676A24E00230548 /* ByteChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B5516755C9600230548 /* ByteChannel.m */; };
+		31D72B8C1676A29F00230548 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC99D1673367100EEB995 /* IOKit.framework */; };
+		31D72B901676DCCD00230548 /* RawDataWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B8E1676DCCD00230548 /* RawDataWindowController.m */; };
+		31D72B911676DCCD00230548 /* RawDataWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31D72B8F1676DCCD00230548 /* RawDataWindowController.xib */; };
+		31D72BC01676F01F00230548 /* MyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72BBF1676F01F00230548 /* MyWindow.m */; };
 		31EEC90B1672FB0100EEB995 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC90A1672FB0100EEB995 /* Foundation.framework */; };
 		31EEC90E1672FB0100EEB995 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC90D1672FB0100EEB995 /* main.m */; };
 		31EEC9731672FD5200EEB995 /* urg_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9461672FCA600EEB995 /* urg_connection.c */; };
@@ -58,6 +73,26 @@
 		31D72B5516755C9600230548 /* ByteChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ByteChannel.m; sourceTree = "<group>"; };
 		31D72B6116767A0C00230548 /* MickeyMouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MickeyMouse.h; sourceTree = "<group>"; };
 		31D72B6216767A0C00230548 /* MickeyMouse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MickeyMouse.m; sourceTree = "<group>"; };
+		31D72B681676A0EB00230548 /* MickeyMouseApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MickeyMouseApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		31D72B6A1676A0EB00230548 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		31D72B6D1676A0EB00230548 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		31D72B6E1676A0EB00230548 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		31D72B6F1676A0EB00230548 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		31D72B721676A0EB00230548 /* MickeyMouseApp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MickeyMouseApp-Info.plist"; sourceTree = "<group>"; };
+		31D72B741676A0EB00230548 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		31D72B761676A0EB00230548 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		31D72B781676A0EB00230548 /* MickeyMouseApp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MickeyMouseApp-Prefix.pch"; sourceTree = "<group>"; };
+		31D72B7A1676A0EB00230548 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		31D72B7C1676A0EB00230548 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		31D72B7D1676A0EB00230548 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		31D72B801676A0EC00230548 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		31D72B851676A23400230548 /* RawDataGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RawDataGraphView.h; sourceTree = "<group>"; };
+		31D72B861676A23400230548 /* RawDataGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RawDataGraphView.m; sourceTree = "<group>"; };
+		31D72B8D1676DCCD00230548 /* RawDataWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RawDataWindowController.h; sourceTree = "<group>"; };
+		31D72B8E1676DCCD00230548 /* RawDataWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RawDataWindowController.m; sourceTree = "<group>"; };
+		31D72B8F1676DCCD00230548 /* RawDataWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RawDataWindowController.xib; sourceTree = "<group>"; };
+		31D72BBE1676F01F00230548 /* MyWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyWindow.h; sourceTree = "<group>"; };
+		31D72BBF1676F01F00230548 /* MyWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyWindow.m; sourceTree = "<group>"; };
 		31EEC9061672FB0100EEB995 /* mickeyMouse */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mickeyMouse; sourceTree = BUILT_PRODUCTS_DIR; };
 		31EEC90A1672FB0100EEB995 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		31EEC90D1672FB0100EEB995 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -132,6 +167,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		31D72B651676A0EB00230548 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31D72B8C1676A29F00230548 /* IOKit.framework in Frameworks */,
+				31D72B6B1676A0EB00230548 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		31EEC9031672FB0100EEB995 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -173,11 +217,54 @@
 				31D72B5516755C9600230548 /* ByteChannel.m */,
 			);
 			name = Lidar2D;
+			path = mickeyMouse;
+			sourceTree = "<group>";
+		};
+		31D72B6C1676A0EB00230548 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				31D72B6D1676A0EB00230548 /* AppKit.framework */,
+				31D72B6E1676A0EB00230548 /* CoreData.framework */,
+				31D72B6F1676A0EB00230548 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		31D72B701676A0EB00230548 /* MickeyMouseApp */ = {
+			isa = PBXGroup;
+			children = (
+				31D72B7C1676A0EB00230548 /* AppDelegate.h */,
+				31D72B7D1676A0EB00230548 /* AppDelegate.m */,
+				31D72B7F1676A0EC00230548 /* MainMenu.xib */,
+				31D72B8D1676DCCD00230548 /* RawDataWindowController.h */,
+				31D72B8E1676DCCD00230548 /* RawDataWindowController.m */,
+				31D72B8F1676DCCD00230548 /* RawDataWindowController.xib */,
+				31D72B851676A23400230548 /* RawDataGraphView.h */,
+				31D72B861676A23400230548 /* RawDataGraphView.m */,
+				31D72B711676A0EB00230548 /* Supporting Files */,
+				31D72BBE1676F01F00230548 /* MyWindow.h */,
+				31D72BBF1676F01F00230548 /* MyWindow.m */,
+			);
+			path = MickeyMouseApp;
+			sourceTree = "<group>";
+		};
+		31D72B711676A0EB00230548 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				31D72B721676A0EB00230548 /* MickeyMouseApp-Info.plist */,
+				31D72B731676A0EB00230548 /* InfoPlist.strings */,
+				31D72B761676A0EB00230548 /* main.m */,
+				31D72B781676A0EB00230548 /* MickeyMouseApp-Prefix.pch */,
+				31D72B791676A0EB00230548 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		31EEC8FB1672FB0100EEB995 = {
 			isa = PBXGroup;
 			children = (
+				31D72B531675500800230548 /* Lidar2D */,
+				31D72B701676A0EB00230548 /* MickeyMouseApp */,
 				31EEC90C1672FB0100EEB995 /* mickeyMouse */,
 				31EEC9181672FCA600EEB995 /* urg_library-1.0.3 */,
 				31EEC9091672FB0100EEB995 /* Frameworks */,
@@ -191,6 +278,7 @@
 				31EEC9061672FB0100EEB995 /* mickeyMouse */,
 				31EEC96F1672FD4100EEB995 /* liburg.a */,
 				31EEC9831672FE3400EEB995 /* calculate_xy */,
+				31D72B681676A0EB00230548 /* MickeyMouseApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -200,6 +288,8 @@
 			children = (
 				31EEC99D1673367100EEB995 /* IOKit.framework */,
 				31EEC90A1672FB0100EEB995 /* Foundation.framework */,
+				31D72B6A1676A0EB00230548 /* Cocoa.framework */,
+				31D72B6C1676A0EB00230548 /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -213,7 +303,6 @@
 				31D72B6116767A0C00230548 /* MickeyMouse.h */,
 				31D72B6216767A0C00230548 /* MickeyMouse.m */,
 				31EEC90F1672FB0100EEB995 /* Supporting Files */,
-				31D72B531675500800230548 /* Lidar2D */,
 			);
 			path = mickeyMouse;
 			sourceTree = "<group>";
@@ -416,6 +505,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		31D72B671676A0EB00230548 /* MickeyMouseApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31D72B821676A0EC00230548 /* Build configuration list for PBXNativeTarget "MickeyMouseApp" */;
+			buildPhases = (
+				31D72B641676A0EB00230548 /* Sources */,
+				31D72B651676A0EB00230548 /* Frameworks */,
+				31D72B661676A0EB00230548 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MickeyMouseApp;
+			productName = MickeyMouseApp;
+			productReference = 31D72B681676A0EB00230548 /* MickeyMouseApp.app */;
+			productType = "com.apple.product-type.application";
+		};
 		31EEC9051672FB0100EEB995 /* mickeyMouse */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 31EEC9151672FB0100EEB995 /* Build configuration list for PBXNativeTarget "mickeyMouse" */;
@@ -491,11 +597,42 @@
 				31EEC9051672FB0100EEB995 /* mickeyMouse */,
 				31EEC96E1672FD4100EEB995 /* liburg */,
 				31EEC9821672FE3400EEB995 /* calculate_xy */,
+				31D72B671676A0EB00230548 /* MickeyMouseApp */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		31D72B661676A0EB00230548 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31D72B751676A0EB00230548 /* InfoPlist.strings in Resources */,
+				31D72B7B1676A0EB00230548 /* Credits.rtf in Resources */,
+				31D72B811676A0EC00230548 /* MainMenu.xib in Resources */,
+				31D72B911676DCCD00230548 /* RawDataWindowController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		31D72B641676A0EB00230548 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31D72B771676A0EB00230548 /* main.m in Sources */,
+				31D72B7E1676A0EB00230548 /* AppDelegate.m in Sources */,
+				31D72B871676A23400230548 /* RawDataGraphView.m in Sources */,
+				31D72B881676A24E00230548 /* Lidar2DManager.m in Sources */,
+				31D72B891676A24E00230548 /* Lidar2D.m in Sources */,
+				31D72B8A1676A24E00230548 /* SCIP20Channel.m in Sources */,
+				31D72B8B1676A24E00230548 /* ByteChannel.m in Sources */,
+				31D72B901676DCCD00230548 /* RawDataWindowController.m in Sources */,
+				31D72BC01676F01F00230548 /* MyWindow.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		31EEC9021672FB0100EEB995 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -536,7 +673,60 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		31D72B731676A0EB00230548 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				31D72B741676A0EB00230548 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		31D72B791676A0EB00230548 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				31D72B7A1676A0EB00230548 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		31D72B7F1676A0EC00230548 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				31D72B801676A0EC00230548 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		31D72B831676A0EC00230548 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MickeyMouseApp/MickeyMouseApp-Prefix.pch";
+				INFOPLIST_FILE = "MickeyMouseApp/MickeyMouseApp-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		31D72B841676A0EC00230548 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MickeyMouseApp/MickeyMouseApp-Prefix.pch";
+				INFOPLIST_FILE = "MickeyMouseApp/MickeyMouseApp-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 		31EEC9131672FB0100EEB995 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -649,6 +839,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		31D72B821676A0EC00230548 /* Build configuration list for PBXNativeTarget "MickeyMouseApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31D72B831676A0EC00230548 /* Debug */,
+				31D72B841676A0EC00230548 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		31EEC9001672FB0100EEB995 /* Build configuration list for PBXProject "mickeyMouse" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
