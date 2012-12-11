@@ -263,7 +263,7 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
 - (NSData *)dataByDecodingPayloadChunks:(NSArray *)chunks withEncodingLength:(NSUInteger)encodingLength error:(NSError **)errorOut {
     NSMutableData *data = [[NSMutableData alloc] init];
     NSUInteger bytesToDecode = encodingLength;
-    NSUInteger decodedValue = 0;
+    uint32_t decodedValue = 0;
     for (NSData *chunk in chunks) {
         char const *p = chunk.bytes;
         char const *end = p + chunk.length;
