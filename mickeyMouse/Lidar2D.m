@@ -100,7 +100,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
     }
 }
 
-- (void)stopStreamingData {
+- (BOOL)stopStreamingData {
     [channel_ sendCommand:@"QT" ignoringSpuriousResponses:YES onEmptyResponse:^(NSString *status) {
         [self checkOKStatus:status];
     } onError:^(NSError *error) {
@@ -108,6 +108,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
             _error = error;
         }
     }];
+    return _error == nil;
 }
 
 - (BOOL)checkOKStatus:(NSString *)status {
@@ -157,6 +158,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
     && [self openFile]
     && [self configureTerminalSettings]
     && [self initSCIP20Channel]
+    && [self stopStreamingData]
     && [self readDeviceDictionaries];
 }
 
