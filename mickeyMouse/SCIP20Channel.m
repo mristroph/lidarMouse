@@ -273,6 +273,7 @@ static NSString *commandFromEchoLine(NSData *echoLine) {
             if (bytesToDecode == 0) {
                 [data appendBytes:&decodedValue length:sizeof decodedValue];
                 bytesToDecode = encodingLength;
+                decodedValue = 0;
             }
         }
     }
