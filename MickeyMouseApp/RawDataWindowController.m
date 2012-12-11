@@ -83,13 +83,18 @@
 - (void)startStreamingData {
     wantsStreamingData_ = YES;
     [proxy_ performBlock:^(id<Lidar2D> device) {
-        while (wantsStreamingData_) {
+        while (!device.error && wantsStreamingData_) {
             [device forEachStreamingDataSnapshot:^(NSData *data, BOOL *stop) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     graphView_.data = data;
                 });
                 *stop = !wantsStreamingData_;
             }];
+        }
+
+        if (device.error) {
+            NSLog(@"device error: %@", device.error);
+            device.error = nil;
         }
     }];
 }
