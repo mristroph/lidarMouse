@@ -157,6 +157,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
     YES
     && [self openFile]
     && [self configureTerminalSettings]
+    && [self resetDevice]
     && [self initSCIP20Channel]
     && [self stopStreamingData]
     && [self readDeviceDictionaries];
@@ -192,6 +193,21 @@ static int const kReadTimeoutInMilliseconds = 1000;
         return [self setPosixErrorWithAction:@"writing the device's terminal settings"];
     }
 
+    return YES;
+}
+
+- (BOOL)resetDevice {
+    // I don't do this through the SCIP20Channel because I don't want SCIP20Channel to have to deal with starting up in the middle of a streaming data packet.
+    static char const kResetCommands[] = "QT\nRS\n";
+    static size_t kResetCommandsSize = sizeof kResetCommands - 1; // -1 for terminating NUL
+    write(fd_, kResetCommands, kResetCommandsSize);
+    char buffer[100];
+    for (int i = 0; i < 2; ++i) {
+        usleep(100000); // Allow some time for data to arrive.
+        while (read(fd_, buffer, sizeof buffer) > 0) {
+            // nothing
+        }
+    }
     return YES;
 }
 
