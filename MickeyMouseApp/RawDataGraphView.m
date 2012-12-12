@@ -12,6 +12,7 @@
 
 #pragma mark - Public API
 
+@synthesize untouchedDistances = _untouchedDistances;
 @synthesize data = _data;
 
 - (void)setData:(NSData *)data {
@@ -37,6 +38,7 @@
         return;
 
     uint32_t const *levels = (uint32_t const *)_data.bytes;
+    uint32_t const *untouchedDistances = (uint32_t const *)_untouchedDistances.bytes;
     CGFloat levelCount = _data.length / sizeof *levels;
 
     CGContextRef gc = [[NSGraphicsContext currentContext] graphicsPort];
@@ -44,21 +46,28 @@
         NSRect bounds = self.bounds;
         CGContextTranslateCTM(gc, CGRectGetMidX(bounds), CGRectGetMidY(bounds));
 
-        uint32_t const *pLevel = levels;
         CGFloat const indexToDegrees= 239.77 / levelCount;
         CGFloat const baseDegrees = -30;
         CGFloat const degreesToRadians = M_PI / 180;
         NSColor *redColor = [NSColor redColor];
+        NSColor *greenColor = [NSColor greenColor];
         NSColor *blueColor = [NSColor blueColor];
         __unsafe_unretained NSColor *currentColor = nil;
-        for (CGFloat i = 0; i < levelCount; ++i, ++pLevel) {
-            CGFloat radius = *pLevel;
+        
+        for (CGFloat i = 0; i < levelCount; ++i) {
+            CGFloat distance = levels[(int)i];
+            if (distance < 20) {
+                distance = UINT32_MAX;
+            }
+
+            CGFloat radius = distance / 4.0;
+
             __unsafe_unretained NSColor *desiredColor = nil;
-            if (radius < 20) {
-                radius = 1000;
+            if (untouchedDistances && distance < untouchedDistances[(int)i]) {
+                desiredColor = greenColor;
+            } else if (distance == UINT32_MAX) {
                 desiredColor = blueColor;
             } else {
-                radius /= 5.0;
                 desiredColor = redColor;
             }
 

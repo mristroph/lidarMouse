@@ -94,7 +94,7 @@
         [self updateStatusLabelIfNecessaryAndClearErrorWithDevice:device];
 
         [self setStatusLabelText:@"Preparing to calibrate - REMOVE ALL OBSTRUCTIONS FROM SCREEN"];
-        [self resetUntouchedRayDistances];
+        [self resetUntouchedRayDistancesWithDevice:device];
         sleep(1);
         [self setStatusLabelText:@"Calibrating - DO NOT OBSTRUCT SCREEN"];
         __block int calibrationFramesLeft = 20;
@@ -106,6 +106,12 @@
             });
             *stop = (--calibrationFramesLeft < 1);
         }];
+
+        [self finalizeUntouchedRayDistancesWithDevice:device];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            graphView_.untouchedDistances = [NSData dataWithBytes:untouchedRayDistances length:sizeof untouchedRayDistances];
+        });
 
         [self setStatusLabelText:@"Preparing to calibrate - REMOVE ALL OBSTRUCTIONS FROM SCREEN"];
         while (wantsStreamingData_) {
@@ -154,7 +160,8 @@
     wantsStreamingData_ = NO;
 }
 
-- (void)resetUntouchedRayDistances {
+- (void)resetUntouchedRayDistancesWithDevice:(id<Lidar2D>)device {
+    (void)device; // only passed to ensure I'm run on the device's queue
     for (size_t i = 0; i < kRayCount; ++i) {
         untouchedRayDistances[i] = UINT32_MAX;
     }
@@ -169,6 +176,13 @@
         if (distance >= 20 && distance < untouchedRayDistances[i]) {
             untouchedRayDistances[i] = distance;
         }
+    }
+}
+
+- (void)finalizeUntouchedRayDistancesWithDevice:(id<Lidar2D>)device {
+    (void)device; // only passed to ensure I'm run on the device's queue
+    for (size_t i = 0; i < kRayCount; ++i) {
+        untouchedRayDistances[i] *= 0.95;
     }
 }
 

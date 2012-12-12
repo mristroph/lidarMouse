@@ -10,6 +10,7 @@
 
 @interface RawDataGraphView : NSView
 
+@property (nonatomic, copy) NSData *untouchedDistances;
 @property (nonatomic, copy) NSData *data;
 
 @end
