@@ -54,7 +54,7 @@
         for (CGFloat i = 0; i < levelCount; ++i, ++pLevel) {
             CGFloat radius = *pLevel;
             __unsafe_unretained NSColor *desiredColor = nil;
-            if (radius == 0) {
+            if (radius < 20) {
                 radius = 1000;
                 desiredColor = blueColor;
             } else {
