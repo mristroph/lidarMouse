@@ -44,17 +44,35 @@
         NSRect bounds = self.bounds;
         CGContextTranslateCTM(gc, CGRectGetMidX(bounds), CGRectGetMidY(bounds));
 
-        NSBezierPath *path = [NSBezierPath bezierPath];
         uint32_t const *pLevel = levels;
         CGFloat const indexToDegrees= 239.77 / levelCount;
-        CGFloat const baseDegrees = 30;
+        CGFloat const baseDegrees = -30;
+        CGFloat const degreesToRadians = M_PI / 180;
+        NSColor *redColor = [NSColor redColor];
+        NSColor *blueColor = [NSColor blueColor];
+        __unsafe_unretained NSColor *currentColor = nil;
         for (CGFloat i = 0; i < levelCount; ++i, ++pLevel) {
-            [path moveToPoint:CGPointZero];
-            [path appendBezierPathWithArcWithCenter:CGPointZero radius:*pLevel / 10.0 startAngle:baseDegrees + i * indexToDegrees endAngle:baseDegrees + (i + 1) * indexToDegrees clockwise:NO];
-            [path closePath];
+            CGFloat radius = *pLevel;
+            __unsafe_unretained NSColor *desiredColor = nil;
+            if (radius == 0) {
+                radius = 1000;
+                desiredColor = blueColor;
+            } else {
+                radius /= 5.0;
+                desiredColor = redColor;
+            }
+
+            if (currentColor != desiredColor) {
+                [desiredColor setStroke];
+                currentColor = desiredColor;
+            }
+            
+            CGFloat x = -cos((baseDegrees + i * indexToDegrees) * degreesToRadians) * radius;
+            CGFloat y = sin((baseDegrees + i * indexToDegrees) * degreesToRadians) * radius;
+            CGContextMoveToPoint(gc, 0, 0);
+            CGContextAddLineToPoint(gc, x, y);
+            CGContextStrokePath(gc);
         }
-        [[NSColor colorWithDeviceHue:0 saturation:0.7 brightness:0.95 alpha:1] setFill];
-        [path fill];
     } CGContextRestoreGState(gc);
 }
 
