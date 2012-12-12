@@ -160,6 +160,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
     && [self resetDevice]
     && [self initSCIP20Channel]
     && [self stopStreamingData]
+    && [self setHighSensitivityMode]
     && [self readDeviceDictionaries];
 }
 
@@ -215,6 +216,17 @@ static int const kReadTimeoutInMilliseconds = 1000;
     ByteChannel *byteChannel = [[ByteChannel alloc] initWithFileDescriptor:fd_];
     channel_ = [[SCIP20Channel alloc] initWithByteChannel:byteChannel];
     return YES;
+}
+
+- (BOOL)setHighSensitivityMode {
+    __block BOOL ok;
+    [channel_ sendCommand:@"HS1" ignoringSpuriousResponses:NO onEmptyResponse:^(NSString *status) {
+        ok = [self checkOKStatus:status];
+    } onError:^(NSError *error) {
+        _error = error;
+        ok = NO;
+    }];
+    return ok;
 }
 
 - (BOOL)readDeviceDictionaries {
