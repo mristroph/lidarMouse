@@ -101,29 +101,36 @@
         sleep(1);
         [self setStatusLabelText:@"Calibrating - DO NOT OBSTRUCT SCREEN"];
         __block int calibrationFramesLeft = 20;
-        [device forEachStreamingDataSnapshot:^(NSData *data, BOOL *stop) {
-            [self setStatusLabelText:[NSString stringWithFormat:@"Calibrating %d - DO NOT OBSTRUCT SCREEN", calibrationFramesLeft]];
-            [self updateUntouchedRayDistancesWithDevice:device data:data];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                graphView_.data = data;
-            });
-            *stop = (--calibrationFramesLeft < 1);
-        }];
+        while (calibrationFramesLeft > 0) {
+            [device forEachStreamingDataSnapshot:^(NSData *data, BOOL *stop) {
+                if (device.error) {
+                    NSLog(@"error during calibration: %@", device.error);
+                    device.error = nil;
+                    return;
+                }
+                
+                [self setStatusLabelText:[NSString stringWithFormat:@"Calibrating %d - DO NOT OBSTRUCT SCREEN", calibrationFramesLeft]];
+                [self updateUntouchedRayDistancesWithDevice:device data:data];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    graphView_.data = data;
+                });
+                *stop = (--calibrationFramesLeft < 1);
+            }];
+        }
 
+        [self setStatusLabelText:@"Calibration finished"];
+        
         [self finalizeUntouchedRayDistancesWithDevice:device];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             graphView_.untouchedDistances = [NSData dataWithBytes:untouchedRayDistances_ length:rayCount_ * sizeof *untouchedRayDistances_];
         });
 
-        [self setStatusLabelText:@"Preparing to calibrate - REMOVE ALL OBSTRUCTIONS FROM SCREEN"];
         while (wantsStreamingData_) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                statusField_.stringValue = @"Requesting streaming data";
-            });
+            [self setStatusLabelText:@"Requesting streaming data"];
             [device forEachStreamingDataSnapshot:^(NSData *data, BOOL *stop) {
+                [self setStatusLabelText:@"Received streaming data"];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    statusField_.stringValue = @"Received streaming data";
                     graphView_.data = data;
                 });
                 *stop = !wantsStreamingData_;
