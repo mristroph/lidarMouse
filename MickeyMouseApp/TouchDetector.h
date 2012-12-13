@@ -43,6 +43,9 @@ typedef enum {
 // Notify `observer` of my current state, right now.
 - (void)notifyObserverOfCurrentState:(id<TouchDetectorObserver>)observer;
 
+// For debugging.
+- (void)getUntouchedFieldDistancesWithBlock:(void (^)(uint32_t const *distances, NSUInteger count))block;
+
 @end
 
 @protocol TouchDetectorObserver <NSObject>

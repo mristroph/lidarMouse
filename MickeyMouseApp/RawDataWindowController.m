@@ -102,7 +102,7 @@
         [self setStatusLabelText:@"Calibrating - DO NOT OBSTRUCT SCREEN"];
         __block int calibrationFramesLeft = 20;
         while (calibrationFramesLeft > 0) {
-            [device forEachStreamingDataSnapshot:^(NSData *data, BOOL *stop) {
+            [device forEachStreamingDataSnapshot:^(uint32_t const *distances, BOOL *stop) {
                 if (device.error) {
                     NSLog(@"error during calibration: %@", device.error);
                     device.error = nil;
@@ -110,9 +110,9 @@
                 }
                 
                 [self setStatusLabelText:[NSString stringWithFormat:@"Calibrating %d - DO NOT OBSTRUCT SCREEN", calibrationFramesLeft]];
-                [self updateUntouchedRayDistancesWithDevice:device data:data];
+                [self updateUntouchedRayDistancesWithDevice:device distances:distances];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    graphView_.data = data;
+                    graphView_.data = [NSData dataWithBytes:distances length:rayCount_ * sizeof *distances];
                 });
                 *stop = (--calibrationFramesLeft < 1);
             }];
@@ -128,10 +128,10 @@
 
         while (wantsStreamingData_) {
             [self setStatusLabelText:@"Requesting streaming data"];
-            [device forEachStreamingDataSnapshot:^(NSData *data, BOOL *stop) {
+            [device forEachStreamingDataSnapshot:^(uint32_t const *distances, BOOL *stop) {
                 [self setStatusLabelText:@"Received streaming data"];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    graphView_.data = data;
+                    graphView_.data = [NSData dataWithBytes:distances length:rayCount_ * sizeof *distances];
                 });
                 *stop = !wantsStreamingData_;
             }];
@@ -182,11 +182,9 @@
     }
 }
 
-- (void)updateUntouchedRayDistancesWithDevice:(id<Lidar2D>)device data:(NSData *)data {
+- (void)updateUntouchedRayDistancesWithDevice:(id<Lidar2D>)device distances:(uint32_t const *)distances {
     (void)device; // only passed to ensure I'm run on the device's queue
-    uint32_t const *distances = (uint32_t const *)data.bytes;
-    size_t count = MIN(data.length / sizeof *distances, rayCount_);
-    for (size_t i = 0; i < count; ++i) {
+    for (size_t i = 0; i < rayCount_; ++i) {
         uint32_t distance = distances[i];
         if (distance >= 20 && distance < untouchedRayDistances_[i]) {
             untouchedRayDistances_[i] = distance;

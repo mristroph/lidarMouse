@@ -107,7 +107,7 @@ static double const kCoverageDegrees = 239.77;
             (void)command; (void)timestamp;
 
             if ([self checkStatus:status isEqualToStatus:SCIP20Status_StreamingData]) {
-                block(data, &stop);
+                block(data.bytes, &stop);
             } else {
                 stop = YES;
             }
