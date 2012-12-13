@@ -6,7 +6,7 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 #import "Application.h"
 #import "Lidar2D.h"
 #import "Lidar2DManager.h"
-#import "MickeyMouse.h"
+#import "Dumper.h"
 
 @interface Application () <Lidar2DManagerDelegate>
 @end
@@ -34,7 +34,7 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 
 - (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(id<Lidar2DProxy>)device {
     NSLog(@"Lidar2DManager %@ connected device %@", manager, device);
-    (void)[[MickeyMouse alloc] initWithLidar2DProxy:device];
+    (void)[[Dumper alloc] initWithLidar2DProxy:device];
 }
 
 @end

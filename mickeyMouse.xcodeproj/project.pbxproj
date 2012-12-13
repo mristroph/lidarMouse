@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		31D72B52167548F300230548 /* SCIP20Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B51167548F300230548 /* SCIP20Channel.m */; };
 		31D72B5616755C9600230548 /* ByteChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B5516755C9600230548 /* ByteChannel.m */; };
-		31D72B6316767A0C00230548 /* MickeyMouse.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B6216767A0C00230548 /* MickeyMouse.m */; };
+		31D72B6316767A0C00230548 /* Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B6216767A0C00230548 /* Dumper.m */; };
 		31D72B6B1676A0EB00230548 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D72B6A1676A0EB00230548 /* Cocoa.framework */; };
 		31D72B751676A0EB00230548 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 31D72B731676A0EB00230548 /* InfoPlist.strings */; };
 		31D72B771676A0EB00230548 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B761676A0EB00230548 /* main.m */; };
@@ -72,8 +72,8 @@
 		31D72B51167548F300230548 /* SCIP20Channel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCIP20Channel.m; sourceTree = "<group>"; };
 		31D72B5416755C9600230548 /* ByteChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ByteChannel.h; sourceTree = "<group>"; };
 		31D72B5516755C9600230548 /* ByteChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ByteChannel.m; sourceTree = "<group>"; };
-		31D72B6116767A0C00230548 /* MickeyMouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MickeyMouse.h; sourceTree = "<group>"; };
-		31D72B6216767A0C00230548 /* MickeyMouse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MickeyMouse.m; sourceTree = "<group>"; };
+		31D72B6116767A0C00230548 /* Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dumper.h; sourceTree = "<group>"; };
+		31D72B6216767A0C00230548 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper.m; sourceTree = "<group>"; };
 		31D72B681676A0EB00230548 /* MickeyMouseApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MickeyMouseApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31D72B6A1676A0EB00230548 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		31D72B6D1676A0EB00230548 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -303,8 +303,8 @@
 				31EEC90D1672FB0100EEB995 /* main.m */,
 				31EEC9A216733A8500EEB995 /* Application.h */,
 				31EEC9A316733A8600EEB995 /* Application.m */,
-				31D72B6116767A0C00230548 /* MickeyMouse.h */,
-				31D72B6216767A0C00230548 /* MickeyMouse.m */,
+				31D72B6116767A0C00230548 /* Dumper.h */,
+				31D72B6216767A0C00230548 /* Dumper.m */,
 				31EEC90F1672FB0100EEB995 /* Supporting Files */,
 			);
 			path = dumpStreamingData;
@@ -646,7 +646,7 @@
 				31EEC9A71673D82F00EEB995 /* Lidar2D.m in Sources */,
 				31D72B52167548F300230548 /* SCIP20Channel.m in Sources */,
 				31D72B5616755C9600230548 /* ByteChannel.m in Sources */,
-				31D72B6316767A0C00230548 /* MickeyMouse.m in Sources */,
+				31D72B6316767A0C00230548 /* Dumper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

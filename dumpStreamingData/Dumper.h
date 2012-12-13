@@ -7,7 +7,7 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 
 @protocol Lidar2DProxy;
 
-@interface MickeyMouse : NSObject
+@interface Dumper : NSObject
 
 - (id)initWithLidar2DProxy:(id<Lidar2DProxy>)proxy;
 

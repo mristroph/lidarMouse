@@ -3,10 +3,10 @@ Created by Rob Mayoff on 12/10/12.
 Copyright (c) 2012 Rob Mayoff. All rights reserved.
 */
 
-#import "MickeyMouse.h"
+#import "Dumper.h"
 #import "Lidar2D.h"
 
-@implementation MickeyMouse {
+@implementation Dumper {
     id<Lidar2DProxy> proxy_;
 }
 
