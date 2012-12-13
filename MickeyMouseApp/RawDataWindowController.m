@@ -48,6 +48,11 @@
 
 - (void)windowDidLoad {
     [super windowDidLoad];
+    __block NSString *serialNumber;
+    [proxy_ performBlockAndWait:^(id<Lidar2D> device) {
+        serialNumber = device.serialNumber;
+    }];
+    self.window.title = [NSString stringWithFormat:@"Lidar2D %@", serialNumber];
     statusField_.stringValue = @"Loading";
     [self startObservingWindowPresence];
 }
