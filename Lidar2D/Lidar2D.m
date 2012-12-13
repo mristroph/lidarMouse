@@ -8,6 +8,7 @@
 #import "SCIP20Channel.h"
 #import "ByteChannel.h"
 #import <termios.h>
+#import <sys/ioctl.h>
 
 NSString *const Lidar2DErrorDomain = @"Lidar2DErrorDomain";
 NSString *const Lidar2DErrorStatusKey = @"status";
@@ -79,6 +80,28 @@ static double const kCoverageDegrees = 239.77;
     if ([self startStreamingData]) {
         [self readStreamingDataWithBlock:block];
         [self stopStreamingData];
+    }
+}
+
+- (int)modemStateBits {
+    int bits = 0;
+    int rc = ioctl(fd_, TIOCMGET, &bits);
+    if (rc < 0) {
+        NSLog(@"error: ioctl(TIOCMGET): %s (%d)", strerror(errno), errno);
+    }
+    return bits;
+}
+
+- (void)setDTR:(int)newDTR {
+    int bits = [self modemStateBits];
+    if (newDTR) {
+        bits |= TIOCM_DTR;
+    } else {
+        bits &= ~TIOCM_DTR;
+    }
+    int rc = ioctl(fd_, TIOCMSET, &bits);
+    if (rc < 0) {
+        NSLog(@"error: ioctl(TIOCMSET): %s (%d)", strerror(errno), errno);
     }
 }
 
