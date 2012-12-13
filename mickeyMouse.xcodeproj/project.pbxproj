@@ -26,6 +26,8 @@
 		31D72B911676DCCD00230548 /* RawDataWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31D72B8F1676DCCD00230548 /* RawDataWindowController.xib */; };
 		31D72BC01676F01F00230548 /* MyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72BBF1676F01F00230548 /* MyWindow.m */; };
 		31D72C0B1679C6A600230548 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D72C0A1679C6A600230548 /* Accelerate.framework */; };
+		31D72C0F167A754800230548 /* TouchDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C0E167A754800230548 /* TouchDetector.m */; };
+		31D72C12167A865300230548 /* DqdObserverSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C11167A865300230548 /* DqdObserverSet.m */; };
 		31EEC90B1672FB0100EEB995 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC90A1672FB0100EEB995 /* Foundation.framework */; };
 		31EEC90E1672FB0100EEB995 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC90D1672FB0100EEB995 /* main.m */; };
 		31EEC9731672FD5200EEB995 /* urg_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9461672FCA600EEB995 /* urg_connection.c */; };
@@ -95,6 +97,10 @@
 		31D72BBE1676F01F00230548 /* MyWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyWindow.h; sourceTree = "<group>"; };
 		31D72BBF1676F01F00230548 /* MyWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyWindow.m; sourceTree = "<group>"; };
 		31D72C0A1679C6A600230548 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		31D72C0D167A754700230548 /* TouchDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchDetector.h; sourceTree = "<group>"; };
+		31D72C0E167A754800230548 /* TouchDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchDetector.m; sourceTree = "<group>"; };
+		31D72C10167A865300230548 /* DqdObserverSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DqdObserverSet.h; sourceTree = "<group>"; };
+		31D72C11167A865300230548 /* DqdObserverSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DqdObserverSet.m; sourceTree = "<group>"; };
 		31EEC9061672FB0100EEB995 /* dumpStreamingData */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dumpStreamingData; sourceTree = BUILT_PRODUCTS_DIR; };
 		31EEC90A1672FB0100EEB995 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		31EEC90D1672FB0100EEB995 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -243,6 +249,10 @@
 				31D72B8F1676DCCD00230548 /* RawDataWindowController.xib */,
 				31D72B851676A23400230548 /* RawDataGraphView.h */,
 				31D72B861676A23400230548 /* RawDataGraphView.m */,
+				31D72C0D167A754700230548 /* TouchDetector.h */,
+				31D72C10167A865300230548 /* DqdObserverSet.h */,
+				31D72C11167A865300230548 /* DqdObserverSet.m */,
+				31D72C0E167A754800230548 /* TouchDetector.m */,
 				31D72B711676A0EB00230548 /* Supporting Files */,
 				31D72BBE1676F01F00230548 /* MyWindow.h */,
 				31D72BBF1676F01F00230548 /* MyWindow.m */,
@@ -633,6 +643,8 @@
 				31D72B8B1676A24E00230548 /* ByteChannel.m in Sources */,
 				31D72B901676DCCD00230548 /* RawDataWindowController.m in Sources */,
 				31D72BC01676F01F00230548 /* MyWindow.m in Sources */,
+				31D72C0F167A754800230548 /* TouchDetector.m in Sources */,
+				31D72C12167A865300230548 /* DqdObserverSet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
