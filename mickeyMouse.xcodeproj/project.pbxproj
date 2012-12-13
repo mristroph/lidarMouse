@@ -25,6 +25,7 @@
 		31D72B901676DCCD00230548 /* RawDataWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B8E1676DCCD00230548 /* RawDataWindowController.m */; };
 		31D72B911676DCCD00230548 /* RawDataWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31D72B8F1676DCCD00230548 /* RawDataWindowController.xib */; };
 		31D72BC01676F01F00230548 /* MyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72BBF1676F01F00230548 /* MyWindow.m */; };
+		31D72C0B1679C6A600230548 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D72C0A1679C6A600230548 /* Accelerate.framework */; };
 		31EEC90B1672FB0100EEB995 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC90A1672FB0100EEB995 /* Foundation.framework */; };
 		31EEC90E1672FB0100EEB995 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC90D1672FB0100EEB995 /* main.m */; };
 		31EEC9731672FD5200EEB995 /* urg_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9461672FCA600EEB995 /* urg_connection.c */; };
@@ -93,6 +94,7 @@
 		31D72B8F1676DCCD00230548 /* RawDataWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RawDataWindowController.xib; sourceTree = "<group>"; };
 		31D72BBE1676F01F00230548 /* MyWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyWindow.h; sourceTree = "<group>"; };
 		31D72BBF1676F01F00230548 /* MyWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyWindow.m; sourceTree = "<group>"; };
+		31D72C0A1679C6A600230548 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		31EEC9061672FB0100EEB995 /* dumpStreamingData */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dumpStreamingData; sourceTree = BUILT_PRODUCTS_DIR; };
 		31EEC90A1672FB0100EEB995 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		31EEC90D1672FB0100EEB995 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31D72C0B1679C6A600230548 /* Accelerate.framework in Frameworks */,
 				31D72B8C1676A29F00230548 /* IOKit.framework in Frameworks */,
 				31D72B6B1676A0EB00230548 /* Cocoa.framework in Frameworks */,
 			);
@@ -285,6 +288,7 @@
 		31EEC9091672FB0100EEB995 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				31D72C0A1679C6A600230548 /* Accelerate.framework */,
 				31EEC99D1673367100EEB995 /* IOKit.framework */,
 				31EEC90A1672FB0100EEB995 /* Foundation.framework */,
 				31D72B6A1676A0EB00230548 /* Cocoa.framework */,
@@ -845,6 +849,7 @@
 				31D72B841676A0EC00230548 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		31EEC9001672FB0100EEB995 /* Build configuration list for PBXProject "mickeyMouse" */ = {
 			isa = XCConfigurationList;
