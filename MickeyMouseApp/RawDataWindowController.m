@@ -11,9 +11,6 @@
 #import "MyWindow.h"
 #import "Lidar2D.h"
 
-// This should really be read from the Lidar2D object.  Hardcoding for convenience.  Fix later.  XXX
-#define kRayCount (725U-44U+1U)
-
 @interface RawDataWindowController ()
 
 @end
@@ -27,7 +24,8 @@
     IBOutlet RawDataGraphView *graphView_;
     volatile BOOL wantsStreamingData_;
 
-    uint32_t untouchedRayDistances[kRayCount];
+    NSUInteger rayCount_;
+    uint32_t *untouchedRayDistances_;
 }
 
 #pragma mark - Public API
@@ -115,7 +113,7 @@
         [self finalizeUntouchedRayDistancesWithDevice:device];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            graphView_.untouchedDistances = [NSData dataWithBytes:untouchedRayDistances length:sizeof untouchedRayDistances];
+            graphView_.untouchedDistances = [NSData dataWithBytes:untouchedRayDistances_ length:rayCount_ * sizeof *untouchedRayDistances_];
         });
 
         [self setStatusLabelText:@"Preparing to calibrate - REMOVE ALL OBSTRUCTIONS FROM SCREEN"];
@@ -167,27 +165,32 @@
 
 - (void)resetUntouchedRayDistancesWithDevice:(id<Lidar2D>)device {
     (void)device; // only passed to ensure I'm run on the device's queue
-    for (size_t i = 0; i < kRayCount; ++i) {
-        untouchedRayDistances[i] = UINT32_MAX;
+    if (rayCount_ == 0) {
+        rayCount_ = device.rayCount;
+        untouchedRayDistances_ = malloc(rayCount_ * sizeof *untouchedRayDistances_);
+    }
+
+    for (size_t i = 0; i < rayCount_; ++i) {
+        untouchedRayDistances_[i] = UINT32_MAX;
     }
 }
 
 - (void)updateUntouchedRayDistancesWithDevice:(id<Lidar2D>)device data:(NSData *)data {
     (void)device; // only passed to ensure I'm run on the device's queue
     uint32_t const *distances = (uint32_t const *)data.bytes;
-    size_t count = MIN(data.length / sizeof *distances, kRayCount);
+    size_t count = MIN(data.length / sizeof *distances, rayCount_);
     for (size_t i = 0; i < count; ++i) {
         uint32_t distance = distances[i];
-        if (distance >= 20 && distance < untouchedRayDistances[i]) {
-            untouchedRayDistances[i] = distance;
+        if (distance >= 20 && distance < untouchedRayDistances_[i]) {
+            untouchedRayDistances_[i] = distance;
         }
     }
 }
 
 - (void)finalizeUntouchedRayDistancesWithDevice:(id<Lidar2D>)device {
     (void)device; // only passed to ensure I'm run on the device's queue
-    for (size_t i = 0; i < kRayCount; ++i) {
-        untouchedRayDistances[i] *= 0.95;
+    for (size_t i = 0; i < rayCount_; ++i) {
+        untouchedRayDistances_[i] *= 0.95;
     }
 }
 
