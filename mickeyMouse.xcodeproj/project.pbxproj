@@ -93,10 +93,10 @@
 		31D72B8F1676DCCD00230548 /* RawDataWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RawDataWindowController.xib; sourceTree = "<group>"; };
 		31D72BBE1676F01F00230548 /* MyWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyWindow.h; sourceTree = "<group>"; };
 		31D72BBF1676F01F00230548 /* MyWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyWindow.m; sourceTree = "<group>"; };
-		31EEC9061672FB0100EEB995 /* mickeyMouse */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mickeyMouse; sourceTree = BUILT_PRODUCTS_DIR; };
+		31EEC9061672FB0100EEB995 /* dumpStreamingData */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dumpStreamingData; sourceTree = BUILT_PRODUCTS_DIR; };
 		31EEC90A1672FB0100EEB995 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		31EEC90D1672FB0100EEB995 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		31EEC9101672FB0100EEB995 /* mickeyMouse-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "mickeyMouse-Prefix.pch"; sourceTree = "<group>"; };
+		31EEC9101672FB0100EEB995 /* dumpStreamingData-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "dumpStreamingData-Prefix.pch"; sourceTree = "<group>"; };
 		31EEC9191672FCA600EEB995 /* AUTHORS.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = AUTHORS.txt; sourceTree = "<group>"; };
 		31EEC91A1672FCA600EEB995 /* COPYRIGHT.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = COPYRIGHT.txt; sourceTree = "<group>"; };
 		31EEC91C1672FCA600EEB995 /* urg_connection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = urg_connection.h; sourceTree = "<group>"; };
@@ -216,8 +216,7 @@
 				31D72B5416755C9600230548 /* ByteChannel.h */,
 				31D72B5516755C9600230548 /* ByteChannel.m */,
 			);
-			name = Lidar2D;
-			path = mickeyMouse;
+			path = Lidar2D;
 			sourceTree = "<group>";
 		};
 		31D72B6C1676A0EB00230548 /* Other Frameworks */ = {
@@ -265,7 +264,7 @@
 			children = (
 				31D72B531675500800230548 /* Lidar2D */,
 				31D72B701676A0EB00230548 /* MickeyMouseApp */,
-				31EEC90C1672FB0100EEB995 /* mickeyMouse */,
+				31EEC90C1672FB0100EEB995 /* dumpStreamingData */,
 				31EEC9181672FCA600EEB995 /* urg_library-1.0.3 */,
 				31EEC9091672FB0100EEB995 /* Frameworks */,
 				31EEC9071672FB0100EEB995 /* Products */,
@@ -275,7 +274,7 @@
 		31EEC9071672FB0100EEB995 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				31EEC9061672FB0100EEB995 /* mickeyMouse */,
+				31EEC9061672FB0100EEB995 /* dumpStreamingData */,
 				31EEC96F1672FD4100EEB995 /* liburg.a */,
 				31EEC9831672FE3400EEB995 /* calculate_xy */,
 				31D72B681676A0EB00230548 /* MickeyMouseApp.app */,
@@ -294,7 +293,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		31EEC90C1672FB0100EEB995 /* mickeyMouse */ = {
+		31EEC90C1672FB0100EEB995 /* dumpStreamingData */ = {
 			isa = PBXGroup;
 			children = (
 				31EEC90D1672FB0100EEB995 /* main.m */,
@@ -304,13 +303,13 @@
 				31D72B6216767A0C00230548 /* MickeyMouse.m */,
 				31EEC90F1672FB0100EEB995 /* Supporting Files */,
 			);
-			path = mickeyMouse;
+			path = dumpStreamingData;
 			sourceTree = "<group>";
 		};
 		31EEC90F1672FB0100EEB995 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				31EEC9101672FB0100EEB995 /* mickeyMouse-Prefix.pch */,
+				31EEC9101672FB0100EEB995 /* dumpStreamingData-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -522,9 +521,9 @@
 			productReference = 31D72B681676A0EB00230548 /* MickeyMouseApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		31EEC9051672FB0100EEB995 /* mickeyMouse */ = {
+		31EEC9051672FB0100EEB995 /* dumpStreamingData */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 31EEC9151672FB0100EEB995 /* Build configuration list for PBXNativeTarget "mickeyMouse" */;
+			buildConfigurationList = 31EEC9151672FB0100EEB995 /* Build configuration list for PBXNativeTarget "dumpStreamingData" */;
 			buildPhases = (
 				31EEC9021672FB0100EEB995 /* Sources */,
 				31EEC9031672FB0100EEB995 /* Frameworks */,
@@ -534,9 +533,9 @@
 			);
 			dependencies = (
 			);
-			name = mickeyMouse;
+			name = dumpStreamingData;
 			productName = mickeyMouse;
-			productReference = 31EEC9061672FB0100EEB995 /* mickeyMouse */;
+			productReference = 31EEC9061672FB0100EEB995 /* dumpStreamingData */;
 			productType = "com.apple.product-type.tool";
 		};
 		31EEC96E1672FD4100EEB995 /* liburg */ = {
@@ -594,7 +593,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				31EEC9051672FB0100EEB995 /* mickeyMouse */,
+				31EEC9051672FB0100EEB995 /* dumpStreamingData */,
 				31EEC96E1672FD4100EEB995 /* liburg */,
 				31EEC9821672FE3400EEB995 /* calculate_xy */,
 				31D72B671676A0EB00230548 /* MickeyMouseApp */,
@@ -792,7 +791,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "mickeyMouse/mickeyMouse-Prefix.pch";
+				GCC_PREFIX_HEADER = "dumpStreamingData/dumpStreamingData-Prefix.pch";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -801,7 +800,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "mickeyMouse/mickeyMouse-Prefix.pch";
+				GCC_PREFIX_HEADER = "dumpStreamingData/dumpStreamingData-Prefix.pch";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -856,7 +855,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		31EEC9151672FB0100EEB995 /* Build configuration list for PBXNativeTarget "mickeyMouse" */ = {
+		31EEC9151672FB0100EEB995 /* Build configuration list for PBXNativeTarget "dumpStreamingData" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				31EEC9161672FB0100EEB995 /* Debug */,
