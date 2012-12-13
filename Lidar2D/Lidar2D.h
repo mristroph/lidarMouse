@@ -12,7 +12,14 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 // This is an error I have encountered, or nil.  Set this to nil after handling the error if you want to try to keep using me.
 @property (nonatomic, strong) NSError *error;
 
+// The serial number of the device.  Useful for distinguishing amongst multiple connected devices.
 @property (nonatomic, readonly) NSString *serialNumber;
+
+// The number of distinct angles at which the device measures distance.  The measurements are equally-spaced around the arc of coverage.
+@property (nonatomic, readonly) NSUInteger rayCount;
+
+// The size of the arc of coverage, in degrees.  The individual measurements are evenly spaced around this arc.  This is the difference between the first measurement angle and the last measurement angle.
+@property (nonatomic, readonly) double coverageDegrees;
 
 typedef void (^Lidar2DDataSnapshotBlock)(NSData *data, BOOL *stop);
 

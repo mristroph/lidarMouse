@@ -18,6 +18,11 @@ static NSString *const SCIP20Status_StreamingData = @"99";
 static int const kWriteTimeoutInMilliseconds = 1000;
 static int const kReadTimeoutInMilliseconds = 1000;
 
+// Hardcoded for URG-04LX.
+static NSUInteger const kFirstRayStep = 44;
+static NSUInteger const kLastRayStep = 725;
+static double const kCoverageDegrees = 239.77;
+
 @implementation Lidar2DDevice {
     NSString *path_;
     dispatch_queue_t queue_;
@@ -62,6 +67,14 @@ static int const kReadTimeoutInMilliseconds = 1000;
 @synthesize error = _error;
 @synthesize serialNumber = _serialNumber;
 
+- (NSUInteger)rayCount {
+    return kLastRayStep - kFirstRayStep + 1;
+}
+
+- (double)coverageDegrees {
+    return kCoverageDegrees;
+}
+
 - (void)forEachStreamingDataSnapshot:(Lidar2DDataSnapshotBlock)block {
     if ([self startStreamingData]) {
         [self readStreamingDataWithBlock:block];
@@ -72,9 +85,14 @@ static int const kReadTimeoutInMilliseconds = 1000;
 #pragma mark - Implementation details - streaming data
 
 - (BOOL)startStreamingData {
-    static NSString *const kCommand = @"MD0044072500000";
+    static NSString *command;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        command = [NSString stringWithFormat:@"MD%04lu%04lu00000", (unsigned long)kFirstRayStep, (unsigned long)kLastRayStep];
+    });
+
     __block BOOL ok = YES;
-    [channel_ sendCommand:kCommand ignoringSpuriousResponses:NO onEmptyResponse:^(NSString *status) {
+    [channel_ sendCommand:command ignoringSpuriousResponses:NO onEmptyResponse:^(NSString *status) {
         ok = [self checkOKStatus:status];
     } onError:^(NSError *error) {
         _error = error;
