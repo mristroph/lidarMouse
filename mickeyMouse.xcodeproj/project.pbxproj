@@ -247,8 +247,6 @@
 				31D72B851676A23400230548 /* RawDataGraphView.h */,
 				31D72B861676A23400230548 /* RawDataGraphView.m */,
 				31D72C0D167A754700230548 /* TouchDetector.h */,
-				31D72C10167A865300230548 /* DqdObserverSet.h */,
-				31D72C11167A865300230548 /* DqdObserverSet.m */,
 				31D72C0E167A754800230548 /* TouchDetector.m */,
 				31D72B711676A0EB00230548 /* Supporting Files */,
 				31D72BBE1676F01F00230548 /* MyWindow.h */,
@@ -290,6 +288,8 @@
 				31D72B5516755C9600230548 /* ByteChannel.m */,
 				31D72C1C167B331000230548 /* Lidar2DConnection.h */,
 				31D72C1D167B331000230548 /* Lidar2DConnection.m */,
+				31D72C10167A865300230548 /* DqdObserverSet.h */,
+				31D72C11167A865300230548 /* DqdObserverSet.m */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
