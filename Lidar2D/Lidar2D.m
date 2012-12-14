@@ -11,9 +11,9 @@
 
 typedef enum {
     ConnectionState_Disconnected,
-    ConnectionState_Connecting,
+    ConnectionState_Connecting, // Only while `q_connect` is executing.
     ConnectionState_Connected,
-    ConnectionState_Disconnecting
+    ConnectionState_Disconnecting // Only while `q_disconnect` is executing.
 } ConnectionState;
 
 NSString *const Lidar2DErrorDomain = @"Lidar2DErrorDomain";
@@ -37,7 +37,7 @@ static double const kCoverageDegrees = 239.77;
     int fd_;
 
     ConnectionState connectionState_;
-    BOOL isStreaming_ : 1;
+    BOOL _isStreaming : 1;
 }
 
 #pragma mark - Public API
@@ -61,27 +61,12 @@ static double const kCoverageDegrees = 239.77;
 @synthesize devicePath = _devicePath;
 
 - (void)connect {
-    switch (connectionState_) {
-        case ConnectionState_Disconnected:
-        case ConnectionState_Disconnecting:
-            abort(); // xxx
-            break;
-        case ConnectionState_Connected:
-        case ConnectionState_Connecting:
-            break;
-    }
+    dispatch_async(queue_, ^{ [self q_connect]; });
 }
 
 - (void)disconnect {
-    switch (connectionState_) {
-        case ConnectionState_Disconnected:
-        case ConnectionState_Disconnecting:
-            break;
-        case ConnectionState_Connected:
-        case ConnectionState_Connecting:
-            abort(); // xxx
-            break;
-    }
+    [self stopStreaming];
+    dispatch_async(queue_, ^{ [self q_disconnect]; });
 }
 
 - (BOOL)isConnected {
@@ -133,6 +118,45 @@ static double const kCoverageDegrees = 239.77;
 // Since I send myself this while in `dealloc`, I have to be careful not to retain myself, because retaining myself in `dealloc` will not prevent me from being deallocated!
 - (void)disconnectWithoutRetainingMyself {
     abort(); // xxx
+}
+
+#pragma mark - Implementation details - background queue methods
+
+- (void)q_setConnectionStateAndNotify:(ConnectionState)state {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        if (state != connectionState_) {
+            connectionState_ = state;
+            switch (connectionState_) {
+                case ConnectionState_Connected:
+                    [observers_.proxy lidar2dDidConnect:self];
+                    break;
+                case ConnectionState_Disconnected:
+                    [observers_.proxy lidar2dDidDisconnect:self];
+                    break;
+                case ConnectionState_Connecting:
+                case ConnectionState_Disconnecting:
+                    break;
+            }
+        }
+    });
+}
+
+- (void)q_connect {
+    // I only update connectionState_ synchronously so this is safe.
+    if (connectionState_ == ConnectionState_Connected)
+        return;
+    [self q_setConnectionStateAndNotify:ConnectionState_Connecting];
+    abort(); // xxx
+    [self q_setConnectionStateAndNotify:ConnectionState_Connected];
+}
+
+- (void)q_disconnect {
+    // I only update connectionState_ synchronously so this is safe.
+    if (connectionState_ == ConnectionState_Disconnected)
+        return;
+    [self q_setConnectionStateAndNotify:ConnectionState_Disconnecting];
+    abort(); // xxx
+    [self q_setConnectionStateAndNotify:ConnectionState_Disconnected];
 }
 
 #pragma mark - Implementation details - streaming data
