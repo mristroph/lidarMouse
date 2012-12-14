@@ -3,11 +3,18 @@
  Copyright (c) 2012 Rob Mayoff. All rights reserved.
  */
 
-#import "Lidar2D.h"
-#import "Lidar2D_managerAccess.h"
-#import "SCIP20Channel.h"
 #import "ByteChannel.h"
+#import "DqdObserverSet.h"
+#import "Lidar2D.h"
+#import "SCIP20Channel.h"
 #import <termios.h>
+
+typedef enum {
+    ConnectionState_Disconnected,
+    ConnectionState_Connecting,
+    ConnectionState_Connected,
+    ConnectionState_Disconnecting
+} ConnectionState;
 
 NSString *const Lidar2DErrorDomain = @"Lidar2DErrorDomain";
 NSString *const Lidar2DErrorStatusKey = @"status";
@@ -23,48 +30,89 @@ static NSUInteger const kFirstRayStep = 44;
 static NSUInteger const kLastRayStep = 725;
 static double const kCoverageDegrees = 239.77;
 
-@implementation Lidar2DDevice {
-    NSString *path_;
+@implementation Lidar2D {
+    DqdObserverSet *observers_;
     dispatch_queue_t queue_;
     SCIP20Channel *channel_;
     int fd_;
+
+    ConnectionState connectionState_;
+    BOOL isStreaming_ : 1;
 }
 
+#pragma mark - Public API
+
 - (void)dealloc {
+    [self stopStreamingWithoutRetainingMyself];
+    [self disconnectWithoutRetainingMyself];
     dispatch_release(queue_);
 }
 
-#pragma mark - Public API - Lidar2DProxy
-
 - (id)initWithDevicePath:(NSString *)path {
     if ((self = [super init])) {
-        path_ = [path copy];
+        _devicePath = [path copy];
         fd_ = -1;
-        queue_ = dispatch_queue_create([[NSString stringWithFormat:@"Lidar2D-%@", path] UTF8String], 0);
-        [self performBlock:^(id<Lidar2D> device) {
-            (void)device;
-            [self connectToDevice];
-        }];
+        queue_ = dispatch_queue_create([[NSString stringWithFormat:@"com.dqd.MickeyMouseApp.Lidar2D-%@", path] UTF8String], 0);
+        connectionState_ = ConnectionState_Disconnected;
     }
     return self;
 }
 
-- (void)performBlock:(void (^)(id<Lidar2D>))block {
-    dispatch_async(queue_, ^{
-        block(self);
-    });
-}
-
-- (void)performBlockAndWait:(void (^)(id<Lidar2D>))block {
-    dispatch_sync(queue_, ^{
-        block(self);
-    });
-}
-
-#pragma mark - Public API - Lidar2D
-
 @synthesize devicePath = _devicePath;
-@synthesize error = _error;
+
+- (void)connect {
+    switch (connectionState_) {
+        case ConnectionState_Disconnected:
+        case ConnectionState_Disconnecting:
+            abort(); // xxx
+            break;
+        case ConnectionState_Connected:
+        case ConnectionState_Connecting:
+            break;
+    }
+}
+
+- (void)disconnect {
+    switch (connectionState_) {
+        case ConnectionState_Disconnected:
+        case ConnectionState_Disconnecting:
+            break;
+        case ConnectionState_Connected:
+        case ConnectionState_Connecting:
+            abort(); // xxx
+            break;
+    }
+}
+
+- (BOOL)isConnected {
+    return connectionState_ == ConnectionState_Connected;
+}
+
+@synthesize isStreaming = _isStreaming;
+
+- (void)startStreaming {
+    if (_isStreaming)
+        return;
+    abort(); // xxx
+}
+
+- (void)stopStreaming {
+    if (!_isStreaming)
+        return;
+    abort(); // xxx
+}
+
+- (void)addObserver:(id<Lidar2DObserver>)observer {
+    if (!observers_) {
+        observers_ = [[DqdObserverSet alloc] initWithProtocol:@protocol(Lidar2DObserver)];
+    }
+    [observers_ addObserver:observer];
+}
+
+- (void)removeObserver:(id<Lidar2DObserver>)observer {
+    [observers_ removeObserver:observer];
+}
+
 @synthesize serialNumber = _serialNumber;
 
 - (NSUInteger)rayCount {
@@ -75,11 +123,16 @@ static double const kCoverageDegrees = 239.77;
     return kCoverageDegrees;
 }
 
-- (void)forEachStreamingDataSnapshot:(Lidar2DDataSnapshotBlock)block {
-    if ([self startStreamingData]) {
-        [self readStreamingDataWithBlock:block];
-        [self stopStreamingData];
-    }
+#pragma mark - Implementation details
+
+// Since I send myself this while in `dealloc`, I have to be careful not to retain myself, because retaining myself in `dealloc` will not prevent me from being deallocated!
+- (void)stopStreamingWithoutRetainingMyself {
+    abort(); // xxx
+}
+
+// Since I send myself this while in `dealloc`, I have to be careful not to retain myself, because retaining myself in `dealloc` will not prevent me from being deallocated!
+- (void)disconnectWithoutRetainingMyself {
+    abort(); // xxx
 }
 
 #pragma mark - Implementation details - streaming data

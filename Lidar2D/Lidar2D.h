@@ -19,11 +19,11 @@ typedef uint32_t Lidar2DDistance;
 // I start connecting to the device on a background thread.  I notify my observers when I have finished connecting.
 - (void)connect;
 
-// `YES` if I am fully connected to my device.
-@property (nonatomic, readonly) BOOL isConnected;
-
 // I start disconnecting from the device on a background thread.  I notify my observers when I have finished disconnecting.
 - (void)disconnect;
+
+// `YES` if I am fully connected to my device.
+@property (nonatomic, readonly) BOOL isConnected;
 
 // I ask the device to start streaming distances to me.
 - (void)startStreaming;
