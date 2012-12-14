@@ -28,6 +28,6 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 
 - (void)lidar2DManager:(Lidar2DManager *)manager didReceiveError:(NSError *)error;
 
-- (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(id<Lidar2DProxy>)device;
+- (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(Lidar2D *)device;
 
 @end

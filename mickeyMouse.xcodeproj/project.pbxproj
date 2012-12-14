@@ -69,7 +69,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		31D72B4E1673EAD600230548 /* Lidar2D_managerAccess.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lidar2D_managerAccess.h; sourceTree = "<group>"; };
 		31D72B50167548F300230548 /* SCIP20Channel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCIP20Channel.h; sourceTree = "<group>"; };
 		31D72B51167548F300230548 /* SCIP20Channel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCIP20Channel.m; sourceTree = "<group>"; };
 		31D72B5416755C9600230548 /* ByteChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ByteChannel.h; sourceTree = "<group>"; };
@@ -218,7 +217,6 @@
 				31EEC99A167333E500EEB995 /* Lidar2DManager.h */,
 				31EEC99B167333E500EEB995 /* Lidar2DManager.m */,
 				31EEC9A51673D82E00EEB995 /* Lidar2D.h */,
-				31D72B4E1673EAD600230548 /* Lidar2D_managerAccess.h */,
 				31EEC9A61673D82E00EEB995 /* Lidar2D.m */,
 				31D72B50167548F300230548 /* SCIP20Channel.h */,
 				31D72B51167548F300230548 /* SCIP20Channel.m */,

@@ -5,7 +5,6 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 
 #import "Lidar2D.h"
 #import "Lidar2DManager.h"
-#import "Lidar2D_managerAccess.h"
 #import <IOKit/IOKitLib.h>
 #import <IOKit/usb/IOUSBLib.h>
 #import <IOKit/serial/IOSerialKeys.h>
@@ -91,7 +90,7 @@ static void firstMatchCallback(__unsafe_unretained Lidar2DManager *refcon, io_it
     if (!self.isStarted)
         return;
 
-    Lidar2DDevice *device = [[Lidar2DDevice alloc] initWithDevicePath:path];
+    Lidar2D *device = [[Lidar2D alloc] initWithDevicePath:path];
     [_delegate lidar2DManager:self didConnectToDevice:device];
 }
 
