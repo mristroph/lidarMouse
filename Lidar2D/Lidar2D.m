@@ -9,6 +9,13 @@
 #import "SCIP20Channel.h"
 #import <termios.h>
 
+/*
+Lidar2D delegates everything to a Lidar2DInternal object.  The Lidar2DInternal object only has a weak reference back to Lidar2D.  The Lidar2D object has the only reference to the Lidar2DInternal object.  So the Lidar2D's retain count can become zero no matter what the Lidar2DInternal is doing.  
+*/
+
+@interface Lidar2DInternal
+@end
+
 typedef enum {
     ConnectionState_Disconnected,
     ConnectionState_Connecting, // Only while `q_connect` is executing.
