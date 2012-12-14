@@ -6,7 +6,7 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 #import <Foundation/Foundation.h>
 
 @protocol  Lidar2DManagerDelegate;
-@protocol Lidar2DProxy;
+@class Lidar2D;
 
 @interface Lidar2DManager : NSObject
 

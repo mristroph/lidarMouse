@@ -6,32 +6,48 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 #import "Dumper.h"
 #import "Lidar2D.h"
 
+@interface Dumper () <Lidar2DObserver>
+@end
+
 @implementation Dumper {
-    id<Lidar2DProxy> proxy_;
+    Dumper *myself_; // keep myself around while my device is connected
+    Lidar2D *device_;
 }
 
-- (id)initWithLidar2DProxy:(id<Lidar2DProxy>)proxy {
+- (id)initWithLidar2D:(Lidar2D *)device {
     if ((self = [super init])) {
-        proxy_ = proxy;
-        [proxy_ performBlock:^(id<Lidar2D> device) {
-            [self runWithDevice:device];
-        }];
+        device_ = device;
+        myself_ = self;
+        [device addObserver:self];
+        [device connect];
     }
     return self;
 }
 
-- (void)runWithDevice:(id<Lidar2D>)device {
-    if (device.error) {
-        NSLog(@"%@ error: %@", device, device.error);
-        return;
+- (void)dealloc {
+    [device_ removeObserver:self];
+}
+
+- (void)lidar2dDidConnect:(Lidar2D *)device {
+    NSLog(@"device %@ connected", device);
+}
+
+- (void)lidar2dDidDisconnect:(Lidar2D *)device {
+    NSLog(@"device %@ disconnected", device);
+}
+
+- (void)lidar2d:(Lidar2D *)device didFailWithError:(NSError *)error {
+    NSLog(@"device %@ failed with error %@", device, error);
+    [device disconnect];
+    myself_ = nil;
+}
+
+- (void)lidar2d:(Lidar2D *)device didReceiveDistances:(const Lidar2DDistance *)distances {
+    NSMutableString *string = [[NSMutableString alloc] init];
+    for (NSUInteger i = 0, l = device.rayCount; i < l; ++i) {
+        [string appendFormat:@"%u ", distances[i]];
     }
-
-    [device forEachStreamingDataSnapshot:^(NSData *data, BOOL *stop) {
-        *stop = NO;
-        NSLog(@"data=%@", data);
-    }];
-
-    NSLog(@"%@ error: %@", device, device.error);
+    printf("device %s reported distances: %s\n", device.description.UTF8String, string.UTF8String);
 }
 
 @end

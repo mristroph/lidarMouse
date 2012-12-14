@@ -28,6 +28,8 @@
 		31D72C0B1679C6A600230548 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D72C0A1679C6A600230548 /* Accelerate.framework */; };
 		31D72C0F167A754800230548 /* TouchDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C0E167A754800230548 /* TouchDetector.m */; };
 		31D72C12167A865300230548 /* DqdObserverSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C11167A865300230548 /* DqdObserverSet.m */; };
+		31D72C1E167B331000230548 /* Lidar2DConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C1D167B331000230548 /* Lidar2DConnection.m */; };
+		31D72C21167B3FF000230548 /* DqdObserverSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C11167A865300230548 /* DqdObserverSet.m */; };
 		31EEC90B1672FB0100EEB995 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC90A1672FB0100EEB995 /* Foundation.framework */; };
 		31EEC90E1672FB0100EEB995 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC90D1672FB0100EEB995 /* main.m */; };
 		31EEC9731672FD5200EEB995 /* urg_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9461672FCA600EEB995 /* urg_connection.c */; };
@@ -100,6 +102,9 @@
 		31D72C0E167A754800230548 /* TouchDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchDetector.m; sourceTree = "<group>"; };
 		31D72C10167A865300230548 /* DqdObserverSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DqdObserverSet.h; sourceTree = "<group>"; };
 		31D72C11167A865300230548 /* DqdObserverSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DqdObserverSet.m; sourceTree = "<group>"; };
+		31D72C1C167B331000230548 /* Lidar2DConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lidar2DConnection.h; sourceTree = "<group>"; };
+		31D72C1D167B331000230548 /* Lidar2DConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lidar2DConnection.m; sourceTree = "<group>"; };
+		31D72C20167B364700230548 /* Lidar2DAncillary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lidar2DAncillary.h; sourceTree = "<group>"; };
 		31EEC9061672FB0100EEB995 /* dumpStreamingData */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dumpStreamingData; sourceTree = BUILT_PRODUCTS_DIR; };
 		31EEC90A1672FB0100EEB995 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		31EEC90D1672FB0100EEB995 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -214,14 +219,8 @@
 		31D72B531675500800230548 /* Lidar2D */ = {
 			isa = PBXGroup;
 			children = (
-				31EEC99A167333E500EEB995 /* Lidar2DManager.h */,
-				31EEC99B167333E500EEB995 /* Lidar2DManager.m */,
-				31EEC9A51673D82E00EEB995 /* Lidar2D.h */,
-				31EEC9A61673D82E00EEB995 /* Lidar2D.m */,
-				31D72B50167548F300230548 /* SCIP20Channel.h */,
-				31D72B51167548F300230548 /* SCIP20Channel.m */,
-				31D72B5416755C9600230548 /* ByteChannel.h */,
-				31D72B5516755C9600230548 /* ByteChannel.m */,
+				31D72C19167B32EE00230548 /* Public API */,
+				31D72C1B167B32F300230548 /* Implementation */,
 			);
 			path = Lidar2D;
 			sourceTree = "<group>";
@@ -268,6 +267,31 @@
 				31D72B791676A0EB00230548 /* Credits.rtf */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		31D72C19167B32EE00230548 /* Public API */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC99A167333E500EEB995 /* Lidar2DManager.h */,
+				31EEC9A51673D82E00EEB995 /* Lidar2D.h */,
+				31D72C20167B364700230548 /* Lidar2DAncillary.h */,
+			);
+			name = "Public API";
+			sourceTree = "<group>";
+		};
+		31D72C1B167B32F300230548 /* Implementation */ = {
+			isa = PBXGroup;
+			children = (
+				31EEC99B167333E500EEB995 /* Lidar2DManager.m */,
+				31EEC9A61673D82E00EEB995 /* Lidar2D.m */,
+				31D72B50167548F300230548 /* SCIP20Channel.h */,
+				31D72B51167548F300230548 /* SCIP20Channel.m */,
+				31D72B5416755C9600230548 /* ByteChannel.h */,
+				31D72B5516755C9600230548 /* ByteChannel.m */,
+				31D72C1C167B331000230548 /* Lidar2DConnection.h */,
+				31D72C1D167B331000230548 /* Lidar2DConnection.m */,
+			);
+			name = Implementation;
 			sourceTree = "<group>";
 		};
 		31EEC8FB1672FB0100EEB995 = {
@@ -657,6 +681,8 @@
 				31D72B52167548F300230548 /* SCIP20Channel.m in Sources */,
 				31D72B5616755C9600230548 /* ByteChannel.m in Sources */,
 				31D72B6316767A0C00230548 /* Dumper.m in Sources */,
+				31D72C1E167B331000230548 /* Lidar2DConnection.m in Sources */,
+				31D72C21167B3FF000230548 /* DqdObserverSet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

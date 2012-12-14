@@ -32,9 +32,9 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
     exit(1);
 }
 
-- (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(id<Lidar2DProxy>)device {
+- (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(Lidar2D *)device {
     NSLog(@"Lidar2DManager %@ connected device %@", manager, device);
-    (void)[[Dumper alloc] initWithLidar2DProxy:device];
+    (void)[[Dumper alloc] initWithLidar2D:device];
 }
 
 @end
