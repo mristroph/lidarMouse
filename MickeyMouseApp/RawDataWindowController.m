@@ -17,7 +17,7 @@
 
 @implementation RawDataWindowController {
     RawDataWindowController *myself_; // set to self while window is ordered in to avoid being deallocated
-    id<Lidar2DProxy> proxy_;
+    Lidar2D *device_;
     id windowWillOrderInObserver_;
     id windowWillCloseObserver_;
     IBOutlet NSTextField *statusField_;
@@ -30,9 +30,9 @@
 
 #pragma mark - Public API
 
-- (id)initWithLidar2DProxy:(id<Lidar2DProxy>)proxy {
+- (id)initWithLidar2D:(Lidar2D *)device {
     if (self = [super initWithWindowNibName:@"RawDataWindowController"]) {
-        proxy_ = proxy;
+        device_ = device;
     }
     return self;
 }

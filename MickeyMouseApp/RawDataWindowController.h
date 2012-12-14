@@ -8,10 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-@protocol Lidar2DProxy;
+@class Lidar2D;
 
 @interface RawDataWindowController : NSWindowController
 
-- (id)initWithLidar2DProxy:(id<Lidar2DProxy>)proxy;
+- (id)initWithLidar2D:(Lidar2D *)device;
 
 @end

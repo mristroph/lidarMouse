@@ -26,7 +26,7 @@ typedef enum {
 
 @interface TouchDetector : NSObject
 
-- (id)initWithLidar2DProxy:(id<Lidar2DProxy>)deviceProxy;
+- (id)initWithDevice:(Lidar2D *)device;
 
 @property (nonatomic, readonly) TouchDetectorState state;
 

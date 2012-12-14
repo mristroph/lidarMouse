@@ -11,7 +11,7 @@
 #import "TouchDetector.h"
 
 @implementation TouchDetector {
-    id<Lidar2DProxy> deviceProxy_;
+    Lidar2D *device_;
     DqdObserverSet *observers_;
 
     uint32_t *untouchedFieldDistances_;
@@ -26,9 +26,9 @@
     [self deallocateUntouchedFieldDistances];
 }
 
-- (id)initWithLidar2DProxy:(id<Lidar2DProxy>)deviceProxy {
+- (id)initWithDevice:(Lidar2D *)device {
     if ((self = [super init])) {
-        deviceProxy_ = deviceProxy;
+        device_ = device;
         [self setAppropriateState];
     }
     return self;
@@ -39,7 +39,7 @@
 - (void)startCalibratingUntouchedField {
     [self requireNotBusy];
     self.state = TouchDetectorState_CalibratingUntouchedField;
-    [deviceProxy_ performBlock:^(id<Lidar2D> device) {
+    [device_ performBlock:^(id<Lidar2D> device) {
         [self calibrateUntouchedFieldWithDevice:device];
     }];
 }
@@ -48,7 +48,7 @@
     [self requireNotBusy];
     currentCalibrationPoint_ = point;
     self.state = TouchDetectorState_CalibratingTouch;
-    [deviceProxy_ performBlock:^(id<Lidar2D> device) {
+    [device_ performBlock:^(id<Lidar2D> device) {
         [self calibrateTouchWithDevice:device];
     }];
 }

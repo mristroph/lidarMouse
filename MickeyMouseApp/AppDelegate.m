@@ -35,9 +35,9 @@
     [alert runModal];
 }
 
-- (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(id<Lidar2DProxy>)device {
+- (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(Lidar2D *)device {
     (void)manager;
-    [[[RawDataWindowController alloc] initWithLidar2DProxy:device] showWindow:nil];
+    [[[RawDataWindowController alloc] initWithLidar2D:device] showWindow:nil];
 }
 
 @end
