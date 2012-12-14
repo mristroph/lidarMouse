@@ -37,7 +37,7 @@ static double const kCoverageDegrees = 239.77;
     int fd_;
 
     ConnectionState connectionState_;
-    BOOL _isStreaming : 1;
+    volatile BOOL _isStreaming : 1;
 }
 
 #pragma mark - Public API
@@ -76,15 +76,12 @@ static double const kCoverageDegrees = 239.77;
 @synthesize isStreaming = _isStreaming;
 
 - (void)startStreaming {
-    if (_isStreaming)
-        return;
-    abort(); // xxx
+    _isStreaming = YES;
+    [self q_streamData];
 }
 
 - (void)stopStreaming {
-    if (!_isStreaming)
-        return;
-    abort(); // xxx
+    _isStreaming = NO;
 }
 
 - (void)addObserver:(id<Lidar2DObserver>)observer {
@@ -112,6 +109,7 @@ static double const kCoverageDegrees = 239.77;
 
 // Since I send myself this while in `dealloc`, I have to be careful not to retain myself, because retaining myself in `dealloc` will not prevent me from being deallocated!
 - (void)stopStreamingWithoutRetainingMyself {
+    _isStreaming = NO;
     abort(); // xxx
 }
 
@@ -157,6 +155,12 @@ static double const kCoverageDegrees = 239.77;
     [self q_setConnectionStateAndNotify:ConnectionState_Disconnecting];
     abort(); // xxx
     [self q_setConnectionStateAndNotify:ConnectionState_Disconnected];
+}
+
+- (void)q_streamData {
+    while (_isStreaming) {
+        abort(); // xxx
+    }
 }
 
 #pragma mark - Implementation details - streaming data
@@ -246,7 +250,7 @@ static double const kCoverageDegrees = 239.77;
     return NO;
 }
 
-#pragma mark - Implementation details - connecting to device
+#pragma mark - File descriptor/serial device details
 
 - (void)connectToDevice {
     YES
