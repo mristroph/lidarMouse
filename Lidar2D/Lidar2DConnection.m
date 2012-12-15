@@ -214,9 +214,13 @@ static int const kReadTimeoutInMilliseconds = 1000;
 
 // I return NO to make it easy to call me and then return NO.
 - (BOOL)reportPosixErrorWithAction:(NSString *)action {
+    char const *errorString = strerror(errno);
+    if (!errorString) {
+        errorString = "unknown error (strerror returned NULL)";
+    }
     [delegate_ connection:self didFailWithError:[NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{
         @"action": action,
-        NSLocalizedDescriptionKey: @(strerror(errno)),
+        NSLocalizedDescriptionKey: @(errorString),
         NSFilePathErrorKey: devicePath_
     }]];
     return NO;
