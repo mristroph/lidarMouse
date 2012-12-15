@@ -3,11 +3,10 @@ Created by Rob Mayoff on 12/8/12.
 Copyright (c) 2012 Rob Mayoff. All rights reserved.
 */
 
-#import "Lidar2D.h"
+#import "Lidar2D+Creation.h"
 #import "Lidar2DManager.h"
 #import <IOKit/IOKitLib.h>
 #import <IOKit/usb/IOUSBLib.h>
-#import <IOKit/serial/IOSerialKeys.h>
 #import <mach/mach.h>
 
 @interface Lidar2DManager ()
@@ -86,11 +85,11 @@ static void firstMatchCallback(__unsafe_unretained Lidar2DManager *refcon, io_it
     [_delegate lidar2DManager:self didReceiveError:error];
 }
 
-- (void)didFirstMatchDeviceWithDevicePath:(NSString *)path {
+- (void)observeFirstMatchNotificationWithService:(io_service_t)service {
     if (!self.isStarted)
         return;
 
-    Lidar2D *device = [[Lidar2D alloc] initWithDevicePath:path];
+    Lidar2D *device = [[Lidar2D alloc] initWithIOService:service];
     [_delegate lidar2DManager:self didConnectToDevice:device];
 }
 
@@ -103,12 +102,10 @@ static void firstMatchCallback(__unsafe_unretained Lidar2DManager *refcon, io_it
 
 static void firstMatchCallback(__unsafe_unretained Lidar2DManager *unsafe_self, io_iterator_t iterator) {
     Lidar2DManager *self = unsafe_self;
-    io_object_t device;
-    while ((device = IOIteratorNext(iterator))) {
-        NSString *path = CFBridgingRelease(IORegistryEntrySearchCFProperty(device, kIOServicePlane, CFSTR(kIODialinDeviceKey), NULL, kIORegistryIterateRecursively));
-        NSLog(@"device path = %@", path);
-        [self didFirstMatchDeviceWithDevicePath:path];
-        IOObjectRelease(device);
+    io_object_t service;
+    while ((service = IOIteratorNext(iterator))) {
+        [self observeFirstMatchNotificationWithService:service];
+        IOObjectRelease(service);
     }
 }
 

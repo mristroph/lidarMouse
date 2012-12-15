@@ -10,9 +10,6 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 
 @interface Lidar2D : NSObject
 
-// I initialize myself to connect to the device at `devicePath`.  I don't actually open the device until you send me `connect`.
-- (id)initWithDevicePath:(NSString *)devicePath;
-
 @property (nonatomic, readonly) NSString *devicePath;
 
 // I start connecting to the device on a background thread.  I notify my observers when I have finished connecting.
@@ -39,6 +36,9 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 @end
 
 @protocol Lidar2DObserver
+
+// The device has been physically disconnected.  You should stop observing me and release your reference to me.
+- (void)lidar2DDidTerminate:(Lidar2D *)device;
 
 @optional
 

@@ -25,7 +25,13 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 }
 
 - (void)dealloc {
+    NSLog(@"%@ dealloc", self);
     [device_ removeObserver:self];
+}
+
+- (void)lidar2DDidTerminate:(Lidar2D *)device {
+    NSLog(@"device %@ terminated", device);
+    myself_ = nil;
 }
 
 - (void)lidar2dDidConnect:(Lidar2D *)device {
