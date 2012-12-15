@@ -101,8 +101,9 @@
 
 - (void)connection:(Lidar2DConnection *)connection didReceiveDistances:(const Lidar2DDistance *)distances {
     (void)connection;
+    NSData *data = [[NSData alloc] initWithBytes:distances length:connection.rayCount * sizeof *distances];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [observers_.proxy lidar2d:self didReceiveDistances:distances];
+        [observers_.proxy lidar2d:self didReceiveDistances:data.bytes];
     });
 }
 
