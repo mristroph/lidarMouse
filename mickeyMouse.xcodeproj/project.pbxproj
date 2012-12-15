@@ -22,8 +22,8 @@
 		31D72B8A1676A24E00230548 /* SCIP20Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B51167548F300230548 /* SCIP20Channel.m */; };
 		31D72B8B1676A24E00230548 /* ByteChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B5516755C9600230548 /* ByteChannel.m */; };
 		31D72B8C1676A29F00230548 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC99D1673367100EEB995 /* IOKit.framework */; };
-		31D72B901676DCCD00230548 /* RawDataWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B8E1676DCCD00230548 /* RawDataWindowController.m */; };
-		31D72B911676DCCD00230548 /* RawDataWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31D72B8F1676DCCD00230548 /* RawDataWindowController.xib */; };
+		31D72B901676DCCD00230548 /* DeviceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B8E1676DCCD00230548 /* DeviceController.m */; };
+		31D72B911676DCCD00230548 /* DeviceController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31D72B8F1676DCCD00230548 /* DeviceController.xib */; };
 		31D72BC01676F01F00230548 /* MyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72BBF1676F01F00230548 /* MyWindow.m */; };
 		31D72C0B1679C6A600230548 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D72C0A1679C6A600230548 /* Accelerate.framework */; };
 		31D72C0F167A754800230548 /* TouchDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C0E167A754800230548 /* TouchDetector.m */; };
@@ -92,9 +92,9 @@
 		31D72B801676A0EC00230548 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		31D72B851676A23400230548 /* RawDataGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RawDataGraphView.h; sourceTree = "<group>"; };
 		31D72B861676A23400230548 /* RawDataGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RawDataGraphView.m; sourceTree = "<group>"; };
-		31D72B8D1676DCCD00230548 /* RawDataWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RawDataWindowController.h; sourceTree = "<group>"; };
-		31D72B8E1676DCCD00230548 /* RawDataWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RawDataWindowController.m; sourceTree = "<group>"; };
-		31D72B8F1676DCCD00230548 /* RawDataWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RawDataWindowController.xib; sourceTree = "<group>"; };
+		31D72B8D1676DCCD00230548 /* DeviceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceController.h; sourceTree = "<group>"; };
+		31D72B8E1676DCCD00230548 /* DeviceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceController.m; sourceTree = "<group>"; };
+		31D72B8F1676DCCD00230548 /* DeviceController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DeviceController.xib; sourceTree = "<group>"; };
 		31D72BBE1676F01F00230548 /* MyWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyWindow.h; sourceTree = "<group>"; };
 		31D72BBF1676F01F00230548 /* MyWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyWindow.m; sourceTree = "<group>"; };
 		31D72C0A1679C6A600230548 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -241,9 +241,9 @@
 				31D72B7C1676A0EB00230548 /* AppDelegate.h */,
 				31D72B7D1676A0EB00230548 /* AppDelegate.m */,
 				31D72B7F1676A0EC00230548 /* MainMenu.xib */,
-				31D72B8D1676DCCD00230548 /* RawDataWindowController.h */,
-				31D72B8E1676DCCD00230548 /* RawDataWindowController.m */,
-				31D72B8F1676DCCD00230548 /* RawDataWindowController.xib */,
+				31D72B8D1676DCCD00230548 /* DeviceController.h */,
+				31D72B8E1676DCCD00230548 /* DeviceController.m */,
+				31D72B8F1676DCCD00230548 /* DeviceController.xib */,
 				31D72B851676A23400230548 /* RawDataGraphView.h */,
 				31D72B861676A23400230548 /* RawDataGraphView.m */,
 				31D72C0D167A754700230548 /* TouchDetector.h */,
@@ -645,7 +645,7 @@
 				31D72B751676A0EB00230548 /* InfoPlist.strings in Resources */,
 				31D72B7B1676A0EB00230548 /* Credits.rtf in Resources */,
 				31D72B811676A0EC00230548 /* MainMenu.xib in Resources */,
-				31D72B911676DCCD00230548 /* RawDataWindowController.xib in Resources */,
+				31D72B911676DCCD00230548 /* DeviceController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -663,7 +663,7 @@
 				31D72B891676A24E00230548 /* Lidar2D.m in Sources */,
 				31D72B8A1676A24E00230548 /* SCIP20Channel.m in Sources */,
 				31D72B8B1676A24E00230548 /* ByteChannel.m in Sources */,
-				31D72B901676DCCD00230548 /* RawDataWindowController.m in Sources */,
+				31D72B901676DCCD00230548 /* DeviceController.m in Sources */,
 				31D72BC01676F01F00230548 /* MyWindow.m in Sources */,
 				31D72C0F167A754800230548 /* TouchDetector.m in Sources */,
 				31D72C12167A865300230548 /* DqdObserverSet.m in Sources */,

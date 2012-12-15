@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "Lidar2DManager.h"
-#import "RawDataWindowController.h"
+#import "DeviceController.h"
 
 @interface AppDelegate () <Lidar2DManagerDelegate>
 @end
@@ -37,7 +37,7 @@
 
 - (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(Lidar2D *)device {
     (void)manager;
-    [[[RawDataWindowController alloc] initWithLidar2D:device] showWindow:nil];
+    [[[DeviceController alloc] initWithLidar2D:device] showWindow:nil];
 }
 
 @end

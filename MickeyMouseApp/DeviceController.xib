@@ -28,7 +28,7 @@
 		</object>
 		<array class="NSMutableArray" key="IBDocument.RootObjects" id="1000">
 			<object class="NSCustomObject" id="1001">
-				<string key="NSClassName">RawDataWindowController</string>
+				<string key="NSClassName">DeviceController</string>
 			</object>
 			<object class="NSCustomObject" id="1003">
 				<string key="NSClassName">FirstResponder</string>
@@ -46,7 +46,7 @@
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<object class="NSView" key="NSWindowView" id="1006">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSCustomView" id="645386849">
@@ -58,7 +58,6 @@
 									<int key="NSvFlags">268</int>
 									<string key="NSFrame">{{-3, 233}, {486, 17}}</string>
 									<reference key="NSSuperview" ref="645386849"/>
-									<reference key="NSWindow"/>
 									<string key="NSReuseIdentifierKey">_NS:1535</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSTextFieldCell" key="NSCell" id="972705520">
@@ -97,7 +96,6 @@
 							</array>
 							<string key="NSFrameSize">{480, 270}</string>
 							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="435371609"/>
 							<bool key="NSViewCanDrawConcurrently">YES</bool>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -105,8 +103,6 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{480, 270}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="645386849"/>
 					<bool key="NSViewIsLayerTreeHost">YES</bool>
 				</object>
@@ -424,25 +420,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/RawDataGraphView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">RawDataWindowController</string>
-					<string key="superclassName">NSWindowController</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">graphView_</string>
-						<string key="NS.object.0">RawDataGraphView</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">graphView_</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">graphView_</string>
-							<string key="candidateClassName">RawDataGraphView</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/RawDataWindowController.h</string>
 					</object>
 				</object>
 			</array>

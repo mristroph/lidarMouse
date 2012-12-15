@@ -1,22 +1,22 @@
 //
-//  RawDataWindowController.m
+//  DeviceController.m
 //  mickeyMouse
 //
 //  Created by Rob Mayoff on 12/10/12.
 //  Copyright (c) 2012 Rob Mayoff. All rights reserved.
 //
 
-#import "RawDataWindowController.h"
+#import "DeviceController.h"
 #import "RawDataGraphView.h"
 #import "MyWindow.h"
 #import "Lidar2D.h"
 
-@interface RawDataWindowController ()
+@interface DeviceController ()
 
 @end
 
-@implementation RawDataWindowController {
-    RawDataWindowController *myself_; // set to self while window is ordered in to avoid being deallocated
+@implementation DeviceController {
+    DeviceController *myself_; // set to self while window is ordered in to avoid being deallocated
     Lidar2D *device_;
     id windowWillOrderInObserver_;
     id windowWillCloseObserver_;
@@ -31,7 +31,7 @@
 #pragma mark - Public API
 
 - (id)initWithLidar2D:(Lidar2D *)device {
-    if (self = [super initWithWindowNibName:@"RawDataWindowController"]) {
+    if (self = [super initWithWindowNibName:@"DeviceController"]) {
         device_ = device;
     }
     return self;
@@ -58,7 +58,7 @@
 #pragma mark - Implementation details
 
 - (void)startObservingWindowPresence {
-    __unsafe_unretained RawDataWindowController *me = self;
+    __unsafe_unretained DeviceController *me = self;
     windowWillOrderInObserver_ = [[NSNotificationCenter defaultCenter] addObserverForName:MyWindowWillOrderInNotification object:self.window queue:nil usingBlock:^(NSNotification *note) {
         (void)note;
         [me windowWillBecomePresent];
