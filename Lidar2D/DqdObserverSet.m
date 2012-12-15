@@ -25,9 +25,7 @@ static NSMutableSet *nonRetainingSet(void) {
 
 @implementation DqdObserverSet {
     NSMutableSet *observers_;
-    NSMutableSet *pendingAdditions_;
-    NSMutableSet *pendingDeletions_;
-    BOOL isForwarding_;
+    NSMutableSet *pendingObservers_;
 }
 
 #pragma mark - Public API
@@ -45,35 +43,18 @@ static NSMutableSet *nonRetainingSet(void) {
         _protocol = protocol;
         _proxy = [[DqdObserverSetMessageProxy alloc] init];
         [_proxy setObserverSet:self];
+        observers_ = nonRetainingSet();
     }
     return self;
 }
 
 - (void)addObserver:(id)observer {
-    if (isForwarding_ && pendingDeletions_) {
-        [pendingDeletions_ removeObject:observer];
-    }
-    
-    __strong NSMutableSet **set = isForwarding_ ? &pendingAdditions_ : &observers_;
-
-    if (!*set) {
-        *set = nonRetainingSet();
-    }
-    [*set addObject:observer];
+    [observers_ addObject:observer];
 }
 
 - (void)removeObserver:(id)observer {
-    if (isForwarding_) {
-        if (pendingAdditions_) {
-            [pendingAdditions_ removeObject:observer];
-        }
-        if (!pendingDeletions_) {
-            pendingDeletions_ = nonRetainingSet();
-        }
-        [pendingDeletions_ addObject:observer];
-    } else {
-        [observers_ removeObject:observer];
-    }
+    [observers_ removeObject:observer];
+    [pendingObservers_ removeObject:observer];
 }
 
 #pragma mark - DqdObserverSetMessageProxy API
@@ -89,31 +70,23 @@ static NSMutableSet *nonRetainingSet(void) {
 }
 
 - (void)forwardInvocationToObservers:(NSInvocation *)invocation {
-    NSAssert(!isForwarding_, @"%@ asked to forward a message to observers recursively", self);
+    NSAssert(pendingObservers_ == nil, @"%@ asked to forward a message to observers recursively", self);
 
-    isForwarding_ = YES;
+    pendingObservers_ = CFBridgingRelease(CFSetCreateMutableCopy(NULL, 0, ((__bridge CFSetRef)observers_)));
     @try {
         SEL selector = invocation.selector;
-        for (id observer in observers_) {
-            if (pendingDeletions_ && [pendingDeletions_ containsObject:observer])
-                continue;
+        while (true) {
+            id observer = [pendingObservers_ anyObject];
+            if (!observer)
+                break;
+            [pendingObservers_ removeObject:observer];
             if ([observer respondsToSelector:selector]) {
                 [invocation invokeWithTarget:observer];
             }
         }
     }
     @finally {
-        isForwarding_ = NO;
-
-        if (pendingAdditions_) {
-            [observers_ unionSet:pendingAdditions_];
-            pendingAdditions_ = nil;
-        }
-        
-        if (pendingDeletions_) {
-            [observers_ minusSet:pendingDeletions_];
-            pendingDeletions_ = nil;
-        }
+        pendingObservers_ = nil;
     }
 }
 
