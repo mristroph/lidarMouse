@@ -57,7 +57,10 @@ static int const kReadTimeoutInMilliseconds = 1000;
     wantStreaming_ = NO;
     // Wait for the background loop to stop.
     dispatch_sync(queue_, ^{});
-    abort();
+    [self stopStreamingData];
+    channel_ = nil;
+    close(fd_);
+    fd_ = -1;
 }
 
 @synthesize serialNumber = _serialNumber;
