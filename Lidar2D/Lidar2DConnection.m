@@ -42,13 +42,11 @@ static int const kReadTimeoutInMilliseconds = 1000;
         delegate_ = delegate;
         queue_ = dispatch_queue_create([[NSString stringWithFormat:@"com.dqd.Lidar2DConnection-%s", devicePath.fileSystemRepresentation] UTF8String], 0);
         wantStreaming_ = YES;
-        if ([self connect]) {
-            dispatch_async(queue_, ^{
-                [self q_receiveStreamingData];
-            });
-        } else {
-            self = nil;
-        }
+        if (![self connect])
+            return nil;
+        dispatch_async(queue_, ^{
+            [self q_receiveStreamingData];
+        });
     }
     return self;
 }
@@ -156,15 +154,32 @@ static int const kReadTimeoutInMilliseconds = 1000;
 
 - (BOOL)startStreaming {
     wantStreaming_ = YES;
-    NSString *command = [NSString stringWithFormat:@"MD%04lu%04lu00000", (unsigned long)kFirstRayStep, (unsigned long)kLastRayStep];
-    __block BOOL ok = YES;
-    [channel_ sendCommand:command ignoringSpuriousResponses:NO onEmptyResponse:^(NSString *status) {
-        ok = [self checkOKStatus:status];
-    } onError:^(NSError *error) {
-        [delegate_ connection:self didFailWithError:error];
-        ok = NO;
-    }];
-    return ok;
+        NSString *command = [NSString stringWithFormat:@"MD%04lu%04lu00000", (unsigned long)kFirstRayStep, (unsigned long)kLastRayStep];
+    __block BOOL didSucceed = NO;
+    __block BOOL shouldKeepLooping = YES;
+    BOOL isFirstTime = YES;
+    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent() + 20;
+    do {
+        if (isFirstTime) {
+            isFirstTime = NO;
+        } else {
+            usleep(250000);
+        }
+        
+        [channel_ sendCommand:command ignoringSpuriousResponses:NO onEmptyResponse:^(NSString *status) {
+            if ([status isEqualToString:@"0J"]) {
+                // Undocumented status code that appears for about 10 seconds when the device is connected.  I assume it means "not ready, try again soon".
+            } else {
+                shouldKeepLooping = NO;
+                didSucceed = [self checkOKStatus:status];
+            }
+        } onError:^(NSError *error) {
+            [delegate_ connection:self didFailWithError:error];
+            shouldKeepLooping = NO;
+            didSucceed = NO;
+        }];
+    } while (shouldKeepLooping && CFAbsoluteTimeGetCurrent() < endTime);
+    return didSucceed;
 }
 
 #pragma mark - Disconnection details
