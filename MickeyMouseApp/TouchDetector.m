@@ -10,10 +10,16 @@
 #import "Lidar2D.h"
 #import "TouchDetector.h"
 
+@interface TouchDetector () <Lidar2DObserver>
+@end
+
 @implementation TouchDetector {
     Lidar2D *device_;
     DqdObserverSet *observers_;
 
+    void (^distancesReportHandler_)(Lidar2DDistance const *distances);
+
+    NSUInteger reportsNeededForUntouchedFieldCalibration_;
     uint32_t *untouchedFieldDistances_;
     NSUInteger untouchedFieldDistancesCount_;
 
@@ -23,13 +29,14 @@
 #pragma mark - Public API
 
 - (void)dealloc {
-    [self deallocateUntouchedFieldDistances];
+    [self resetUntouchedFieldCalibrationParameters];
 }
 
 - (id)initWithDevice:(Lidar2D *)device {
     if ((self = [super init])) {
         device_ = device;
-        [self setAppropriateState];
+        [self resetUntouchedFieldCalibrationParameters];
+        [self setAppropriateStateBecauseCalibrationFinished];
     }
     return self;
 }
@@ -38,19 +45,21 @@
 
 - (void)startCalibratingUntouchedField {
     [self requireNotBusy];
+    [self resetUntouchedFieldCalibrationParameters];
+    [self allocateUntouchedFieldDistances];
     self.state = TouchDetectorState_CalibratingUntouchedField;
-    [device_ performBlock:^(id<Lidar2D> device) {
-        [self calibrateUntouchedFieldWithDevice:device];
-    }];
+
+    __weak TouchDetector *me;
+    distancesReportHandler_ = ^(Lidar2DDistance const *distances) {
+        TouchDetector *self = me;
+        [self calibrateUntouchedFieldWithDistances:distances];
+    };
 }
 
 - (void)startCalibratingTouchAtPoint:(CGPoint)point {
     [self requireNotBusy];
     currentCalibrationPoint_ = point;
     self.state = TouchDetectorState_CalibratingTouch;
-    [device_ performBlock:^(id<Lidar2D> device) {
-        [self calibrateTouchWithDevice:device];
-    }];
 }
 
 - (void)addObserver:(id<TouchDetectorObserver>)observer {
@@ -88,6 +97,15 @@
     block(untouchedFieldDistances_, untouchedFieldDistancesCount_);
 }
 
+#pragma mark - Lidar2DObserver protocol
+
+- (void)lidar2d:(Lidar2D *)device didReceiveDistances:(const Lidar2DDistance *)distances {
+    (void)device;
+    if (distancesReportHandler_) {
+        distancesReportHandler_(distances);
+    }
+}
+
 #pragma mark - Implementation details - general state management
 
 - (void)setState:(TouchDetectorState)state {
@@ -97,7 +115,7 @@
     }
 }
 
-- (void)setAppropriateState {
+- (void)setAppropriateStateBecauseCalibrationFinished {
     self.state = [self needsUntouchedFieldCalibration] ? TouchDetectorState_AwaitingUntouchedFieldCalibration
         : [self needsTouchCalibration] ? TouchDetectorState_AwaitingTouchCalibration
         : TouchDetectorState_DetectingTouches;
@@ -138,48 +156,15 @@
     return untouchedFieldDistances_ == NULL;
 }
 
-- (void)calibrateUntouchedFieldWithDevice:(id<Lidar2D>)device {
-    [self deallocateUntouchedFieldDistances];
-    [self allocateUntouchedFieldDistancesWithDevice:device];
-
-    __block NSUInteger scansNeeded = 20;
-    while (scansNeeded > 0) {
-        [device forEachStreamingDataSnapshot:^(uint32_t const *distances, BOOL *stop) {
-            [self calibrateUntouchedFieldWithDistances:distances device:device];
-            *stop = --scansNeeded == 0;
-        }];
-
-        if (device.error) {
-            NSLog(@"device error: %@", device.error);
-            device.error = nil;
-
-            if (scansNeeded > 0) {
-                sleep(1);
-            }
-        }
-    }
-
-    [self polishUntouchedFieldDistancesWithDevice:device];
-    [self performSelectorOnMainThread:@selector(setAppropriateState) withObject:nil waitUntilDone:NO];
+- (void)resetUntouchedFieldCalibrationParameters {
+    reportsNeededForUntouchedFieldCalibration_ = 20;
+    free(untouchedFieldDistances_);
+    untouchedFieldDistances_ = NULL;
+    untouchedFieldDistancesCount_ = 0;
 }
 
-- (void)calibrateUntouchedFieldWithDistances:(uint32 const *)distances device:(id<Lidar2D>)device {
-    (void)device; // enforces this only being called on device queue
-
-    for (NSUInteger i = 0; i < untouchedFieldDistancesCount_; ++i) {
-        untouchedFieldDistances_[i] = MIN(untouchedFieldDistances_[i], distances[i]);
-    }
-}
-
-- (void)polishUntouchedFieldDistancesWithDevice:(id<Lidar2D>)device {
-    (void)device; // enforces this only being called on device queue
-    for  (NSUInteger i = 0; i < untouchedFieldDistancesCount_; ++i) {
-        untouchedFieldDistances_[i] *= 0.95;
-    }
-}
-
-- (void)allocateUntouchedFieldDistancesWithDevice:(id<Lidar2D>)device {
-    NSUInteger count = device.rayCount;
+- (void)allocateUntouchedFieldDistances {
+    NSUInteger count = device_.rayCount;
     untouchedFieldDistances_ = malloc(count * sizeof *untouchedFieldDistances_);
     for (NSUInteger i = 0; i < count; ++i) {
         untouchedFieldDistances_[i] = UINT32_MAX;
@@ -187,23 +172,44 @@
     untouchedFieldDistancesCount_ = count;
 }
 
-- (void)deallocateUntouchedFieldDistances {
-    free(untouchedFieldDistances_);
-    untouchedFieldDistances_ = NULL;
-    untouchedFieldDistancesCount_ = 0;
+- (void)calibrateUntouchedFieldWithDistances:(Lidar2DDistance const *)distances {
+    if (reportsNeededForUntouchedFieldCalibration_ == 0) {
+        [NSException raise:NSInternalInconsistencyException format:@"%s called with reportsNeededForUntouchedFieldCalibration_ == 0", __func__];
+    }
+
+    [self updateUntouchedFieldDistancesWithReportedDistances:distances];
+    [self updateReportsNeededForUntouchedFieldCalibration];
+}
+
+- (void)updateUntouchedFieldDistancesWithReportedDistances:(Lidar2DDistance const *)distances {
+    for (NSUInteger i = 0; i < untouchedFieldDistancesCount_; ++i) {
+        untouchedFieldDistances_[i] = MIN(untouchedFieldDistances_[i], distances[i]);
+    }
+}
+
+- (void)updateReportsNeededForUntouchedFieldCalibration {
+    --reportsNeededForUntouchedFieldCalibration_;
+    if (reportsNeededForUntouchedFieldCalibration_ == 0) {
+        [self finishCalibratingUntouchedField];
+    }
+}
+
+- (void)finishCalibratingUntouchedField {
+    distancesReportHandler_ = nil;
+    [self tweakUntouchedFieldDistances];
+    [self setAppropriateStateBecauseCalibrationFinished];
+}
+
+- (void)tweakUntouchedFieldDistances {
+    for  (NSUInteger i = 0; i < untouchedFieldDistancesCount_; ++i) {
+        untouchedFieldDistances_[i] *= 0.95;
+    }
 }
 
 #pragma mark - Touch calibration details
 
 - (BOOL)needsTouchCalibration {
     abort(); // xxx
-}
-
-- (void)calibrateTouchWithDevice:(id<Lidar2D>)device {
-    (void)device;
-    abort(); // xxx
-
-    [self performSelectorOnMainThread:@selector(setAppropriateState) withObject:nil waitUntilDone:NO];
 }
 
 @end
