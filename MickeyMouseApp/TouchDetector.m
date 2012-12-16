@@ -29,12 +29,14 @@
 #pragma mark - Public API
 
 - (void)dealloc {
+    [device_ removeObserver:self];
     [self resetUntouchedFieldCalibrationParameters];
 }
 
 - (id)initWithDevice:(Lidar2D *)device {
     if ((self = [super init])) {
         device_ = device;
+        [device addObserver:self];
         [self resetUntouchedFieldCalibrationParameters];
         [self setAppropriateStateBecauseCalibrationFinished];
     }
@@ -98,6 +100,11 @@
 }
 
 #pragma mark - Lidar2DObserver protocol
+
+-  (void)lidar2DDidTerminate:(Lidar2D *)device {
+    (void)device;
+    // Nothing to do
+}
 
 - (void)lidar2d:(Lidar2D *)device didReceiveDistances:(const Lidar2DDistance *)distances {
     (void)device;
