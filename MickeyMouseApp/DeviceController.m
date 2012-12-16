@@ -7,196 +7,153 @@
 //
 
 #import "DeviceController.h"
-#import "RawDataGraphView.h"
-#import "MyWindow.h"
 #import "Lidar2D.h"
+#import "MyWindow.h"
+#import "RawDataGraphView.h"
+#import "TouchDetector.h"
 
-@interface DeviceController ()
-
+@interface DeviceController () <Lidar2DObserver, TouchDetectorObserver>
 @end
 
 @implementation DeviceController {
-    DeviceController *myself_; // set to self while window is ordered in to avoid being deallocated
+    DeviceController *myself_; // set to self while device is physically connected to keep me from being deallocated
     Lidar2D *device_;
-    id windowWillOrderInObserver_;
-    id windowWillCloseObserver_;
-    IBOutlet NSTextField *statusField_;
+    TouchDetector *touchDetector_;
+    IBOutlet NSWindow *window_;
     IBOutlet RawDataGraphView *graphView_;
-    volatile BOOL wantsStreamingData_;
-
-    NSUInteger rayCount_;
-    uint32_t *untouchedRayDistances_;
+    IBOutlet NSTextView *logView_;
+    IBOutlet NSButton *connectButton_;
+    IBOutlet NSButton *calibrateUntouchedFieldButton_;
+    IBOutlet NSButton *calibrateTouchButton_;
+    IBOutlet NSButton *disconnectButton_;
+    NSString *serialNumber_;
 }
 
 #pragma mark - Public API
 
++ (void)runWithLidar2D:(Lidar2D *)device {
+    (void)[[DeviceController alloc] initWithLidar2D:device];
+}
+
 - (id)initWithLidar2D:(Lidar2D *)device {
-    if (self = [super initWithWindowNibName:@"DeviceController"]) {
+    if (self = [super init]) {
+        myself_ = self;
         device_ = device;
+        [device_ addObserver:self];
+        touchDetector_ = [[TouchDetector alloc] initWithDevice:device_];
+        if (![[NSBundle mainBundle] loadNibNamed:@"DeviceController" owner:self topLevelObjects:nil]) {
+            [NSException raise:NSNibLoadingException format:@"%@ failed to load nib", self];
+        }
+        [self enableAppropriateButtons];
+        [self updateWindowTitle];
+        [window_ makeKeyAndOrderFront:self];
+        NSLog(@"window_=%@", window_);
     }
     return self;
 }
 
 - (void)dealloc {
-    [self stopObservingWindowPresence];
-    [self stopStreamingData];
+    [device_ removeObserver:self];
+    [touchDetector_ removeObserver:self];
 }
 
-#pragma mark - NSWindowController
+#pragma mark - Nib actions
 
-- (void)windowDidLoad {
-    [super windowDidLoad];
-    __block NSString *serialNumber;
-    [proxy_ performBlockAndWait:^(id<Lidar2D> device) {
-        serialNumber = device.serialNumber;
-    }];
-    self.window.title = [NSString stringWithFormat:@"Lidar2D %@", serialNumber];
-    statusField_.stringValue = @"Loading";
-    [self startObservingWindowPresence];
+- (IBAction)connectButtonWasPressed:(id)sender {
+    (void)sender;
+    NSLog(@"debug: %s %@", __func__, sender);
 }
 
-#pragma mark - Implementation details
-
-- (void)startObservingWindowPresence {
-    __unsafe_unretained DeviceController *me = self;
-    windowWillOrderInObserver_ = [[NSNotificationCenter defaultCenter] addObserverForName:MyWindowWillOrderInNotification object:self.window queue:nil usingBlock:^(NSNotification *note) {
-        (void)note;
-        [me windowWillBecomePresent];
-    }];
-    windowWillCloseObserver_ = [[NSNotificationCenter defaultCenter] addObserverForName:NSWindowWillCloseNotification object:self.window queue:nil usingBlock:^(NSNotification *note) {
-        (void)note;
-        [me windowWillBecomeAbsent];
-    }];
+- (IBAction)calibrateUntouchedFieldButtonWasPressed:(id)sender {
+    (void)sender;
+    NSLog(@"debug: %s %@", __func__, sender);
 }
 
-- (void)stopObservingWindowPresence {
-    if (windowWillOrderInObserver_) {
-        [[NSNotificationCenter defaultCenter] removeObserver:windowWillOrderInObserver_];
-        windowWillOrderInObserver_ = nil;
-    }
-    if (windowWillCloseObserver_) {
-        [[NSNotificationCenter defaultCenter] removeObserver:windowWillCloseObserver_];
-        windowWillCloseObserver_ =nil;
-    }
+- (IBAction)calibrateTouchButtonWasPressed:(id)sender {
+    (void)sender;
+    NSLog(@"debug: %s %@", __func__, sender);
 }
 
-- (void)windowWillBecomePresent {
-    myself_ = self;
-    [self startStreamingData];
+- (IBAction)disconnectButtonWasPressed:(id)sender {
+    (void)sender;
+    NSLog(@"debug: %s %@", __func__, sender);
 }
 
-- (void)windowWillBecomeAbsent {
+#pragma mark - Lidar2DObserver protocol
+
+- (void)lidar2DDidTerminate:(Lidar2D *)device {
+    (void)device;
     myself_ = nil;
-    [self stopStreamingData];
 }
 
-- (void)startStreamingData {
-    wantsStreamingData_ = YES;
-
-    [proxy_ performBlock:^(id<Lidar2D> device) {
-        [self updateStatusLabelIfNecessaryAndClearErrorWithDevice:device];
-
-        [self setStatusLabelText:@"Preparing to calibrate - REMOVE ALL OBSTRUCTIONS FROM SCREEN"];
-        [self resetUntouchedRayDistancesWithDevice:device];
-        sleep(1);
-        [self setStatusLabelText:@"Calibrating - DO NOT OBSTRUCT SCREEN"];
-        __block int calibrationFramesLeft = 20;
-        while (calibrationFramesLeft > 0) {
-            [device forEachStreamingDataSnapshot:^(uint32_t const *distances, BOOL *stop) {
-                if (device.error) {
-                    NSLog(@"error during calibration: %@", device.error);
-                    device.error = nil;
-                    return;
-                }
-                
-                [self setStatusLabelText:[NSString stringWithFormat:@"Calibrating %d - DO NOT OBSTRUCT SCREEN", calibrationFramesLeft]];
-                [self updateUntouchedRayDistancesWithDevice:device distances:distances];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    graphView_.data = [NSData dataWithBytes:distances length:rayCount_ * sizeof *distances];
-                });
-                *stop = (--calibrationFramesLeft < 1);
-            }];
-        }
-
-        [self setStatusLabelText:@"Calibration finished"];
-        
-        [self finalizeUntouchedRayDistancesWithDevice:device];
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            graphView_.untouchedDistances = [NSData dataWithBytes:untouchedRayDistances_ length:rayCount_ * sizeof *untouchedRayDistances_];
-        });
-
-        while (wantsStreamingData_) {
-            [self setStatusLabelText:@"Requesting streaming data"];
-            [device forEachStreamingDataSnapshot:^(uint32_t const *distances, BOOL *stop) {
-                [self setStatusLabelText:@"Received streaming data"];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    graphView_.data = [NSData dataWithBytes:distances length:rayCount_ * sizeof *distances];
-                });
-                *stop = !wantsStreamingData_;
-            }];
-
-            NSError *error = device.error;
-            [self updateStatusLabelIfNecessaryAndClearErrorWithDevice:device];
-            if (error) {
-                if (wantsStreamingData_) {
-                    sleep(1);
-                }
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    statusField_.stringValue = @"Streaming data stopped";
-                });
-            }
-        }
-    }];
+- (void)lidar2dDidConnect:(Lidar2D *)device {
+    (void)device;
+    serialNumber_ = [device_.serialNumber copy];
+    [self updateWindowTitle];
+    [self enableAppropriateButtons];
 }
 
-- (void)setStatusLabelText:(NSString *)text {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        statusField_.stringValue = text;
-    });
+- (void)lidar2dDidDisconnect:(Lidar2D *)device {
+    (void)device;
+    [self enableAppropriateButtons];
 }
 
-- (void)updateStatusLabelIfNecessaryAndClearErrorWithDevice:(id<Lidar2D>) device {
-    NSError *error = device.error;
-    if (error) {
-        [self setStatusLabelText:@"Device Error"];
-        NSLog(@"device error: %@", device.error);
-        device.error = nil;
-    }
+#pragma mark - TouchDetectorObserver protocol
+
+- (void)touchDetectorIsAwaitingUntouchedFieldCalibration:(TouchDetector *)detector {
+    (void)detector;
+    [self enableAppropriateButtons];
 }
 
-- (void)stopStreamingData {
-    wantsStreamingData_ = NO;
+- (void)touchDetectorIsCalibratingUntouchedField:(TouchDetector *)detector {
+    (void)detector;
+    [self enableAppropriateButtons];
 }
 
-- (void)resetUntouchedRayDistancesWithDevice:(id<Lidar2D>)device {
-    (void)device; // only passed to ensure I'm run on the device's queue
-    if (rayCount_ == 0) {
-        rayCount_ = device.rayCount;
-        untouchedRayDistances_ = malloc(rayCount_ * sizeof *untouchedRayDistances_);
-    }
-
-    for (size_t i = 0; i < rayCount_; ++i) {
-        untouchedRayDistances_[i] = UINT32_MAX;
-    }
+- (void)touchDetectorIsAwaitingTouchCalibration:(TouchDetector *)detector {
+    (void)detector;
+    [self enableAppropriateButtons];
 }
 
-- (void)updateUntouchedRayDistancesWithDevice:(id<Lidar2D>)device distances:(uint32_t const *)distances {
-    (void)device; // only passed to ensure I'm run on the device's queue
-    for (size_t i = 0; i < rayCount_; ++i) {
-        uint32_t distance = distances[i];
-        if (distance >= 20 && distance < untouchedRayDistances_[i]) {
-            untouchedRayDistances_[i] = distance;
-        }
-    }
+- (void)touchDetector:(TouchDetector *)detector isCalibratingTouchAtPoint:(CGPoint)point {
+    (void)detector; (void)point;
+    [self enableAppropriateButtons];
 }
 
-- (void)finalizeUntouchedRayDistancesWithDevice:(id<Lidar2D>)device {
-    (void)device; // only passed to ensure I'm run on the device's queue
-    for (size_t i = 0; i < rayCount_; ++i) {
-        untouchedRayDistances_[i] *= 0.95;
-    }
+- (void)touchDetectorIsDetectingTouches:(TouchDetector *)detector {
+    (void)detector;
+    [self enableAppropriateButtons];
+}
+
+#pragma mark - Button enabling details
+
+- (void)enableAppropriateButtons {
+    [self enableConnectButtonIfAppropriate];
+    [self enableDisconnectButtonIfAppropriate];
+    [self enableCalibrateUntouchedFieldButtonIfAppropriate];
+    [self enableCalibrateTouchButtonIfAppropriate];
+}
+
+- (void)enableConnectButtonIfAppropriate {
+    connectButton_.enabled = !device_.isConnected;
+}
+
+- (void)enableDisconnectButtonIfAppropriate {
+    disconnectButton_.enabled = device_.isConnected;
+}
+
+- (void)enableCalibrateUntouchedFieldButtonIfAppropriate {
+    calibrateUntouchedFieldButton_.enabled = touchDetector_.canStartCalibratingUntouchedField;
+}
+
+- (void)enableCalibrateTouchButtonIfAppropriate {
+    calibrateTouchButton_.enabled = touchDetector_.canStartCalibratingTouchAtPoint;
+}
+
+#pragma mark - Window title details
+
+- (void)updateWindowTitle {
+    window_.title = serialNumber_ ? [NSString stringWithFormat:@"Lidar2D - Serial Number %@", serialNumber_] : [NSString stringWithFormat:@"Lidar2D - Device Path %@", device_.devicePath];
 }
 
 @end

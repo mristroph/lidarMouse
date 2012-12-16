@@ -30,8 +30,14 @@ typedef enum {
 
 @property (nonatomic, readonly) TouchDetectorState state;
 
+// This is YES when you can send me `startCalibratingUntouchedField`.  I check my state and whether the device is connected.
+@property (nonatomic, readonly) BOOL canStartCalibratingUntouchedField;
+
 // When I receive this, I calibrate my data parameters on the assumption that nothing is currently touching the screen.  I take several readings after receiving this message.  You can send me this at any time to recalibrate my idle parameters.  If I'm in state `TouchDetectorState_AwaitingIdleCalibration`, I will change to state `TouchDetectorState_AwaitingTouchCalibration` and notify my delegate when I finish calibrating my idle parameters.
 - (void)startCalibratingUntouchedField;
+
+// This is YES when you can send me `startCalibratingTouchAtPoint:`.  I check my state and whether the device is connected.
+@property (nonatomic, readonly) BOOL canStartCalibratingTouchAtPoint;
 
 // When I receive this, I try to detect a touch.  If I detect a touch, I assume it's at `point` and adjust my touch parameters accordingly.  You can send me this at any time.  If I'm in state `TouchDetectorState_AwaitingTouchCalibration` and I have enough calibration readings to map touches to points, I change to state `TouchDetectorState_DetectingTouches` and notify my delegate.
 - (void)startCalibratingTouchAtPoint:(CGPoint)point;

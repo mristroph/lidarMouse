@@ -45,6 +45,10 @@
 
 @synthesize state = _state;
 
+- (BOOL)canStartCalibratingUntouchedField {
+    return ![self isBusy] && device_.isConnected;
+}
+
 - (void)startCalibratingUntouchedField {
     [self requireNotBusy];
     [self resetUntouchedFieldCalibrationParameters];
@@ -56,6 +60,10 @@
         TouchDetector *self = me;
         [self calibrateUntouchedFieldWithDistances:distances];
     };
+}
+
+- (BOOL)canStartCalibratingTouchAtPoint {
+    return ![self isBusy] && device_.isConnected && ![self needsUntouchedFieldCalibration];
 }
 
 - (void)startCalibratingTouchAtPoint:(CGPoint)point {
