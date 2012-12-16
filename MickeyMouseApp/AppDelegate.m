@@ -37,7 +37,7 @@
 
 - (void)lidar2DManager:(Lidar2DManager *)manager didConnectToDevice:(Lidar2D *)device {
     (void)manager;
-    [[[DeviceController alloc] initWithLidar2D:device] showWindow:nil];
+    [DeviceController runWithLidar2D:device];
 }
 
 @end

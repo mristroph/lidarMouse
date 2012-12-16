@@ -10,8 +10,8 @@
 
 @class Lidar2D;
 
-@interface DeviceController : NSWindowController
+@interface DeviceController : NSObject
 
-- (id)initWithLidar2D:(Lidar2D *)device;
++ (void)runWithLidar2D:(Lidar2D *)device;
 
 @end
