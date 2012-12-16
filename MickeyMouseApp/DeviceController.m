@@ -8,7 +8,7 @@
 
 #import "DeviceController.h"
 #import "Lidar2D.h"
-#import "MyWindow.h"
+#import "DeviceControlWindow.h"
 #import "RawDataGraphView.h"
 #import "TouchDetector.h"
 
@@ -19,7 +19,7 @@
     DeviceController *myself_; // set to self while device is physically connected to keep me from being deallocated
     Lidar2D *device_;
     TouchDetector *touchDetector_;
-    IBOutlet NSWindow *window_;
+    IBOutlet DeviceControlWindow *window_;
     IBOutlet RawDataGraphView *graphView_;
     IBOutlet NSTextView *logView_;
     IBOutlet NSButton *connectButton_;
