@@ -149,6 +149,9 @@
 - (void)touchDetectorDidFinishCalibratingUntouchedField:(TouchDetector *)detector {
     (void)detector;
     [self logText:@"Finished calibrating untouched field"];
+    [detector getUntouchedFieldDistancesWithBlock:^(const uint32_t *distances, NSUInteger count) {
+        graphView_.untouchedDistances = [NSData dataWithBytes:distances length:count * sizeof *distances];
+    }];
 }
 
 - (void)touchDetectorIsAwaitingTouchCalibration:(TouchDetector *)detector {
