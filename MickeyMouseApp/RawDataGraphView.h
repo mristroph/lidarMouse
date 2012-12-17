@@ -8,8 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class Lidar2D;
+
 @interface RawDataGraphView : NSView
 
+@property (nonatomic, strong) Lidar2D *device;
 @property (nonatomic, copy) NSData *untouchedDistances;
 @property (nonatomic, copy) NSData *data;
 

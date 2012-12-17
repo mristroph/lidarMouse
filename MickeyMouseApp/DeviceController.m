@@ -47,6 +47,7 @@
         if (![[NSBundle mainBundle] loadNibNamed:@"DeviceController" owner:self topLevelObjects:nil]) {
             [NSException raise:NSNibLoadingException format:@"%@ failed to load nib", self];
         }
+        graphView_.device = device_;
         [self updateWindowTitle];
         [window_ makeKeyAndOrderFront:self];
         NSLog(@"window_=%@", window_);

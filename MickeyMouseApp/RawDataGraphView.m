@@ -6,11 +6,23 @@
 //  Copyright (c) 2012 Rob Mayoff. All rights reserved.
 //
 
+#import "Lidar2D.h"
 #import "RawDataGraphView.h"
+
+@interface RawDataGraphView () <Lidar2DObserver>
+@end
 
 @implementation RawDataGraphView
 
 #pragma mark - Public API
+
+@synthesize device = _device;
+
+- (void)setDevice:(Lidar2D *)device {
+    [self disconnect];
+    _device = device;
+    [self connect];
+}
 
 @synthesize untouchedDistances = _untouchedDistances;
 @synthesize data = _data;
@@ -83,6 +95,26 @@
             CGContextStrokePath(gc);
         }
     } CGContextRestoreGState(gc);
+}
+
+#pragma mark - Lidar2DObserver protocol
+
+- (void)lidar2DDidTerminate:(Lidar2D *)device {
+    (void)device;
+}
+
+- (void)lidar2d:(Lidar2D *)device didReceiveDistances:(const Lidar2DDistance *)distances {
+    self.data = [NSData dataWithBytes:distances length:device.rayCount * sizeof *distances];
+}
+
+#pragma mark - Device connection details
+
+- (void)disconnect {
+    [_device removeObserver:self];
+}
+
+- (void)connect {
+    [_device addObserver:self];
 }
 
 @end
