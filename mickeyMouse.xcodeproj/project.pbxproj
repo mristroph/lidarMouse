@@ -31,7 +31,7 @@
 		31D72B901676DCCD00230548 /* DeviceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B8E1676DCCD00230548 /* DeviceController.m */; };
 		31D72BC01676F01F00230548 /* DeviceControlWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72BBF1676F01F00230548 /* DeviceControlWindow.m */; };
 		31D72C0B1679C6A600230548 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D72C0A1679C6A600230548 /* Accelerate.framework */; };
-		31D72C0F167A754800230548 /* TouchDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C0E167A754800230548 /* TouchDetector.m */; };
+		31D72C0F167A754800230548 /* TouchDetector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C0E167A754800230548 /* TouchDetector.mm */; };
 		31D72C12167A865300230548 /* DqdObserverSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C11167A865300230548 /* DqdObserverSet.m */; };
 		31D72C1E167B331000230548 /* Lidar2DConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C1D167B331000230548 /* Lidar2DConnection.m */; };
 		31D72C21167B3FF000230548 /* DqdObserverSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C11167A865300230548 /* DqdObserverSet.m */; };
@@ -109,7 +109,7 @@
 		31D72BBF1676F01F00230548 /* DeviceControlWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceControlWindow.m; sourceTree = "<group>"; };
 		31D72C0A1679C6A600230548 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		31D72C0D167A754700230548 /* TouchDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchDetector.h; sourceTree = "<group>"; };
-		31D72C0E167A754800230548 /* TouchDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchDetector.m; sourceTree = "<group>"; };
+		31D72C0E167A754800230548 /* TouchDetector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TouchDetector.mm; sourceTree = "<group>"; };
 		31D72C10167A865300230548 /* DqdObserverSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DqdObserverSet.h; sourceTree = "<group>"; };
 		31D72C11167A865300230548 /* DqdObserverSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DqdObserverSet.m; sourceTree = "<group>"; };
 		31D72C1C167B331000230548 /* Lidar2DConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lidar2DConnection.h; sourceTree = "<group>"; };
@@ -261,7 +261,7 @@
 				31D72B851676A23400230548 /* RawDataGraphView.h */,
 				31D72B861676A23400230548 /* RawDataGraphView.m */,
 				31D72C0D167A754700230548 /* TouchDetector.h */,
-				31D72C0E167A754800230548 /* TouchDetector.m */,
+				31D72C0E167A754800230548 /* TouchDetector.mm */,
 				31D72B711676A0EB00230548 /* Supporting Files */,
 				31D72BBE1676F01F00230548 /* DeviceControlWindow.h */,
 				31D72BBF1676F01F00230548 /* DeviceControlWindow.m */,
@@ -684,7 +684,7 @@
 				31D72B8B1676A24E00230548 /* ByteChannel.m in Sources */,
 				31D72B901676DCCD00230548 /* DeviceController.m in Sources */,
 				31D72BC01676F01F00230548 /* DeviceControlWindow.m in Sources */,
-				31D72C0F167A754800230548 /* TouchDetector.m in Sources */,
+				31D72C0F167A754800230548 /* TouchDetector.mm in Sources */,
 				31D72C12167A865300230548 /* DqdObserverSet.m in Sources */,
 				313F1500167E2505009E4A80 /* Lidar2DConnection.m in Sources */,
 			);
