@@ -7,7 +7,18 @@
 
 using std::vector;
 
+static Lidar2DDistance const kMinimumDistance = 20;
 static NSUInteger const kReportsNeededForUntouchedFieldCalibration = 20;
+static NSUInteger const kTouchCalibrationsNeeded = 4;
+static NSUInteger const kReportsNeededForTouchCalibration = 20;
+
+static BOOL isValidDistance(Lidar2DDistance distance) {
+    return distance >= kMinimumDistance && distance != Lidar2DDistance_MAX;
+}
+
+static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
+    return isValidDistance(distance) ? distance : Lidar2DDistance_MAX;
+}
 
 @interface TouchDetector () <Lidar2DObserver>
 @end
@@ -23,16 +34,16 @@ static NSUInteger const kReportsNeededForUntouchedFieldCalibration = 20;
 
     NSUInteger reportsReceivedForUntouchedFieldCalibration_;
 
-    // `reportsNeededForTouchCalibration_` is the number of reports I need to receive to finish calibrating the current touch point.
-    NSUInteger reportsNeededForTouchCalibration_;
+    // Each element of `touchDistanceSums_` corresponds to one ray and is the sum of the valid distances reported for that ray since I started calibrating the current touch.
+    vector<Lidar2DDistance> touchDistanceSums_;
 
-    // Each element of `calibrationDistanceSumsStorage_` corresponds to one ray and is the sum of the distances reported for that ray since I started calibrating the current touch.
-    vector<Lidar2DDistance> calibrationDistanceSums_;
-    
-    // `calibrationReportsCount_` is the number of distance reports I have added into `calibrationDistanceSumsStorage_` since I started calibrating the current touch.
-    NSUInteger calibrationReportsCount_;
+    // Each element of `touchDistanceCounts_` corresponds to one ray and is the number of valid distances reported for that ray since I started calibrating the current touch.
+    vector<uint16_t> touchDistanceCounts_;
+ 
+    NSUInteger reportsReceivedForTouchCalibration_;
 
-    NSUInteger touchCalibrationCount_;
+    NSUInteger touchCalibrationsPerformed;
+
     CGPoint currentCalibrationPoint_;
 }
 
@@ -75,7 +86,7 @@ static NSUInteger const kReportsNeededForUntouchedFieldCalibration = 20;
 - (void)startCalibratingTouchAtPoint:(CGPoint)point {
     [self requireNotBusy];
     currentCalibrationPoint_ = point;
-    calibrationReportsCount_ = 0;
+    reportsReceivedForTouchCalibration_ = 0;
     self.state = TouchDetectorState_CalibratingTouch;
 
     __weak TouchDetector *me = self;
@@ -187,7 +198,7 @@ static NSUInteger const kReportsNeededForUntouchedFieldCalibration = 20;
     if (reportsReceivedForUntouchedFieldCalibration_ == 0) {
         [self resetUntouchedFieldDistances];
     } else if (reportsReceivedForUntouchedFieldCalibration_ == kReportsNeededForUntouchedFieldCalibration) {
-        [NSException raise:NSInternalInconsistencyException format:@"%s called with reportsNeededForUntouchedFieldCalibration_ == %ld == kReportsNeededForUntouchedFieldCalibration", __func__, reportsReceivedForUntouchedFieldCalibration_];
+        [NSException raise:NSInternalInconsistencyException format:@"%s called with reportsReceivedForUntouchedFieldCalibration_ == %ld == kReportsNeededForUntouchedFieldCalibration", __func__, reportsReceivedForUntouchedFieldCalibration_];
     }
 
     [self updateUntouchedFieldDistancesWithReportedDistances:distances];
@@ -200,7 +211,7 @@ static NSUInteger const kReportsNeededForUntouchedFieldCalibration = 20;
 
 - (void)updateUntouchedFieldDistancesWithReportedDistances:(Lidar2DDistance const *)distances {
     for (NSUInteger i = 0, l = MIN(device_.rayCount, untouchedFieldDistances_.size()); i < l; ++i) {
-        untouchedFieldDistances_[i] = MIN(untouchedFieldDistances_[i], distances[i]);
+        untouchedFieldDistances_[i] = MIN(untouchedFieldDistances_[i], correctedDistance(distances[i]));
     }
 }
 
@@ -227,11 +238,47 @@ static NSUInteger const kReportsNeededForUntouchedFieldCalibration = 20;
 #pragma mark - Touch calibration details
 
 - (BOOL)needsTouchCalibration {
-    return touchCalibrationCount_ < 4;
+    return touchCalibrationsPerformed < kTouchCalibrationsNeeded;
 }
 
 - (void)calibrateTouchWithDistances:(Lidar2DDistance const *)distances {
+    if (reportsReceivedForTouchCalibration_ == 0) {
+        [self resetTouchDistanceSums];
+    } else if (reportsReceivedForTouchCalibration_ == kReportsNeededForTouchCalibration) {
+        [NSException raise:NSInternalInconsistencyException format:@"%s called with reportsReceivedForTouchCalibration_ == %ld == kReportsNeededForUntouchedFieldCalibration", __func__, reportsReceivedForTouchCalibration_];
+    }
+
+    [self updateTouchDistancesWithReportedDistances:distances];
+    [self updateReportsReceivedForTouchCalibration];
+}
+
+- (void)resetTouchDistanceSums {
+    NSUInteger count = device_.rayCount;
+    touchDistanceSums_.assign(count, Lidar2DDistance_MAX);
+    touchDistanceCounts_.assign(count, 0);
+}
+
+- (void)updateTouchDistancesWithReportedDistances:(Lidar2DDistance const *)distances {
+    NSUInteger l = MIN(touchDistanceSums_.size(), device_.rayCount);
+    for (NSUInteger i = 0; i < l; ++i) {
+        Lidar2DDistance distance = distances[i];
+        if (isValidDistance(distance)) {
+            touchDistanceSums_[i] += distance;
+            ++touchDistanceCounts_[i];
+        }
+    }
+}
+
+- (void)updateReportsReceivedForTouchCalibration {
+    ++reportsReceivedForTouchCalibration_;
+    if (reportsReceivedForTouchCalibration_ == kReportsNeededForTouchCalibration) {
+        [self finishCalibratingTouch];
+    }
+}
+
+- (void)finishCalibratingTouch {
     abort(); // xxx
+    [self setAppropriateStateBecauseCalibrationFinished];
 }
 
 @end
