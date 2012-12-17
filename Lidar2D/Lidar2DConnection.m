@@ -27,7 +27,6 @@ static int const kReadTimeoutInMilliseconds = 1000;
 
 @implementation Lidar2DConnection {
     dispatch_queue_t queue_;  // I run my streaming data reader loop on this queue.
-    __weak id<Lidar2DConnectionDelegate> delegate_;
     NSString *devicePath_;
     SCIP20Channel *channel_;
     int fd_;
@@ -36,10 +35,12 @@ static int const kReadTimeoutInMilliseconds = 1000;
 
 #pragma mark - Package API
 
+@synthesize delegate = _delegate;
+
 - (id)initWithDevicePath:(NSString *)devicePath delegate:(id<Lidar2DConnectionDelegate>)delegate {
     if (self = [super init]) {
         devicePath_ = [devicePath copy];
-        delegate_ = delegate;
+        _delegate = delegate;
         queue_ = dispatch_queue_create([[NSString stringWithFormat:@"com.dqd.Lidar2DConnection-%s", devicePath.fileSystemRepresentation] UTF8String], 0);
         wantStreaming_ = YES;
         if (![self connect])
@@ -146,7 +147,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
     [channel_ sendCommand:@"HS1" ignoringSpuriousResponses:NO onEmptyResponse:^(NSString *status) {
         ok = [self checkOKStatus:status];
     } onError:^(NSError *error) {
-        [delegate_ connection:self didFailWithError:error];
+        [_delegate connection:self didFailWithError:error];
         ok = NO;
     }];
     return ok;
@@ -174,7 +175,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
                 didSucceed = [self checkOKStatus:status];
             }
         } onError:^(NSError *error) {
-            [delegate_ connection:self didFailWithError:error];
+            [_delegate connection:self didFailWithError:error];
             shouldKeepLooping = NO;
             didSucceed = NO;
         }];
@@ -188,7 +189,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
     [channel_ sendCommand:@"QT" ignoringSpuriousResponses:YES onEmptyResponse:^(NSString *status) {
         [self checkOKStatus:status];
     } onError:^(NSError *error) {
-        [delegate_ connection:self didFailWithError:error];
+        [_delegate connection:self didFailWithError:error];
     }];
 }
 
@@ -199,12 +200,12 @@ static int const kReadTimeoutInMilliseconds = 1000;
         [channel_ receiveStreamingResponseWithDataEncodingLength:3 onResponse:^(NSString *command, NSString *status, NSUInteger timestamp, NSData *data) {
             (void)command; (void)timestamp;
             if ([self checkStatus:status isEqualToStatus:SCIP20Status_StreamingData]) {
-                [delegate_ connection:self didReceiveDistances:data.bytes];
+                [_delegate connection:self didReceiveDistances:data.bytes];
             } else {
                 wantStreaming_ = NO;
             }
         } onError:^(NSError *error) {
-            [delegate_ connection:self didFailWithError:error];
+            [_delegate connection:self didFailWithError:error];
             wantStreaming_ = NO;
         }];
     }
@@ -218,7 +219,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
     if (!errorString) {
         errorString = "unknown error (strerror returned NULL)";
     }
-    [delegate_ connection:self didFailWithError:[NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{
+    [_delegate connection:self didFailWithError:[NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{
         @"action": action,
         NSLocalizedDescriptionKey: @(errorString),
         NSFilePathErrorKey: devicePath_
@@ -243,7 +244,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
         NSLog(@"device version: %@", info);
         _serialNumber = info[@"SERI"];
     } onError:^(NSError *error) {
-        [delegate_ connection:self didFailWithError:error];
+        [_delegate connection:self didFailWithError:error];
         ok = NO;
     }];
     return ok;
@@ -256,7 +257,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
             return;
         NSLog(@"device specifications: %@", info);
     } onError:^(NSError *error) {
-        [delegate_ connection:self didFailWithError:error];
+        [_delegate connection:self didFailWithError:error];
         ok = NO;
     }];
     return ok;
@@ -269,7 +270,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
             return;
         NSLog(@"device state: %@", info);
     } onError:^(NSError *error) {
-        [delegate_ connection:self didFailWithError:error];
+        [_delegate connection:self didFailWithError:error];
         ok = NO;
     }];
     return ok;
@@ -284,7 +285,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
 - (BOOL)checkStatus:(NSString *)status isEqualToStatus:(NSString *)expectedStatus {
     if ([status isEqualToString:expectedStatus])
         return YES;
-    [delegate_ connection:self didFailWithError:[NSError errorWithDomain:Lidar2DErrorDomain code:0 userInfo:@{
+    [_delegate connection:self didFailWithError:[NSError errorWithDomain:Lidar2DErrorDomain code:0 userInfo:@{
         Lidar2DErrorStatusKey: status,
         Lidar2DErrorExpectedStatusKey: expectedStatus
     }]];

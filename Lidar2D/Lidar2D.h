@@ -18,6 +18,9 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 // I start disconnecting from the device on a background thread.  I notify my observers when I have finished disconnecting.
 - (void)disconnect;
 
+// `YES` if I am currently connecting or disconnecting.
+@property (nonatomic, readonly) BOOL isBusy;
+
 // `YES` if I am fully connected to my device.  While I am connected, the device sends me distance measurements, which I forward to my observers.
 @property (nonatomic, readonly) BOOL isConnected;
 

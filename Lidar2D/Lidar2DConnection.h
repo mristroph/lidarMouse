@@ -18,6 +18,8 @@
 // I open the device at `devicePath` and ask it to stream distances.  I block until I either finish successfully or fail.  If I fail, I notify `delegate` and return nil.
 - (id)initWithDevicePath:(NSString *)devicePath delegate:(id<Lidar2DConnectionDelegate>)delegate;
 
+@property (nonatomic, weak) id<Lidar2DConnectionDelegate> delegate;
+
 // I tell `device` to stop streaming distances and close the device.  I block until I am finished closing the device.
 - (void)disconnect;
 

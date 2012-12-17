@@ -26,6 +26,7 @@ static NSString *dialinDevicePathForIOService(io_service_t service) {
     IONotificationPortRef ioNotificationPort_;
     DqdObserverSet *observers_;
     dispatch_queue_t queue_; // I use this to sequence changes to connection_.connectionState.  Blocks on this queue don't return until they have finished making the state changes.
+    dispatch_group_t group_; // I queue all tasks in this group so I can easily tell when I have pending tasks.  However, I don't use dispatch_group_async because each task needs to leave the group before sending any notifications to my observers, so isBusy will return the correct value.
     Lidar2DConnection *connection_;
     BOOL didTerminate_ : 1;
 }
@@ -35,13 +36,19 @@ static NSString *dialinDevicePathForIOService(io_service_t service) {
 - (void)dealloc {
     if (connection_) {
         Lidar2DConnection *connection = connection_; // prevent block from retaining me
+        connection.delegate = nil;
+
+        // Don't need to enter the group here because it's too late for anyone to ask me isBusy.
         dispatch_async(queue_, ^{
             [connection disconnect];
         });
     }
 
+    if (group_) {
+        dispatch_release(group_);
+    }
+
     if (queue_) {
-        // queue_ retains itself if I just put a block on it, and releases itself when the block returns.
         dispatch_release(queue_);
     }
 
@@ -57,6 +64,7 @@ static NSString *dialinDevicePathForIOService(io_service_t service) {
             return nil;
         _devicePath = dialinDevicePathForIOService(service);
         queue_ = dispatch_queue_create([[NSString stringWithFormat:@"com.dqd.Lidar2D-%s", _devicePath.fileSystemRepresentation] UTF8String], 0);
+        group_ = dispatch_group_create();
         observers_ = [[DqdObserverSet alloc] initWithProtocol:@protocol(Lidar2DObserver)];
     }
     return self;
@@ -65,10 +73,12 @@ static NSString *dialinDevicePathForIOService(io_service_t service) {
 @synthesize devicePath = _devicePath;
 
 - (void)connect {
+    dispatch_group_enter(group_);
     dispatch_async(queue_, ^{
         if (connection_)
             return;
         connection_ = [[Lidar2DConnection alloc] initWithDevicePath:_devicePath delegate:self];
+        dispatch_group_leave(group_);
         if (connection_) {
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [observers_.proxy lidar2dDidConnect:self];
@@ -78,15 +88,21 @@ static NSString *dialinDevicePathForIOService(io_service_t service) {
 }
 
 - (void)disconnect {
+    dispatch_group_enter(group_);
     dispatch_async(queue_, ^{
         if (!connection_)
             return;
         [connection_ disconnect];
         connection_ = nil;
+        dispatch_group_leave(group_);
         dispatch_sync(dispatch_get_main_queue(), ^{
             [observers_.proxy lidar2dDidDisconnect:self];
         });
     });
+}
+
+- (BOOL)isBusy {
+    return dispatch_group_wait(group_, DISPATCH_TIME_NOW) != 0;
 }
 
 - (BOOL)isConnected {

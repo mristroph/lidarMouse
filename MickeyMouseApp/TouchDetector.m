@@ -23,6 +23,9 @@
     uint32_t *untouchedFieldDistances_;
     NSUInteger untouchedFieldDistancesCount_;
 
+    NSMutableData *calibrationPointStorage_;
+    NSMutableData *calibrationMeasurementStorage_;
+    NSUInteger touchCalibrationCount_;
     CGPoint currentCalibrationPoint_;
 }
 
@@ -55,7 +58,7 @@
     [self allocateUntouchedFieldDistances];
     self.state = TouchDetectorState_CalibratingUntouchedField;
 
-    __weak TouchDetector *me;
+    __weak TouchDetector *me = self;
     distancesReportHandler_ = ^(Lidar2DDistance const *distances) {
         TouchDetector *self = me;
         [self calibrateUntouchedFieldWithDistances:distances];
@@ -212,6 +215,7 @@
 - (void)finishCalibratingUntouchedField {
     distancesReportHandler_ = nil;
     [self tweakUntouchedFieldDistances];
+    [observers_.proxy touchDetectorDidFinishCalibratingUntouchedField:self];
     [self setAppropriateStateBecauseCalibrationFinished];
 }
 
@@ -224,7 +228,7 @@
 #pragma mark - Touch calibration details
 
 - (BOOL)needsTouchCalibration {
-    abort(); // xxx
+    return touchCalibrationCount_ < 4;
 }
 
 @end

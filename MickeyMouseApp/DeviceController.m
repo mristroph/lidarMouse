@@ -24,7 +24,6 @@
     IBOutlet NSTextView *logView_;
     NSDictionary *toolbarValidators_;
     NSString *serialNumber_;
-    BOOL isTogglingDeviceConnection_;
 }
 
 #pragma mark - Public API
@@ -46,6 +45,7 @@
         }
         graphView_.device = device_;
         [self updateWindowTitle];
+        [touchDetector_ notifyObserverOfCurrentState:self];
         [window_ makeKeyAndOrderFront:self];
         NSLog(@"window_=%@", window_);
     }
@@ -61,7 +61,6 @@
 
 - (IBAction)connectButtonWasPressed:(id)sender {
     (void)sender;
-    isTogglingDeviceConnection_ = YES;
     [self logText:@"connecting"];
     [device_ connect];
     [window_.toolbar validateVisibleItems];
@@ -69,7 +68,7 @@
 
 - (IBAction)calibrateUntouchedFieldButtonWasPressed:(id)sender {
     (void)sender;
-    NSLog(@"debug: %s %@", __func__, sender);
+    [touchDetector_ startCalibratingUntouchedField];
 }
 
 - (IBAction)calibrateTouchButtonWasPressed:(id)sender {
@@ -79,7 +78,6 @@
 
 - (IBAction)disconnectButtonWasPressed:(id)sender {
     (void)sender;
-    isTogglingDeviceConnection_ = YES;
     [self logText:@"disconnecting"];
     [device_ disconnect];
     [window_.toolbar validateVisibleItems];
@@ -88,14 +86,15 @@
 #pragma mark - Toolbar item validation
 
 - (void)initToolbarValidators {
-    // Using __weak here would require copying `me` to a strong variable in each block.  Ugh.
-    __unsafe_unretained DeviceController *me = self;
+    // Localize these so the validators don't make retain cycles with me.
+    Lidar2D *device = device_;
+    TouchDetector *detector = touchDetector_;
 
     toolbarValidators_ = @{
-        @"connect": ^{ return !me->isTogglingDeviceConnection_ && !me->device_.isConnected; },
-        @"calibrateUntouchedField": ^{ return me->touchDetector_.canStartCalibratingUntouchedField; },
-        @"calibrateTouch": ^{ return me->touchDetector_.canStartCalibratingTouchAtPoint; },
-        @"disconnect": ^{ return !me->isTogglingDeviceConnection_ && me->device_.isConnected; }
+        @"connect": ^{ return !device.isBusy && !device.isConnected; },
+        @"calibrateUntouchedField": ^{ return detector.canStartCalibratingUntouchedField; },
+        @"calibrateTouch": ^{ return detector.canStartCalibratingTouchAtPoint; },
+        @"disconnect": ^{ return !device.isBusy && device.isConnected; }
     };
 }
 
@@ -117,7 +116,6 @@
 
 - (void)lidar2dDidConnect:(Lidar2D *)device {
     (void)device;
-    isTogglingDeviceConnection_ = NO;
     [self logText:@"connected"];
     serialNumber_ = [device_.serialNumber copy];
     [self updateWindowTitle];
@@ -126,7 +124,6 @@
 
 - (void)lidar2dDidDisconnect:(Lidar2D *)device {
     (void)device;
-    isTogglingDeviceConnection_ = NO;
     [self logText:@"disconnected"];
     [window_.toolbar validateVisibleItems];
 }
@@ -137,6 +134,48 @@
 }
 
 #pragma mark - TouchDetectorObserver protocol
+
+- (void)touchDetectorIsAwaitingUntouchedFieldCalibration:(TouchDetector *)detector {
+    (void)detector;
+    [self logText:@"Touch detector needs to calibrate untouched field; remove all obstructions from the sensitive area then click Calibrate Untouched Field"];
+    [window_.toolbar validateVisibleItems];
+}
+
+- (void)touchDetectorIsCalibratingUntouchedField:(TouchDetector *)detector {
+    (void)detector;
+    [self logText:@"Calibrating untouched field; do not obstruct the sensitive area"];
+}
+
+- (void)touchDetectorDidFinishCalibratingUntouchedField:(TouchDetector *)detector {
+    (void)detector;
+    [self logText:@"Finished calibrating untouched field"];
+}
+
+- (void)touchDetectorIsAwaitingTouchCalibration:(TouchDetector *)detector {
+    (void)detector;
+    [self logText:@"Touch detector needs to calibrate touches"];
+    [window_.toolbar validateVisibleItems];
+}
+
+- (void)touchDetector:(TouchDetector *)detector isCalibratingTouchAtPoint:(CGPoint)point {
+    (void)detector; (void)point;
+    [self logText:@"Touch detector is calibrating a touch"];
+}
+
+- (void)touchDetector:(TouchDetector *)detector didFinishCalibratingTouchAtPoint:(CGPoint)point withResult:(TouchCalibrationResult)result {
+    (void)detector; (void)point;
+    switch (result) {
+        case TouchCalibrationResult_Success: [self logText:@"Calibrated a touch successfully"]; break;
+        case TouchCalibrationResult_MultipleTouchesDetected: [self logText:@"Failed to calibrate a touch because I detected multiple touches"]; break;
+        case TouchCalibrationResult_NoTouchDetected: [self logText:@"Failed to calibrate a touch because I didn't detect a touch"]; break;
+    }
+}
+
+- (void)touchDetectorIsDetectingTouches:(TouchDetector *)detector {
+    (void)detector;
+    [self logText:@"Ready to detect touches"];
+    [window_.toolbar validateVisibleItems];
+}
 
 #pragma mark - Window title details
 

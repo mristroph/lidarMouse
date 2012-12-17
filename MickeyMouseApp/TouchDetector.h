@@ -61,10 +61,10 @@ typedef enum {
 // State transitions.
 - (void)touchDetectorIsAwaitingUntouchedFieldCalibration:(TouchDetector *)detector;
 - (void)touchDetectorIsCalibratingUntouchedField:(TouchDetector *)detector;
+- (void)touchDetectorDidFinishCalibratingUntouchedField:(TouchDetector *)detector;
 - (void)touchDetectorIsAwaitingTouchCalibration:(TouchDetector *)detector;
 - (void)touchDetector:(TouchDetector *)detector isCalibratingTouchAtPoint:(CGPoint)point;
+- (void)touchDetector:(TouchDetector *)detector didFinishCalibratingTouchAtPoint:(CGPoint)point withResult:(TouchCalibrationResult)result;
 - (void)touchDetectorIsDetectingTouches:(TouchDetector *)detector;
-
-- (void)touchDetector:(TouchDetector *)detector didStopCalibratingTouchAtPoint:(CGPoint)point withResult:(TouchCalibrationResult)result;
 
 @end
