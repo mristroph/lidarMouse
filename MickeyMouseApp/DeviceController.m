@@ -24,6 +24,7 @@
     IBOutlet NSTextView *logView_;
     NSDictionary *toolbarValidators_;
     NSString *serialNumber_;
+    BOOL isTogglingDeviceConnection_;
 }
 
 #pragma mark - Public API
@@ -60,6 +61,7 @@
 
 - (IBAction)connectButtonWasPressed:(id)sender {
     (void)sender;
+    isTogglingDeviceConnection_ = YES;
     [self logText:@"connecting"];
     [device_ connect];
     [window_.toolbar validateVisibleItems];
@@ -77,6 +79,7 @@
 
 - (IBAction)disconnectButtonWasPressed:(id)sender {
     (void)sender;
+    isTogglingDeviceConnection_ = YES;
     [self logText:@"disconnecting"];
     [device_ disconnect];
     [window_.toolbar validateVisibleItems];
@@ -85,14 +88,14 @@
 #pragma mark - Toolbar item validation
 
 - (void)initToolbarValidators {
-    // Use locals to avoid retain cycles.
-    Lidar2D *device = device_;
-    TouchDetector *detector = touchDetector_;
+    // Using __weak here would require copying `me` to a strong variable in each block.  Ugh.
+    __unsafe_unretained DeviceController *me = self;
+
     toolbarValidators_ = @{
-        @"connect": ^{ return !device.isConnected; },
-        @"calibrateUntouchedField": ^{ return detector.canStartCalibratingUntouchedField; },
-        @"calibrateTouch": ^{ return detector.canStartCalibratingTouchAtPoint; },
-        @"disconnect": ^{ return device.isConnected; }
+        @"connect": ^{ return !me->isTogglingDeviceConnection_ && !me->device_.isConnected; },
+        @"calibrateUntouchedField": ^{ return me->touchDetector_.canStartCalibratingUntouchedField; },
+        @"calibrateTouch": ^{ return me->touchDetector_.canStartCalibratingTouchAtPoint; },
+        @"disconnect": ^{ return !me->isTogglingDeviceConnection_ && me->device_.isConnected; }
     };
 }
 
@@ -114,6 +117,7 @@
 
 - (void)lidar2dDidConnect:(Lidar2D *)device {
     (void)device;
+    isTogglingDeviceConnection_ = NO;
     [self logText:@"connected"];
     serialNumber_ = [device_.serialNumber copy];
     [self updateWindowTitle];
@@ -122,6 +126,7 @@
 
 - (void)lidar2dDidDisconnect:(Lidar2D *)device {
     (void)device;
+    isTogglingDeviceConnection_ = NO;
     [self logText:@"disconnected"];
     [window_.toolbar validateVisibleItems];
 }
