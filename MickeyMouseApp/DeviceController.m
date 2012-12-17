@@ -22,10 +22,6 @@
     IBOutlet DeviceControlWindow *window_;
     IBOutlet RawDataGraphView *graphView_;
     IBOutlet NSTextView *logView_;
-    IBOutlet NSToolbarItem *connectItem_;
-    IBOutlet NSToolbarItem *calibrateUntouchedFieldItem_;
-    IBOutlet NSToolbarItem *calibrateTouchItem_;
-    IBOutlet NSToolbarItem *disconnectItem_;
     NSDictionary *toolbarValidators_;
     NSString *serialNumber_;
 }
@@ -89,11 +85,14 @@
 #pragma mark - Toolbar item validation
 
 - (void)initToolbarValidators {
+    // Use locals to avoid retain cycles.
+    Lidar2D *device = device_;
+    TouchDetector *detector = touchDetector_;
     toolbarValidators_ = @{
-        @"connect": ^{ return !device_.isConnected; },
-        @"calibrateUntouchedField": ^{ return touchDetector_.canStartCalibratingUntouchedField; },
-        @"calibrateTouch": ^{ return touchDetector_.canStartCalibratingTouchAtPoint; },
-        @"disconnect": ^{ return device_.isConnected; }
+        @"connect": ^{ return device.isConnected; },
+        @"calibrateUntouchedField": ^{ return detector.canStartCalibratingUntouchedField; },
+        @"calibrateTouch": ^{ return detector.canStartCalibratingTouchAtPoint; },
+        @"disconnect": ^{ return device.isConnected; }
     };
 }
 
@@ -109,6 +108,7 @@
 
 - (void)lidar2DDidTerminate:(Lidar2D *)device {
     (void)device;
+    [self logText:@"terminated"];
     myself_ = nil;
 }
 
