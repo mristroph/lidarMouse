@@ -89,7 +89,7 @@
     Lidar2D *device = device_;
     TouchDetector *detector = touchDetector_;
     toolbarValidators_ = @{
-        @"connect": ^{ return device.isConnected; },
+        @"connect": ^{ return !device.isConnected; },
         @"calibrateUntouchedField": ^{ return detector.canStartCalibratingUntouchedField; },
         @"calibrateTouch": ^{ return detector.canStartCalibratingTouchAtPoint; },
         @"disconnect": ^{ return device.isConnected; }
