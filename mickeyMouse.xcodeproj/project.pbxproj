@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		312DD29C167E7A560066B81A /* DeviceController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 312DD29B167E7A560066B81A /* DeviceController.xib */; };
+		312DD2A0167E8E850066B81A /* calibrateUntouchedField.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 312DD29F167E8E850066B81A /* calibrateUntouchedField.pdf */; };
+		312DD2A2167E8F670066B81A /* calibrateTouch.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 312DD2A1167E8F670066B81A /* calibrateTouch.pdf */; };
+		312DD2A5167E907A0066B81A /* connect.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 312DD2A3167E907A0066B81A /* connect.pdf */; };
+		312DD2A6167E907A0066B81A /* disconnect.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 312DD2A4167E907A0066B81A /* disconnect.pdf */; };
 		313F1500167E2505009E4A80 /* Lidar2DConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C1D167B331000230548 /* Lidar2DConnection.m */; };
 		31D72B52167548F300230548 /* SCIP20Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B51167548F300230548 /* SCIP20Channel.m */; };
 		31D72B5616755C9600230548 /* ByteChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B5516755C9600230548 /* ByteChannel.m */; };
@@ -73,6 +77,10 @@
 
 /* Begin PBXFileReference section */
 		312DD29B167E7A560066B81A /* DeviceController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DeviceController.xib; sourceTree = "<group>"; };
+		312DD29F167E8E850066B81A /* calibrateUntouchedField.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = calibrateUntouchedField.pdf; sourceTree = "<group>"; };
+		312DD2A1167E8F670066B81A /* calibrateTouch.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = calibrateTouch.pdf; sourceTree = "<group>"; };
+		312DD2A3167E907A0066B81A /* connect.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = connect.pdf; sourceTree = "<group>"; };
+		312DD2A4167E907A0066B81A /* disconnect.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = disconnect.pdf; sourceTree = "<group>"; };
 		313F14F2167C68F0009E4A80 /* Lidar2D+Creation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Lidar2D+Creation.h"; sourceTree = "<group>"; };
 		31D72B50167548F300230548 /* SCIP20Channel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCIP20Channel.h; sourceTree = "<group>"; };
 		31D72B51167548F300230548 /* SCIP20Channel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCIP20Channel.m; sourceTree = "<group>"; };
@@ -240,6 +248,10 @@
 		31D72B701676A0EB00230548 /* MickeyMouseApp */ = {
 			isa = PBXGroup;
 			children = (
+				312DD2A3167E907A0066B81A /* connect.pdf */,
+				312DD2A4167E907A0066B81A /* disconnect.pdf */,
+				312DD2A1167E8F670066B81A /* calibrateTouch.pdf */,
+				312DD29F167E8E850066B81A /* calibrateUntouchedField.pdf */,
 				31D72B7C1676A0EB00230548 /* AppDelegate.h */,
 				31D72B7D1676A0EB00230548 /* AppDelegate.m */,
 				31D72B7F1676A0EC00230548 /* MainMenu.xib */,
@@ -649,6 +661,10 @@
 				31D72B7B1676A0EB00230548 /* Credits.rtf in Resources */,
 				31D72B811676A0EC00230548 /* MainMenu.xib in Resources */,
 				312DD29C167E7A560066B81A /* DeviceController.xib in Resources */,
+				312DD2A0167E8E850066B81A /* calibrateUntouchedField.pdf in Resources */,
+				312DD2A2167E8F670066B81A /* calibrateTouch.pdf in Resources */,
+				312DD2A5167E907A0066B81A /* connect.pdf in Resources */,
+				312DD2A6167E907A0066B81A /* disconnect.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

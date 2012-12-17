@@ -22,10 +22,11 @@
     IBOutlet DeviceControlWindow *window_;
     IBOutlet RawDataGraphView *graphView_;
     IBOutlet NSTextView *logView_;
-    IBOutlet NSButton *connectButton_;
-    IBOutlet NSButton *calibrateUntouchedFieldButton_;
-    IBOutlet NSButton *calibrateTouchButton_;
-    IBOutlet NSButton *disconnectButton_;
+    IBOutlet NSToolbarItem *connectItem_;
+    IBOutlet NSToolbarItem *calibrateUntouchedFieldItem_;
+    IBOutlet NSToolbarItem *calibrateTouchItem_;
+    IBOutlet NSToolbarItem *disconnectItem_;
+    NSDictionary *toolbarValidators_;
     NSString *serialNumber_;
 }
 
@@ -41,10 +42,11 @@
         device_ = device;
         [device_ addObserver:self];
         touchDetector_ = [[TouchDetector alloc] initWithDevice:device_];
+        [touchDetector_ addObserver:self];
+        [self initToolbarValidators];
         if (![[NSBundle mainBundle] loadNibNamed:@"DeviceController" owner:self topLevelObjects:nil]) {
             [NSException raise:NSNibLoadingException format:@"%@ failed to load nib", self];
         }
-        [self enableAppropriateButtons];
         [self updateWindowTitle];
         [window_ makeKeyAndOrderFront:self];
         NSLog(@"window_=%@", window_);
@@ -61,7 +63,9 @@
 
 - (IBAction)connectButtonWasPressed:(id)sender {
     (void)sender;
-    NSLog(@"debug: %s %@", __func__, sender);
+    [self logText:@"connecting"];
+    [device_ connect];
+    [window_.toolbar validateVisibleItems];
 }
 
 - (IBAction)calibrateUntouchedFieldButtonWasPressed:(id)sender {
@@ -76,7 +80,28 @@
 
 - (IBAction)disconnectButtonWasPressed:(id)sender {
     (void)sender;
-    NSLog(@"debug: %s %@", __func__, sender);
+    [self logText:@"disconnecting"];
+    [device_ disconnect];
+    [window_.toolbar validateVisibleItems];
+}
+
+#pragma mark - Toolbar item validation
+
+- (void)initToolbarValidators {
+    toolbarValidators_ = @{
+        @"connect": ^{ return !device_.isConnected; },
+        @"calibrateUntouchedField": ^{ return touchDetector_.canStartCalibratingUntouchedField; },
+        @"calibrateTouch": ^{ return touchDetector_.canStartCalibratingTouchAtPoint; },
+        @"disconnect": ^{ return device_.isConnected; }
+    };
+}
+
+- (BOOL)validateToolbarItem:(NSToolbarItem *)theItem {
+    BOOL (^validator)(void) = toolbarValidators_[theItem.itemIdentifier];
+    if (!validator) {
+        [NSException raise:NSInternalInconsistencyException format:@"%@ doesn't have a validator for %@", self, theItem];
+    }
+    return validator();
 }
 
 #pragma mark - Lidar2DObserver protocol
@@ -88,72 +113,42 @@
 
 - (void)lidar2dDidConnect:(Lidar2D *)device {
     (void)device;
+    [self logText:@"connected"];
     serialNumber_ = [device_.serialNumber copy];
     [self updateWindowTitle];
-    [self enableAppropriateButtons];
+    [window_.toolbar validateVisibleItems];
 }
 
 - (void)lidar2dDidDisconnect:(Lidar2D *)device {
     (void)device;
-    [self enableAppropriateButtons];
+    [self logText:@"disconnected"];
+    [window_.toolbar validateVisibleItems];
+}
+
+- (void)lidar2d:(Lidar2D *)device didFailWithError:(NSError *)error {
+    (void)device;
+    [self logText:error.description];
 }
 
 #pragma mark - TouchDetectorObserver protocol
-
-- (void)touchDetectorIsAwaitingUntouchedFieldCalibration:(TouchDetector *)detector {
-    (void)detector;
-    [self enableAppropriateButtons];
-}
-
-- (void)touchDetectorIsCalibratingUntouchedField:(TouchDetector *)detector {
-    (void)detector;
-    [self enableAppropriateButtons];
-}
-
-- (void)touchDetectorIsAwaitingTouchCalibration:(TouchDetector *)detector {
-    (void)detector;
-    [self enableAppropriateButtons];
-}
-
-- (void)touchDetector:(TouchDetector *)detector isCalibratingTouchAtPoint:(CGPoint)point {
-    (void)detector; (void)point;
-    [self enableAppropriateButtons];
-}
-
-- (void)touchDetectorIsDetectingTouches:(TouchDetector *)detector {
-    (void)detector;
-    [self enableAppropriateButtons];
-}
-
-#pragma mark - Button enabling details
-
-- (void)enableAppropriateButtons {
-    [self enableConnectButtonIfAppropriate];
-    [self enableDisconnectButtonIfAppropriate];
-    [self enableCalibrateUntouchedFieldButtonIfAppropriate];
-    [self enableCalibrateTouchButtonIfAppropriate];
-}
-
-- (void)enableConnectButtonIfAppropriate {
-    connectButton_.enabled = !device_.isConnected;
-}
-
-- (void)enableDisconnectButtonIfAppropriate {
-    disconnectButton_.enabled = device_.isConnected;
-}
-
-- (void)enableCalibrateUntouchedFieldButtonIfAppropriate {
-    calibrateUntouchedFieldButton_.enabled = touchDetector_.canStartCalibratingUntouchedField;
-}
-
-- (void)enableCalibrateTouchButtonIfAppropriate {
-    calibrateTouchButton_.enabled = touchDetector_.canStartCalibratingTouchAtPoint;
-}
 
 #pragma mark - Window title details
 
 - (void)updateWindowTitle {
     window_.title = serialNumber_ ? [NSString stringWithFormat:@"Lidar2D - Serial Number %@", serialNumber_] : [NSString stringWithFormat:@"Lidar2D - Device Path %@", device_.devicePath];
+}
+
+#pragma mark - Implementation details
+
+- (void)logText:(NSString *)text {
+    char const *newline = [text hasSuffix:@"\n"] ? "" : "\n";
+    text = [NSString stringWithFormat:@"%.6f %@%s", CFAbsoluteTimeGetCurrent(), text, newline];
+
+    BOOL wasAtBottom = logView_.enclosingScrollView.verticalScroller.doubleValue == 1.0;
+    [logView_.textStorage replaceCharactersInRange:NSMakeRange(logView_.textStorage.length, 0) withString:text];
+    if (wasAtBottom) {
+        [logView_ scrollPoint:NSMakePoint(0, logView_.bounds.size.height)];
+    }
 }
 
 @end
