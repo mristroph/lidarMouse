@@ -6,7 +6,7 @@
 
 - (void)close {
     [super close];
-    [[NSApplication sharedApplication]addWindowsItem:self title:self.title filename:NO];
+    [[NSApplication sharedApplication] addWindowsItem:self title:self.title filename:NO];
 }
 
 @end
