@@ -392,6 +392,8 @@ struct ScreenPoint {
         .c = bx[1].x, .d = bx[1].y,
         .tx = bx[2].x, .ty = bx[2].y
     };
+
+    NSLog(@"sensorToScreenTransform = %@", [NSValue valueWithBytes:&sensorToScreenTransform_ objCType:@encode(CGAffineTransform)]);
 }
 
 @end

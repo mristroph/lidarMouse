@@ -22,6 +22,7 @@
     IBOutlet DeviceControlWindow *controlWindow_;
     IBOutlet RawDataGraphView *graphView_;
     IBOutlet NSPanel *touchCalibrationPanel_;
+    IBOutlet NSView *touchCalibrationTargetView_;
     IBOutlet NSTextView *logView_;
     NSDictionary *toolbarValidators_;
     NSString *serialNumber_;
@@ -73,7 +74,10 @@
 
 - (IBAction)calibrateTouchButtonWasPressed:(id)sender {
     (void)sender;
-    NSLog(@"debug: %s %@", __func__, sender);
+    CGRect rect = [touchCalibrationTargetView_ convertRect:touchCalibrationTargetView_.bounds toView:nil];
+    rect = [touchCalibrationPanel_ convertRectToScreen:rect];
+    CGPoint screenPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
+    [touchDetector_ startCalibratingTouchAtPoint:screenPoint];
 }
 
 - (IBAction)disconnectButtonWasPressed:(id)sender {
