@@ -394,6 +394,14 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
 
 #pragma mark - Touch detection details
 
+static BOOL isValidScreenPoint(CGPoint point) {
+    for (NSScreen *screen in [NSScreen screens]) {
+        if (CGRectContainsPoint(screen.frame, point))
+            return YES;
+    }
+    return NO;
+}
+
 - (void)detectTouchesWithDistances:(Lidar2DDistance const *)distances {
     vector<BOOL> rayWasTouched;
     [self computeTouchedRays:rayWasTouched forDetectionWithDistances:distances];
@@ -401,7 +409,9 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
         Lidar2DDistance distance = distances[middleRayIndex];
         CGPoint sensorPoint = [self sensorPointForRayIndex:middleRayIndex distance:distance];
         CGPoint screenPoint = [self screenPointForSensorPoint:sensorPoint];
-        NSLog(@"touch detected: rayIndex=%lu distance=%u sensorPoint=%@ screenPoint=%@", middleRayIndex, distance, NSStringFromPoint(sensorPoint), NSStringFromPoint(screenPoint));
+        if (isValidScreenPoint(screenPoint)) {
+            NSLog(@"touch detected: rayIndex=%lu distance=%u sensorPoint=%@ screenPoint=%@", middleRayIndex, distance, NSStringFromPoint(sensorPoint), NSStringFromPoint(screenPoint));
+        }
     }];
 }
 
