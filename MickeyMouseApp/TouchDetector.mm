@@ -8,13 +8,14 @@
 using std::vector;
 
 static Lidar2DDistance const kMinimumDistance = 20;
+static Lidar2DDistance const kMaximumDistance = 5600;
 static NSUInteger const kReportsNeededForUntouchedFieldCalibration = 20;
 static NSUInteger const kTouchCalibrationsNeeded = 3;
 static NSUInteger const kReportsNeededForTouchCalibration = 20;
 static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = 15;
 
 static BOOL isValidDistance(Lidar2DDistance distance) {
-    return distance >= kMinimumDistance && distance != Lidar2DDistance_MAX;
+    return distance >= kMinimumDistance && distance <= kMaximumDistance;
 }
 
 static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
@@ -242,7 +243,7 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
 
 - (void)tweakUntouchedFieldDistances {
     for (auto p = untouchedFieldDistances_.begin(); p != untouchedFieldDistances_.end(); ++p) {
-        *p *= 0.95;
+        *p *= 0.90;
     }
 }
 
@@ -386,12 +387,15 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
     }
 
     sensorToScreenTransform_ = (CGAffineTransform){
-        .a = bx[0], .b = bx[1],
-        .c = bx[2], .d = bx[3],
-        .tx = bx[4], .ty = bx[5]
+        .a = bx[0], .b = bx[3],
+        .c = bx[1], .d = bx[4],
+        .tx = bx[2], .ty = bx[5]
     };
 
     NSLog(@"sensorToScreenTransform = %@", [NSValue valueWithBytes:&sensorToScreenTransform_ objCType:@encode(CGAffineTransform)]);
+    for (size_t i = 0; i < sampleCount; ++i) {
+        NSLog(@"    %@ -> %@", NSStringFromPoint(sensorPointsForTouchCalibration_[i]), NSStringFromPoint([self screenPointForSensorPoint:sensorPointsForTouchCalibration_[i]]));
+    }
 }
 
 #pragma mark - Touch detection details

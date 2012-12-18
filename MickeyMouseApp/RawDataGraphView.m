@@ -68,7 +68,7 @@
         
         for (CGFloat i = 0; i < levelCount; ++i) {
             CGFloat distance = levels[(int)i];
-            if (distance < 20) {
+            if (distance < 20 || distance > 5600) {
                 distance = UINT32_MAX;
             }
 
