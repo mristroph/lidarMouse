@@ -19,8 +19,9 @@
     DeviceController *myself_; // set to self while device is physically connected to keep me from being deallocated
     Lidar2D *device_;
     TouchDetector *touchDetector_;
-    IBOutlet DeviceControlWindow *window_;
+    IBOutlet DeviceControlWindow *controlWindow_;
     IBOutlet RawDataGraphView *graphView_;
+    IBOutlet NSPanel *touchCalibrationWindow_;
     IBOutlet NSTextView *logView_;
     NSDictionary *toolbarValidators_;
     NSString *serialNumber_;
@@ -46,8 +47,9 @@
         graphView_.device = device_;
         [self updateWindowTitle];
         [touchDetector_ notifyObserverOfCurrentState:self];
-        [window_ makeKeyAndOrderFront:self];
-        NSLog(@"window_=%@", window_);
+        [controlWindow_ makeKeyAndOrderFront:self];
+
+        [touchCalibrationWindow_ orderFront:self];
     }
     return self;
 }
@@ -63,7 +65,7 @@
     (void)sender;
     [self logText:@"connecting"];
     [device_ connect];
-    [window_.toolbar validateVisibleItems];
+    [controlWindow_.toolbar validateVisibleItems];
 }
 
 - (IBAction)calibrateUntouchedFieldButtonWasPressed:(id)sender {
@@ -80,7 +82,7 @@
     (void)sender;
     [self logText:@"disconnecting"];
     [device_ disconnect];
-    [window_.toolbar validateVisibleItems];
+    [controlWindow_.toolbar validateVisibleItems];
 }
 
 #pragma mark - Toolbar item validation
@@ -119,13 +121,13 @@
     [self logText:@"connected"];
     serialNumber_ = [device_.serialNumber copy];
     [self updateWindowTitle];
-    [window_.toolbar validateVisibleItems];
+    [controlWindow_.toolbar validateVisibleItems];
 }
 
 - (void)lidar2dDidDisconnect:(Lidar2D *)device {
     (void)device;
     [self logText:@"disconnected"];
-    [window_.toolbar validateVisibleItems];
+    [controlWindow_.toolbar validateVisibleItems];
 }
 
 - (void)lidar2d:(Lidar2D *)device didFailWithError:(NSError *)error {
@@ -138,7 +140,7 @@
 - (void)touchDetectorIsAwaitingUntouchedFieldCalibration:(TouchDetector *)detector {
     (void)detector;
     [self logText:@"Touch detector needs to calibrate untouched field; remove all obstructions from the sensitive area then click Calibrate Untouched Field"];
-    [window_.toolbar validateVisibleItems];
+    [controlWindow_.toolbar validateVisibleItems];
 }
 
 - (void)touchDetectorIsCalibratingUntouchedField:(TouchDetector *)detector {
@@ -157,7 +159,7 @@
 - (void)touchDetectorIsAwaitingTouchCalibration:(TouchDetector *)detector {
     (void)detector;
     [self logText:@"Touch detector needs to calibrate touches"];
-    [window_.toolbar validateVisibleItems];
+    [controlWindow_.toolbar validateVisibleItems];
 }
 
 - (void)touchDetector:(TouchDetector *)detector isCalibratingTouchAtPoint:(CGPoint)point {
@@ -177,13 +179,13 @@
 - (void)touchDetectorIsDetectingTouches:(TouchDetector *)detector {
     (void)detector;
     [self logText:@"Ready to detect touches"];
-    [window_.toolbar validateVisibleItems];
+    [controlWindow_.toolbar validateVisibleItems];
 }
 
 #pragma mark - Window title details
 
 - (void)updateWindowTitle {
-    window_.title = serialNumber_ ? [NSString stringWithFormat:@"Lidar2D - Serial Number %@", serialNumber_] : [NSString stringWithFormat:@"Lidar2D - Device Path %@", device_.devicePath];
+    controlWindow_.title = serialNumber_ ? [NSString stringWithFormat:@"Lidar2D - Serial Number %@", serialNumber_] : [NSString stringWithFormat:@"Lidar2D - Device Path %@", device_.devicePath];
 }
 
 #pragma mark - Implementation details

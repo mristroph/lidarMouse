@@ -13,6 +13,7 @@
 		312DD2A5167E907A0066B81A /* connect.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 312DD2A3167E907A0066B81A /* connect.pdf */; };
 		312DD2A6167E907A0066B81A /* disconnect.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 312DD2A4167E907A0066B81A /* disconnect.pdf */; };
 		313F1500167E2505009E4A80 /* Lidar2DConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72C1D167B331000230548 /* Lidar2DConnection.m */; };
+		314DEBA616803EB20060CD61 /* TouchCalibrationTargetPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 314DEBA516803EB20060CD61 /* TouchCalibrationTargetPanel.m */; };
 		31B41F8116803A0100C04CC0 /* touchCalibrationTarget.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 31B41F8016803A0100C04CC0 /* touchCalibrationTarget.pdf */; };
 		31D72B52167548F300230548 /* SCIP20Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B51167548F300230548 /* SCIP20Channel.m */; };
 		31D72B5616755C9600230548 /* ByteChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D72B5516755C9600230548 /* ByteChannel.m */; };
@@ -83,6 +84,8 @@
 		312DD2A3167E907A0066B81A /* connect.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = connect.pdf; sourceTree = "<group>"; };
 		312DD2A4167E907A0066B81A /* disconnect.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = disconnect.pdf; sourceTree = "<group>"; };
 		313F14F2167C68F0009E4A80 /* Lidar2D+Creation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Lidar2D+Creation.h"; sourceTree = "<group>"; };
+		314DEBA416803EB20060CD61 /* TouchCalibrationTargetPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchCalibrationTargetPanel.h; sourceTree = "<group>"; };
+		314DEBA516803EB20060CD61 /* TouchCalibrationTargetPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchCalibrationTargetPanel.m; sourceTree = "<group>"; };
 		31B41F8016803A0100C04CC0 /* touchCalibrationTarget.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = touchCalibrationTarget.pdf; sourceTree = "<group>"; };
 		31D72B50167548F300230548 /* SCIP20Channel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCIP20Channel.h; sourceTree = "<group>"; };
 		31D72B51167548F300230548 /* SCIP20Channel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCIP20Channel.m; sourceTree = "<group>"; };
@@ -275,6 +278,8 @@
 				31D72C0E167A754800230548 /* TouchDetector.mm */,
 				31D72BBE1676F01F00230548 /* DeviceControlWindow.h */,
 				31D72BBF1676F01F00230548 /* DeviceControlWindow.m */,
+				314DEBA416803EB20060CD61 /* TouchCalibrationTargetPanel.h */,
+				314DEBA516803EB20060CD61 /* TouchCalibrationTargetPanel.m */,
 				31D72B711676A0EB00230548 /* Supporting Files */,
 			);
 			path = MickeyMouseApp;
@@ -699,6 +704,7 @@
 				31D72C0F167A754800230548 /* TouchDetector.mm in Sources */,
 				31D72C12167A865300230548 /* DqdObserverSet.m in Sources */,
 				313F1500167E2505009E4A80 /* Lidar2DConnection.m in Sources */,
+				314DEBA616803EB20060CD61 /* TouchCalibrationTargetPanel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
