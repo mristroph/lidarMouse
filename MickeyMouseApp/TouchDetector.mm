@@ -158,9 +158,15 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
 }
 
 - (void)setAppropriateStateBecauseCalibrationFinished {
-    self.state = [self needsUntouchedFieldCalibration] ? TouchDetectorState_AwaitingUntouchedFieldCalibration
+    TouchDetectorState newState = [self needsUntouchedFieldCalibration] ? TouchDetectorState_AwaitingUntouchedFieldCalibration
         : [self needsTouchCalibration] ? TouchDetectorState_AwaitingTouchCalibration
         : TouchDetectorState_DetectingTouches;
+    if (newState != _state) {
+        self.state = newState;
+        if (newState == TouchDetectorState_DetectingTouches) {
+            [self startDetectingTouches];
+        }
+    }
 }
 
 // When this returns YES, it means I'm doing something that reads from the device, so I can't start anything new that reads from the device.
@@ -190,6 +196,7 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
         StateString(CalibratingTouch);
         StateString(DetectingTouches);
     }
+#undef StateString
 }
 
 #pragma mark - Untouched field calibration details
@@ -284,7 +291,7 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
     distancesReportHandler_ = nil;
 
     vector<BOOL> rayWasTouched;
-    [self computeTouchedRays:rayWasTouched];
+    [self computeTouchedRaysForCalibration:rayWasTouched];
     __block NSUInteger touchesFound = 0;
     __block NSUInteger rayIndex;
     [self forEachSweepInTouchedRays:rayWasTouched do:^(NSUInteger middleRayIndex) {
@@ -303,7 +310,7 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
     [self setAppropriateStateBecauseCalibrationFinished];
 }
 
-- (void)computeTouchedRays:(vector<BOOL> &)rayWasTouched {
+- (void)computeTouchedRaysForCalibration:(vector<BOOL> &)rayWasTouched {
     NSUInteger l = MIN(touchDistanceSums_.size(), untouchedFieldDistances_.size());
     rayWasTouched.clear();
     rayWasTouched.reserve(l);
@@ -319,27 +326,12 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
     }
 }
 
-- (void)forEachSweepInTouchedRays:(vector<BOOL> const &)rayWasTouched do:(void (^)(NSUInteger middleRayIndex))block {
-    NSUInteger i = 0;
-    while (i < rayWasTouched.size()) {
-        if (rayWasTouched[i]) {
-            NSUInteger end = i + 1;
-            while (end < rayWasTouched.size() && rayWasTouched[end]) {
-                ++end;
-            }
-            block(i + (end - i) / 2);
-            i = end;
-        } else {
-            ++i;
-        }
-    }
-}
-
 - (void)recordCalibratedTouchAtRayIndex:(NSUInteger)rayIndex{
     double distance = (double)touchDistanceSums_[rayIndex] / touchDistanceCounts_[rayIndex];
-    double radians = device_.coverageDegrees * rayIndex / (2 * M_PI * touchDistanceCounts_.size());
-    sensorPointsForTouchCalibration_.push_back(CGPointMake(distance * cos(radians), distance * sin(radians)));
+    sensorPointsForTouchCalibration_.push_back([self sensorPointForRayIndex:rayIndex distance:distance]);
     screenPointsForTouchCalibration_.push_back(CGPointMake(currentCalibrationPoint_.x, currentCalibrationPoint_.y));
+    double radians = (2.0 * M_PI / 360.0) * (device_.firstRayOffsetDegrees + device_.coverageDegrees * (double)rayIndex / touchDistanceCounts_.size());
+    NSLog(@"touch calibrated: rayIndex=%lu radians=%f distance=%f sensorPoint=%@ screenPoint=%@", rayIndex, radians, distance, NSStringFromPoint(sensorPointsForTouchCalibration_.back()), NSStringFromPoint(screenPointsForTouchCalibration_.back()));
     if (sensorPointsForTouchCalibration_.size() >= kTouchCalibrationsNeeded) {
         [self computeSensorToScreenTransform];
     }
@@ -400,6 +392,65 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
     };
 
     NSLog(@"sensorToScreenTransform = %@", [NSValue valueWithBytes:&sensorToScreenTransform_ objCType:@encode(CGAffineTransform)]);
+}
+
+#pragma mark - Touch detection details
+
+- (void)detectTouchesWithDistances:(Lidar2DDistance const *)distances {
+    vector<BOOL> rayWasTouched;
+    [self computeTouchedRays:rayWasTouched forDetectionWithDistances:distances];
+    [self forEachSweepInTouchedRays:rayWasTouched do:^(NSUInteger middleRayIndex) {
+        Lidar2DDistance distance = distances[middleRayIndex];
+        CGPoint sensorPoint = [self sensorPointForRayIndex:middleRayIndex distance:distance];
+        CGPoint screenPoint = [self screenPointForSensorPoint:sensorPoint];
+        NSLog(@"touch detected: rayIndex=%lu distance=%u sensorPoint=%@ screenPoint=%@", middleRayIndex, distance, NSStringFromPoint(sensorPoint), NSStringFromPoint(screenPoint));
+    }];
+}
+
+- (void)computeTouchedRays:(vector<BOOL> &)rayWasTouched forDetectionWithDistances:(Lidar2DDistance const *)distances {
+    NSUInteger count = MIN(device_.rayCount, untouchedFieldDistances_.size());
+    rayWasTouched.clear();
+    rayWasTouched.reserve(count);
+    for (NSUInteger i = 0; i < count; ++i) {
+        Lidar2DDistance distance = correctedDistance(distances[i]);
+        rayWasTouched.push_back(distance < untouchedFieldDistances_[i]);
+    }
+}
+
+- (void)startDetectingTouches {
+    self.state = TouchDetectorState_DetectingTouches;
+
+    __weak TouchDetector *me = self;
+    distancesReportHandler_ = ^(Lidar2DDistance const *distances) {
+        [me detectTouchesWithDistances:distances];
+    };
+}
+
+#pragma mark - Implementation details
+
+- (void)forEachSweepInTouchedRays:(vector<BOOL> const &)rayWasTouched do:(void (^)(NSUInteger middleRayIndex))block {
+    NSUInteger i = 0;
+    while (i < rayWasTouched.size()) {
+        if (rayWasTouched[i]) {
+            NSUInteger end = i + 1;
+            while (end < rayWasTouched.size() && rayWasTouched[end]) {
+                ++end;
+            }
+            block(i + (end - i) / 2);
+            i = end;
+        } else {
+            ++i;
+        }
+    }
+}
+
+- (CGPoint)sensorPointForRayIndex:(NSUInteger)rayIndex distance:(Lidar2DDistance)distance {
+    double radians = (2.0 * M_PI / 360.0) * (device_.firstRayOffsetDegrees + device_.coverageDegrees * (double)rayIndex / touchDistanceCounts_.size());
+    return CGPointMake(distance * cos(radians), distance * sin(radians));
+}
+
+- (CGPoint)screenPointForSensorPoint:(CGPoint)sensorPoint {
+    return CGPointApplyAffineTransform(sensorPoint, sensorToScreenTransform_);
 }
 
 @end
