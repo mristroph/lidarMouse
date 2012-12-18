@@ -10,4 +10,8 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
++ (AppDelegate *)theDelegate;
+
+@property (nonatomic, strong) IBOutlet NSMenuItem *pointerTracksTouchesMenuItem;
+
 @end

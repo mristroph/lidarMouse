@@ -17,6 +17,14 @@
     Lidar2DManager *lidar2DManager_;
 }
 
+#pragma mark - Public API
+
++ (AppDelegate *)theDelegate {
+    return [NSApplication sharedApplication].delegate;
+}
+
+@synthesize pointerTracksTouchesMenuItem = _pointerTracksTouchesMenuItem;
+
 #pragma mark - NSApplicationDelegate protocol
 
 - (void)applicationDidFinishLaunching:(NSNotification *)note {

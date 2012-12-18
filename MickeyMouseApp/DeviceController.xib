@@ -62,17 +62,17 @@
 					<int key="NSToolbarDisplayMode">1</int>
 					<int key="NSToolbarSizeMode">1</int>
 					<dictionary class="NSMutableDictionary" key="NSToolbarIBIdentifiedItems">
-						<object class="NSToolbarItem" key="3B9A2653-0315-4733-804B-665338DBB687" id="166414794">
+						<object class="NSToolbarItem" key="3B9A2653-0315-4733-804B-665338DBB687" id="315756072">
 							<object class="NSMutableString" key="NSToolbarItemIdentifier">
 								<characters key="NS.bytes">3B9A2653-0315-4733-804B-665338DBB687</characters>
 							</object>
-							<string key="NSToolbarItemLabel">Detect Touches</string>
-							<string key="NSToolbarItemPaletteLabel">Detect Touches</string>
+							<string key="NSToolbarItemLabel">Pointer Tracks Touches</string>
+							<string key="NSToolbarItemPaletteLabel">Pointer Tracks Touches</string>
 							<string key="NSToolbarItemToolTip"/>
 							<nil key="NSToolbarItemView"/>
 							<object class="NSCustomResource" key="NSToolbarItemImage">
 								<string key="NSClassName">NSImage</string>
-								<string key="NSResourceName">detectTouches</string>
+								<string key="NSResourceName">pointerTracksTouches</string>
 							</object>
 							<nil key="NSToolbarItemTarget"/>
 							<nil key="NSToolbarItemAction"/>
@@ -240,13 +240,13 @@
 						<reference ref="33507782"/>
 						<reference ref="367242431"/>
 						<reference ref="858311301"/>
-						<reference ref="166414794"/>
+						<reference ref="315756072"/>
 					</array>
 					<array key="NSToolbarIBDefaultItems">
 						<reference ref="901207582"/>
 						<reference ref="668509036"/>
 						<reference ref="204410201"/>
-						<reference ref="166414794"/>
+						<reference ref="315756072"/>
 						<reference ref="858311301"/>
 						<reference ref="33507782"/>
 					</array>
@@ -267,26 +267,7 @@
 									<array class="NSMutableArray" key="NSSubviews">
 										<object class="NSTextView" id="773764491">
 											<reference key="NSNextResponder" ref="688135112"/>
-											<int key="NSvFlags">2322</int>
-											<set class="NSMutableSet" key="NSDragTypes">
-												<string>Apple HTML pasteboard type</string>
-												<string>Apple PDF pasteboard type</string>
-												<string>Apple PICT pasteboard type</string>
-												<string>Apple PNG pasteboard type</string>
-												<string>Apple URL pasteboard type</string>
-												<string>CorePasteboardFlavorType 0x6D6F6F76</string>
-												<string>NSColor pasteboard type</string>
-												<string>NSFilenamesPboardType</string>
-												<string>NSStringPboardType</string>
-												<string>NeXT Encapsulated PostScript v1.2 pasteboard type</string>
-												<string>NeXT RTFD pasteboard type</string>
-												<string>NeXT Rich Text Format v1.0 pasteboard type</string>
-												<string>NeXT TIFF v4.0 pasteboard type</string>
-												<string>NeXT font pasteboard type</string>
-												<string>NeXT ruler pasteboard type</string>
-												<string>WebURLsWithTitlesPboardType</string>
-												<string>public.url</string>
-											</set>
+											<int key="NSvFlags">6418</int>
 											<string key="NSFrameSize">{203, 275}</string>
 											<reference key="NSSuperview" ref="688135112"/>
 											<reference key="NSWindow"/>
@@ -303,7 +284,7 @@
 													<array class="NSMutableArray" key="NSTextContainers">
 														<reference ref="455317492"/>
 													</array>
-													<int key="NSLMFlags">166</int>
+													<int key="NSLMFlags">38</int>
 													<nil key="NSDelegate"/>
 												</object>
 												<reference key="NSTextView" ref="773764491"/>
@@ -311,7 +292,7 @@
 												<int key="NSTCFlags">1</int>
 											</object>
 											<object class="NSTextViewSharedData" key="NSSharedData">
-												<int key="NSFlags">67121127</int>
+												<int key="NSFlags">10497</int>
 												<int key="NSTextCheckingTypes">0</int>
 												<nil key="NSMarkedAttributes"/>
 												<object class="NSColor" key="NSBackgroundColor" id="95937415">
@@ -713,11 +694,19 @@ wGw</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">detectTouchesButtonWasPressed:</string>
+						<string key="label">pointerTracksTouchesButtonWasPressed:</string>
 						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="166414794"/>
+						<reference key="destination" ref="315756072"/>
 					</object>
-					<int key="connectionID">127</int>
+					<int key="connectionID">128</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="1005"/>
+						<reference key="destination" ref="1001"/>
+					</object>
+					<int key="connectionID">129</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1016,7 +1005,7 @@ wGw</bytes>
 							<reference ref="668509036"/>
 							<reference ref="204410201"/>
 							<reference ref="33507782"/>
-							<reference ref="166414794"/>
+							<reference ref="315756072"/>
 						</array>
 						<reference key="parent" ref="1005"/>
 					</object>
@@ -1123,7 +1112,7 @@ wGw</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">126</int>
-						<reference key="object" ref="166414794"/>
+						<reference key="object" ref="315756072"/>
 						<reference key="parent" ref="1061614180"/>
 					</object>
 				</array>
@@ -1153,7 +1142,7 @@ wGw</bytes>
 				<string key="120.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="121.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="126.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="126.designableToolbarItemIdentifier">detectTouches</string>
+				<string key="126.designableToolbarItemIdentifier">pointerTracksTouches</string>
 				<boolean value="YES" key="126.toolbarItem.selectable"/>
 				<array class="NSMutableArray" key="2.IBNSViewMetadataConstraints">
 					<reference ref="372770766"/>
@@ -1200,7 +1189,7 @@ wGw</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">127</int>
+			<int key="maxID">129</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1219,8 +1208,8 @@ wGw</bytes>
 						<string key="calibrateTouchButtonWasPressed:">id</string>
 						<string key="calibrateUntouchedFieldButtonWasPressed:">id</string>
 						<string key="connectButtonWasPressed:">id</string>
-						<string key="detectTouchesButtonWasPressed:">id</string>
 						<string key="disconnectButtonWasPressed:">id</string>
+						<string key="pointerTracksTouchesButtonWasPressed:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="calibrateTouchButtonWasPressed:">
@@ -1235,12 +1224,12 @@ wGw</bytes>
 							<string key="name">connectButtonWasPressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="detectTouchesButtonWasPressed:">
-							<string key="name">detectTouchesButtonWasPressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="disconnectButtonWasPressed:">
 							<string key="name">disconnectButtonWasPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="pointerTracksTouchesButtonWasPressed:">
+							<string key="name">pointerTracksTouchesButtonWasPressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
@@ -1314,8 +1303,8 @@ wGw</bytes>
 			<string key="calibrateTouch">{48, 48}</string>
 			<string key="calibrateUntouchedField">{48, 48}</string>
 			<string key="connect">{48, 48}</string>
-			<string key="detectTouches">{48, 48}</string>
 			<string key="disconnect">{48, 48}</string>
+			<string key="pointerTracksTouches">{48, 48}</string>
 			<string key="touchCalibrationTarget">{48, 48}</string>
 		</dictionary>
 		<bool key="IBDocument.UseAutolayout">YES</bool>

@@ -6,15 +6,16 @@
 //  Copyright (c) 2012 Rob Mayoff. All rights reserved.
 //
 
+#import "AppDelegate.h"
+#import "DeviceControlWindow.h"
 #import "DeviceController.h"
 #import "Lidar2D.h"
-#import "DeviceControlWindow.h"
 #import "RawDataGraphView.h"
 #import "TouchDetector.h"
 
-static NSString *const kDetectTouchesItemIdentifier = @"detectTouches";
+static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouches";
 
-@interface DeviceController () <Lidar2DObserver, TouchDetectorObserver>
+@interface DeviceController () <Lidar2DObserver, TouchDetectorObserver, NSWindowDelegate>
 @end
 
 @implementation DeviceController {
@@ -26,10 +27,10 @@ static NSString *const kDetectTouchesItemIdentifier = @"detectTouches";
     IBOutlet NSPanel *touchCalibrationPanel_;
     IBOutlet NSView *touchCalibrationTargetView_;
     IBOutlet NSTextView *logView_;
-    NSDictionary *toolbarValidators_;
+    NSDictionary *userInterfaceItemValidators_;
     NSString *serialNumber_;
 
-    BOOL shouldDetectTouches_ : 1;
+    BOOL shouldPointerTrackTouches_ : 1;
 }
 
 #pragma mark - Public API
@@ -45,7 +46,7 @@ static NSString *const kDetectTouchesItemIdentifier = @"detectTouches";
         [device_ addObserver:self];
         touchDetector_ = [[TouchDetector alloc] initWithDevice:device_];
         [touchDetector_ addObserver:self];
-        [self initToolbarValidators];
+        [self initUserInterfaceItemValidators];
         if (![[NSBundle mainBundle] loadNibNamed:@"DeviceController" owner:self topLevelObjects:nil]) {
             [NSException raise:NSNibLoadingException format:@"%@ failed to load nib", self];
         }
@@ -91,32 +92,32 @@ static NSString *const kDetectTouchesItemIdentifier = @"detectTouches";
     [self updateInterfaceForCurrentState];
 }
 
-- (IBAction)detectTouchesButtonWasPressed:(id)sender {
+- (IBAction)pointerTracksTouchesButtonWasPressed:(id)sender {
     (void)sender;
-    shouldDetectTouches_ = !shouldDetectTouches_;
+    shouldPointerTrackTouches_ = !shouldPointerTrackTouches_;
     [self updateInterfaceForCurrentState];
 }
 
-#pragma mark - Toolbar item validation
+#pragma mark - Toolbar and menu item validation
 
-- (void)initToolbarValidators {
+- (void)initUserInterfaceItemValidators {
     // Localize these so the validators don't make retain cycles with me.
     Lidar2D *device = device_;
     TouchDetector *detector = touchDetector_;
 
-    toolbarValidators_ = @{
-        @"connect": ^{ return !device.isBusy && !device.isConnected; },
-        @"calibrateUntouchedField": ^{ return detector.canStartCalibratingUntouchedField; },
-        @"calibrateTouch": ^{ return detector.canStartCalibratingTouchAtPoint; },
-        @"disconnect": ^{ return !device.isBusy && device.isConnected; },
-        kDetectTouchesItemIdentifier: ^{ return YES; }
+    userInterfaceItemValidators_ = @{
+    NSStringFromSelector(@selector(connectButtonWasPressed:)): ^{ return !device.isBusy && !device.isConnected; },
+    NSStringFromSelector(@selector(calibrateUntouchedFieldButtonWasPressed:)): ^{ return detector.canStartCalibratingUntouchedField; },
+    NSStringFromSelector(@selector(calibrateTouchButtonWasPressed:)): ^{ return detector.canStartCalibratingTouchAtPoint; },
+    NSStringFromSelector(@selector(disconnectButtonWasPressed:)): ^{ return !device.isBusy && device.isConnected; },
+    NSStringFromSelector(@selector(pointerTracksTouchesButtonWasPressed:)): ^{ return YES; }
     };
 }
 
-- (BOOL)validateToolbarItem:(NSToolbarItem *)theItem {
-    BOOL (^validator)(void) = toolbarValidators_[theItem.itemIdentifier];
+- (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)item {
+    BOOL (^validator)(void) = userInterfaceItemValidators_[NSStringFromSelector(item.action)];
     if (!validator) {
-        [NSException raise:NSInternalInconsistencyException format:@"%@ doesn't have a validator for %@", self, theItem];
+        [NSException raise:NSInternalInconsistencyException format:@"%@ doesn't have a validator for %@", self, item];
     }
     return validator();
 }
@@ -200,7 +201,7 @@ static NSString *const kDetectTouchesItemIdentifier = @"detectTouches";
 
 - (void)touchDetector:(TouchDetector *)detector didDetectTouches:(NSUInteger)count atScreenPoints:(const CGPoint *)points {
     (void)detector;
-    if (!shouldDetectTouches_)
+    if (!shouldPointerTrackTouches_)
         return;
 
     if (count > 1) {
@@ -222,8 +223,11 @@ static NSString *const kDetectTouchesItemIdentifier = @"detectTouches";
 
 - (void)updateInterfaceForCurrentState {
     [controlWindow_.toolbar validateVisibleItems];
-    controlWindow_.toolbar.selectedItemIdentifier = shouldDetectTouches_ ? kDetectTouchesItemIdentifier : nil;
+    controlWindow_.toolbar.selectedItemIdentifier = shouldPointerTrackTouches_ ? kPointerTracksTouchesItemIdentifier : nil;
     [self updateTouchCalibrationPanelVisibility];
+    if (controlWindow_.isMainWindow) {
+        [AppDelegate theDelegate].pointerTracksTouchesMenuItem.state = shouldPointerTrackTouches_ ? NSOnState : NSOffState;
+    }
 }
 
 - (void)updateTouchCalibrationPanelVisibility {
