@@ -67,4 +67,7 @@ typedef enum {
 - (void)touchDetector:(TouchDetector *)detector didFinishCalibratingTouchAtPoint:(CGPoint)point withResult:(TouchCalibrationResult)result;
 - (void)touchDetectorIsDetectingTouches:(TouchDetector *)detector;
 
+// Touch detection.
+- (void)touchDetector:(TouchDetector *)detector didDetectTouches:(NSUInteger)count atScreenPoints:(CGPoint const *)points;
+
 @end

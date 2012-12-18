@@ -187,6 +187,16 @@
     [self updateInterfaceForCurrentState];
 }
 
+- (void)touchDetector:(TouchDetector *)detector didDetectTouches:(NSUInteger)count atScreenPoints:(const CGPoint *)points {
+    (void)detector;
+    if (count > 1) {
+        NSLog(@"%lu touches detected", count);
+    } else {
+        NSLog(@"warping mouse cursor to %@", NSStringFromPoint(*points));
+        CGWarpMouseCursorPosition(*points);
+    }
+}
+
 #pragma mark - Window title details
 
 - (void)updateWindowTitle {
