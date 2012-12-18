@@ -192,8 +192,9 @@
     if (count > 1) {
         NSLog(@"%lu touches detected", count);
     } else {
-        NSLog(@"warping mouse cursor to %@", NSStringFromPoint(*points));
-        CGWarpMouseCursorPosition(*points);
+        // CG coordinates are flipped from NS coordinates.
+        CGPoint point = CGPointMake(points[0].x, [NSScreen mainScreen].frame.size.height - points[0].y);
+        CGWarpMouseCursorPosition(point);
     }
 }
 
