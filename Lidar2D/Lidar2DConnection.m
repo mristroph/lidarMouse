@@ -85,7 +85,7 @@ static int const kReadTimeoutInMilliseconds = 1000;
     && [self configureTerminalSettings]
     && [self resetDevice]
     && [self initSCIP20Channel]
-    && [self setHighSensitivityMode]
+//    && [self setHighSensitivityMode]
     && [self readDeviceDictionaries]
     && [self startStreaming];
 }
