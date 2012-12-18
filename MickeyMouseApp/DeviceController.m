@@ -21,7 +21,7 @@
     TouchDetector *touchDetector_;
     IBOutlet DeviceControlWindow *controlWindow_;
     IBOutlet RawDataGraphView *graphView_;
-    IBOutlet NSPanel *touchCalibrationWindow_;
+    IBOutlet NSPanel *touchCalibrationPanel_;
     IBOutlet NSTextView *logView_;
     NSDictionary *toolbarValidators_;
     NSString *serialNumber_;
@@ -48,8 +48,6 @@
         [self updateWindowTitle];
         [touchDetector_ notifyObserverOfCurrentState:self];
         [controlWindow_ makeKeyAndOrderFront:self];
-
-        [touchCalibrationWindow_ orderFront:self];
     }
     return self;
 }
@@ -121,13 +119,13 @@
     [self logText:@"connected"];
     serialNumber_ = [device_.serialNumber copy];
     [self updateWindowTitle];
-    [controlWindow_.toolbar validateVisibleItems];
+    [self updateInterfaceForCurrentState];
 }
 
 - (void)lidar2dDidDisconnect:(Lidar2D *)device {
     (void)device;
     [self logText:@"disconnected"];
-    [controlWindow_.toolbar validateVisibleItems];
+    [self updateInterfaceForCurrentState];
 }
 
 - (void)lidar2d:(Lidar2D *)device didFailWithError:(NSError *)error {
@@ -140,17 +138,19 @@
 - (void)touchDetectorIsAwaitingUntouchedFieldCalibration:(TouchDetector *)detector {
     (void)detector;
     [self logText:@"Touch detector needs to calibrate untouched field; remove all obstructions from the sensitive area then click Calibrate Untouched Field"];
-    [controlWindow_.toolbar validateVisibleItems];
+    [self updateInterfaceForCurrentState];
 }
 
 - (void)touchDetectorIsCalibratingUntouchedField:(TouchDetector *)detector {
     (void)detector;
     [self logText:@"Calibrating untouched field; do not obstruct the sensitive area"];
+    [self updateInterfaceForCurrentState];
 }
 
 - (void)touchDetectorDidFinishCalibratingUntouchedField:(TouchDetector *)detector {
     (void)detector;
     [self logText:@"Finished calibrating untouched field"];
+    [self updateInterfaceForCurrentState];
     [detector getUntouchedFieldDistancesWithBlock:^(const uint32_t *distances, NSUInteger count) {
         graphView_.untouchedDistances = [NSData dataWithBytes:distances length:count * sizeof *distances];
     }];
@@ -159,12 +159,13 @@
 - (void)touchDetectorIsAwaitingTouchCalibration:(TouchDetector *)detector {
     (void)detector;
     [self logText:@"Touch detector needs to calibrate touches"];
-    [controlWindow_.toolbar validateVisibleItems];
+    [self updateInterfaceForCurrentState];
 }
 
 - (void)touchDetector:(TouchDetector *)detector isCalibratingTouchAtPoint:(CGPoint)point {
     (void)detector; (void)point;
     [self logText:@"Touch detector is calibrating a touch"];
+    [self updateInterfaceForCurrentState];
 }
 
 - (void)touchDetector:(TouchDetector *)detector didFinishCalibratingTouchAtPoint:(CGPoint)point withResult:(TouchCalibrationResult)result {
@@ -179,7 +180,7 @@
 - (void)touchDetectorIsDetectingTouches:(TouchDetector *)detector {
     (void)detector;
     [self logText:@"Ready to detect touches"];
-    [controlWindow_.toolbar validateVisibleItems];
+    [self updateInterfaceForCurrentState];
 }
 
 #pragma mark - Window title details
@@ -189,6 +190,24 @@
 }
 
 #pragma mark - Implementation details
+
+- (void)updateInterfaceForCurrentState {
+    [controlWindow_.toolbar validateVisibleItems];
+    [self updateTouchCalibrationPanelVisibility];
+}
+
+- (void)updateTouchCalibrationPanelVisibility {
+    BOOL shouldBeVisible = [touchDetector_ canStartCalibratingTouchAtPoint] || touchDetector_.state == TouchDetectorState_CalibratingTouch;
+    if (shouldBeVisible) {
+        if (!touchCalibrationPanel_.isVisible) {
+            [touchCalibrationPanel_ orderFront:self];
+        }
+    } else {
+        if (touchCalibrationPanel_.isVisible) {
+            [touchCalibrationPanel_ orderOut:self];
+        }
+    }
+}
 
 - (void)logText:(NSString *)text {
     char const *newline = [text hasSuffix:@"\n"] ? "" : "\n";
