@@ -87,6 +87,11 @@
     [controlWindow_.toolbar validateVisibleItems];
 }
 
+- (IBAction)detectTouchesButtonWasPressed:(id)sender {
+    (void)sender;
+    [self logText:@"detectTouches clicked"];
+}
+
 #pragma mark - Toolbar item validation
 
 - (void)initToolbarValidators {
@@ -98,7 +103,8 @@
         @"connect": ^{ return !device.isBusy && !device.isConnected; },
         @"calibrateUntouchedField": ^{ return detector.canStartCalibratingUntouchedField; },
         @"calibrateTouch": ^{ return detector.canStartCalibratingTouchAtPoint; },
-        @"disconnect": ^{ return !device.isBusy && device.isConnected; }
+        @"disconnect": ^{ return !device.isBusy && device.isConnected; },
+        @"detectTouches": ^{ return YES; } // xxx
     };
 }
 
