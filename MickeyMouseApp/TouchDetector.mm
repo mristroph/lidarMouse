@@ -394,7 +394,11 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
 
     NSLog(@"sensorToScreenTransform = %@", [NSValue valueWithBytes:&sensorToScreenTransform_ objCType:@encode(CGAffineTransform)]);
     for (size_t i = 0; i < sampleCount; ++i) {
-        NSLog(@"    %@ -> %@", NSStringFromPoint(sensorPointsForTouchCalibration_[i]), NSStringFromPoint([self screenPointForSensorPoint:sensorPointsForTouchCalibration_[i]]));
+        CGPoint sensorPoint = sensorPointsForTouchCalibration_[i];
+        CGPoint computedScreenPoint = [self screenPointForSensorPoint:sensorPoint];
+        CGPoint referenceScreenPoint = screenPointsForTouchCalibration_[i];
+        double error = hypot(computedScreenPoint.x - referenceScreenPoint.x, computedScreenPoint.y - referenceScreenPoint.y);
+        NSLog(@"    %@ -> %@; wanted %@; error=%f", NSStringFromPoint(sensorPoint), NSStringFromPoint(computedScreenPoint), NSStringFromPoint(referenceScreenPoint), error);
     }
 }
 
