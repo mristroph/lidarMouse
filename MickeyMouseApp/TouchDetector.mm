@@ -414,9 +414,7 @@ static BOOL isValidScreenPoint(CGPoint point) {
             touchPoints.push_back(screenPoint);
         }
     }];
-    if (touchPoints.size() > 0) {
-        [observers_.proxy touchDetector:self didDetectTouches:touchPoints.size() atScreenPoints:touchPoints.data()];
-    }
+    [observers_.proxy touchDetector:self didDetectTouches:touchPoints.size() atScreenPoints:touchPoints.data()];
 }
 
 - (void)computeTouchedRays:(vector<BOOL> &)rayWasTouched forDetectionWithDistances:(Lidar2DDistance const *)distances {

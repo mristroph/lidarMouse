@@ -30,7 +30,9 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
     NSDictionary *userInterfaceItemValidators_;
     NSString *serialNumber_;
 
+    CGPoint touchPoint_; // in CG screen coordinates
     BOOL shouldPointerTrackTouches_ : 1;
+    BOOL touchWasDown_ : 1;
 }
 
 #pragma mark - Public API
@@ -205,12 +207,25 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
         return;
 
     if (count > 1) {
-        NSLog(@"%lu touches detected", count);
-    } else {
-        // CG coordinates are flipped from NS coordinates.
-        CGPoint point = CGPointMake(points[0].x, [NSScreen mainScreen].frame.size.height - points[0].y);
-        CGWarpMouseCursorPosition(point);
+        NSLog(@"%lu touches detected; ignoring all", count);
+    } else if (count == 1) {
+        touchPoint_ = CGPointMake(points[0].x, [NSScreen mainScreen].frame.size.height - points[0].y);
+        if (touchWasDown_) {
+            [self sendMouseEventWithType:kCGEventOtherMouseDragged];
+        } else {
+            [self sendMouseEventWithType:kCGEventOtherMouseDown];
+            touchWasDown_ = YES;
+        }
+    } else if (touchWasDown_) {
+        [self sendMouseEventWithType:kCGEventOtherMouseUp];
+        touchWasDown_ = NO;
     }
+}
+
+- (void)sendMouseEventWithType:(CGEventType)type {
+    CGEventRef event = CGEventCreateMouseEvent(NULL, type, touchPoint_, kCGMouseButtonLeft);
+    CGEventPost(kCGHIDEventTap, event);
+    CFRelease(event);
 }
 
 #pragma mark - Window title details
