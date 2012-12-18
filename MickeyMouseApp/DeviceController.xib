@@ -62,7 +62,7 @@
 					<int key="NSToolbarDisplayMode">1</int>
 					<int key="NSToolbarSizeMode">1</int>
 					<dictionary class="NSMutableDictionary" key="NSToolbarIBIdentifiedItems">
-						<object class="NSToolbarItem" key="3B9A2653-0315-4733-804B-665338DBB687" id="74638967">
+						<object class="NSToolbarItem" key="3B9A2653-0315-4733-804B-665338DBB687" id="166414794">
 							<object class="NSMutableString" key="NSToolbarItemIdentifier">
 								<characters key="NS.bytes">3B9A2653-0315-4733-804B-665338DBB687</characters>
 							</object>
@@ -240,13 +240,13 @@
 						<reference ref="33507782"/>
 						<reference ref="367242431"/>
 						<reference ref="858311301"/>
-						<reference ref="74638967"/>
+						<reference ref="166414794"/>
 					</array>
 					<array key="NSToolbarIBDefaultItems">
 						<reference ref="901207582"/>
 						<reference ref="668509036"/>
 						<reference ref="204410201"/>
-						<reference ref="74638967"/>
+						<reference ref="166414794"/>
 						<reference ref="858311301"/>
 						<reference ref="33507782"/>
 					</array>
@@ -527,7 +527,6 @@ wGw</bytes>
 									<string key="NSFrame">{{204, 1}, {15, 275}}</string>
 									<reference key="NSSuperview" ref="224238207"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:83</string>
 									<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 									<reference key="NSTarget" ref="224238207"/>
@@ -716,7 +715,7 @@ wGw</bytes>
 					<object class="IBActionConnection" key="connection">
 						<string key="label">detectTouchesButtonWasPressed:</string>
 						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="74638967"/>
+						<reference key="destination" ref="166414794"/>
 					</object>
 					<int key="connectionID">127</int>
 				</object>
@@ -1017,7 +1016,7 @@ wGw</bytes>
 							<reference ref="668509036"/>
 							<reference ref="204410201"/>
 							<reference ref="33507782"/>
-							<reference ref="74638967"/>
+							<reference ref="166414794"/>
 						</array>
 						<reference key="parent" ref="1005"/>
 					</object>
@@ -1124,7 +1123,7 @@ wGw</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">126</int>
-						<reference key="object" ref="74638967"/>
+						<reference key="object" ref="166414794"/>
 						<reference key="parent" ref="1061614180"/>
 					</object>
 				</array>

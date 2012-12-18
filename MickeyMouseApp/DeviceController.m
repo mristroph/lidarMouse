@@ -12,6 +12,8 @@
 #import "RawDataGraphView.h"
 #import "TouchDetector.h"
 
+static NSString *const kDetectTouchesItemIdentifier = @"detectTouches";
+
 @interface DeviceController () <Lidar2DObserver, TouchDetectorObserver>
 @end
 
@@ -26,6 +28,8 @@
     IBOutlet NSTextView *logView_;
     NSDictionary *toolbarValidators_;
     NSString *serialNumber_;
+
+    BOOL shouldDetectTouches_ : 1;
 }
 
 #pragma mark - Public API
@@ -64,7 +68,7 @@
     (void)sender;
     [self logText:@"connecting"];
     [device_ connect];
-    [controlWindow_.toolbar validateVisibleItems];
+    [self updateInterfaceForCurrentState];
 }
 
 - (IBAction)calibrateUntouchedFieldButtonWasPressed:(id)sender {
@@ -84,12 +88,13 @@
     (void)sender;
     [self logText:@"disconnecting"];
     [device_ disconnect];
-    [controlWindow_.toolbar validateVisibleItems];
+    [self updateInterfaceForCurrentState];
 }
 
 - (IBAction)detectTouchesButtonWasPressed:(id)sender {
     (void)sender;
-    [self logText:@"detectTouches clicked"];
+    shouldDetectTouches_ = !shouldDetectTouches_;
+    [self updateInterfaceForCurrentState];
 }
 
 #pragma mark - Toolbar item validation
@@ -104,7 +109,7 @@
         @"calibrateUntouchedField": ^{ return detector.canStartCalibratingUntouchedField; },
         @"calibrateTouch": ^{ return detector.canStartCalibratingTouchAtPoint; },
         @"disconnect": ^{ return !device.isBusy && device.isConnected; },
-        @"detectTouches": ^{ return YES; } // xxx
+        kDetectTouchesItemIdentifier: ^{ return YES; }
     };
 }
 
@@ -195,6 +200,9 @@
 
 - (void)touchDetector:(TouchDetector *)detector didDetectTouches:(NSUInteger)count atScreenPoints:(const CGPoint *)points {
     (void)detector;
+    if (!shouldDetectTouches_)
+        return;
+
     if (count > 1) {
         NSLog(@"%lu touches detected", count);
     } else {
@@ -214,6 +222,7 @@
 
 - (void)updateInterfaceForCurrentState {
     [controlWindow_.toolbar validateVisibleItems];
+    controlWindow_.toolbar.selectedItemIdentifier = shouldDetectTouches_ ? kDetectTouchesItemIdentifier : nil;
     [self updateTouchCalibrationPanelVisibility];
 }
 
