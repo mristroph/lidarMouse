@@ -21,20 +21,6 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
     return isValidDistance(distance) ? distance : Lidar2DDistance_MAX;
 }
 
-// To use `dgels_` to solve for the affine transform, I need to augment each point from the sensor with a constant 1, which is the coefficient of the translation element of the transform.
-struct SensorPoint {
-    __CLPK_doublereal x;
-    __CLPK_doublereal y;
-    __CLPK_doublereal one;
-    SensorPoint(__CLPK_doublereal x_, __CLPK_doublereal y_) : x(x_), y(y_), one(1) { }
-};
-
-struct ScreenPoint {
-    __CLPK_doublereal x;
-    __CLPK_doublereal y;
-    ScreenPoint(__CLPK_doublereal x_, __CLPK_doublereal y_) : x(x_), y(y_) { }
-};
-
 @interface TouchDetector () <Lidar2DObserver>
 @end
 
@@ -57,8 +43,8 @@ struct ScreenPoint {
 
     NSUInteger reportsReceivedForTouchCalibration_;
 
-    vector<SensorPoint> sensorPointsForTouchCalibration_;
-    vector<ScreenPoint> screenPointsForTouchCalibration_;
+    vector<CGPoint> sensorPointsForTouchCalibration_;
+    vector<CGPoint> screenPointsForTouchCalibration_;
     
     CGPoint currentCalibrationPoint_;
 
@@ -295,6 +281,8 @@ struct ScreenPoint {
 }
 
 - (void)finishCalibratingTouch {
+    distancesReportHandler_ = nil;
+
     vector<BOOL> rayWasTouched;
     [self computeTouchedRays:rayWasTouched];
     __block NSUInteger touchesFound = 0;
@@ -311,6 +299,7 @@ struct ScreenPoint {
     } else {
         [observers_.proxy touchDetector:self didFinishCalibratingTouchAtPoint:currentCalibrationPoint_ withResult:TouchCalibrationResult_MultipleTouchesDetected];
     }
+
     [self setAppropriateStateBecauseCalibrationFinished];
 }
 
@@ -347,29 +336,46 @@ struct ScreenPoint {
 }
 
 - (void)recordCalibratedTouchAtRayIndex:(NSUInteger)rayIndex{
-    double distance = (double)touchDistanceSums_[rayIndex] / touchDistanceSums_[rayIndex];
+    double distance = (double)touchDistanceSums_[rayIndex] / touchDistanceCounts_[rayIndex];
     double radians = device_.coverageDegrees * rayIndex / (2 * M_PI * touchDistanceCounts_.size());
-    sensorPointsForTouchCalibration_.push_back(SensorPoint(distance * cos(radians), distance * sin(radians)));
-    screenPointsForTouchCalibration_.push_back(ScreenPoint(currentCalibrationPoint_.x, currentCalibrationPoint_.y));
+    sensorPointsForTouchCalibration_.push_back(CGPointMake(distance * cos(radians), distance * sin(radians)));
+    screenPointsForTouchCalibration_.push_back(CGPointMake(currentCalibrationPoint_.x, currentCalibrationPoint_.y));
     if (sensorPointsForTouchCalibration_.size() >= kTouchCalibrationsNeeded) {
         [self computeSensorToScreenTransform];
     }
 }
 
 - (void)computeSensorToScreenTransform {
-    static char kTranspose = 'T'; // My matrices are stored row-major, so I need dgels_ to transpose them.
-    vector<ScreenPoint> bx = screenPointsForTouchCalibration_;
-    __CLPK_integer m = (__CLPK_integer)sensorPointsForTouchCalibration_.size();
+    static char kNoTranspose = 'N';
+
+    // LAPACK on Mac only supports column-major order.
+
+    size_t sampleCount = sensorPointsForTouchCalibration_.size();
+    
+    vector<__CLPK_doublereal> a(sampleCount * 3);
+    for (size_t i = 0; i < sampleCount; ++i) {
+        a[i] = sensorPointsForTouchCalibration_[i].x;
+        a[sampleCount + i] = sensorPointsForTouchCalibration_[i].y;
+        a[2 * sampleCount + i] = 1;
+    }
+
+    vector<__CLPK_doublereal> bx(sampleCount * 2);
+    for (size_t i = 0; i < sampleCount; ++i) {
+        bx[i] = screenPointsForTouchCalibration_[i].x;
+        bx[sampleCount + i] = screenPointsForTouchCalibration_[i].y;
+    }
+
+    __CLPK_integer m = (__CLPK_integer)sampleCount;
     __CLPK_integer n = 3;
     __CLPK_integer nrhs = 2;
-    __CLPK_integer lda = sizeof(sensorPointsForTouchCalibration_[0]) / sizeof(sensorPointsForTouchCalibration_[0].x);
-    __CLPK_integer ldb = sizeof(bx[0]) / sizeof(bx[0].x);
+    __CLPK_integer lda = m;
+    __CLPK_integer ldb = m;
     __CLPK_doublereal work_fixed[1];
     __CLPK_integer lwork = -1;
     __CLPK_integer info;
 
     // First, we ask dgels_ how much work area it needs.
-    dgels_(&kTranspose, &m, &n, &nrhs, &sensorPointsForTouchCalibration_[0].x, &lda, &bx[0].x, &ldb, work_fixed, &lwork, &info);
+    dgels_(&kNoTranspose, &m, &n, &nrhs, a.data(), &lda, bx.data(), &ldb, work_fixed, &lwork, &info);
 
     if (info != 0) {
         [NSException raise:NSInternalInconsistencyException format:@"dgels_ failed to compute workspace size: info=%d", info];
@@ -380,7 +386,7 @@ struct ScreenPoint {
     __CLPK_doublereal *work = (__CLPK_doublereal *)malloc(sizeof(__CLPK_doublereal) * lwork);
 
     // This time, we ask dgels_ to solve the linear least squares problem.
-    dgels_(&kTranspose, &m, &n, &nrhs, &sensorPointsForTouchCalibration_[0].x, &lda, &bx[0].x, &ldb, work, &lwork, &info);
+    dgels_(&kNoTranspose, &m, &n, &nrhs, a.data(), &lda, bx.data(), &ldb, work, &lwork, &info);
     free(work);
 
     if (info != 0) {
@@ -388,9 +394,9 @@ struct ScreenPoint {
     }
 
     sensorToScreenTransform_ = (CGAffineTransform){
-        .a = bx[0].x, .b = bx[0].y,
-        .c = bx[1].x, .d = bx[1].y,
-        .tx = bx[2].x, .ty = bx[2].y
+        .a = bx[0], .b = bx[1],
+        .c = bx[2], .d = bx[3],
+        .tx = bx[4], .ty = bx[5]
     };
 
     NSLog(@"sensorToScreenTransform = %@", [NSValue valueWithBytes:&sensorToScreenTransform_ objCType:@encode(CGAffineTransform)]);
