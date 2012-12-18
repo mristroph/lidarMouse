@@ -11,6 +11,7 @@ static Lidar2DDistance const kMinimumDistance = 20;
 static NSUInteger const kReportsNeededForUntouchedFieldCalibration = 20;
 static NSUInteger const kTouchCalibrationsNeeded = 4;
 static NSUInteger const kReportsNeededForTouchCalibration = 20;
+static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = 15;
 
 static BOOL isValidDistance(Lidar2DDistance distance) {
     return distance >= kMinimumDistance && distance != Lidar2DDistance_MAX;
@@ -39,7 +40,7 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
 
     // Each element of `touchDistanceCounts_` corresponds to one ray and is the number of valid distances reported for that ray since I started calibrating the current touch.
     vector<uint16_t> touchDistanceCounts_;
- 
+
     NSUInteger reportsReceivedForTouchCalibration_;
 
     NSUInteger touchCalibrationsPerformed;
@@ -277,8 +278,64 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
 }
 
 - (void)finishCalibratingTouch {
-    abort(); // xxx
+    vector<BOOL> rayWasTouched;
+    [self computeTouchedRays:rayWasTouched];
+    __block NSUInteger touchesFound = 0;
+    __block NSUInteger rayIndex;
+    [self forEachSweepInTouchedRays:rayWasTouched do:^(NSUInteger middleRayIndex) {
+        ++touchesFound;
+        rayIndex = middleRayIndex;
+    }];
+
+    if (touchesFound == 0) {
+        [observers_.proxy touchDetector:self didFinishCalibratingTouchAtPoint:currentCalibrationPoint_ withResult:TouchCalibrationResult_NoTouchDetected];
+    } else if (touchesFound == 1) {
+        [self recordCalibratedTouchAtRayIndex:rayIndex];
+    } else {
+        [observers_.proxy touchDetector:self didFinishCalibratingTouchAtPoint:currentCalibrationPoint_ withResult:TouchCalibrationResult_MultipleTouchesDetected];
+    }
     [self setAppropriateStateBecauseCalibrationFinished];
+}
+
+- (void)computeTouchedRays:(vector<BOOL> &)rayWasTouched {
+    NSUInteger l = MIN(touchDistanceSums_.size(), untouchedFieldDistances_.size());
+    rayWasTouched.clear();
+    rayWasTouched.reserve(l);
+    for (NSUInteger i = 0; i < l; ++i) {
+        BOOL wasTouched = NO;
+        if (touchDistanceCounts_[i] >= kDistancesNeededForRayToBeTreatedAsTouch) {
+            Lidar2DDistance averageDistance = touchDistanceSums_[i] / touchDistanceCounts_[i];
+            if (averageDistance < untouchedFieldDistances_[i]) {
+                wasTouched = YES;
+            }
+        }
+        rayWasTouched.push_back(wasTouched);
+    }
+}
+
+- (void)forEachSweepInTouchedRays:(vector<BOOL> const &)rayWasTouched do:(void (^)(NSUInteger middleRayIndex))block {
+    NSUInteger i = 0;
+    while (i < rayWasTouched.size()) {
+        if (rayWasTouched[i]) {
+            NSUInteger end = i + 1;
+            while (end < rayWasTouched.size() && rayWasTouched[end]) {
+                ++end;
+            }
+            block(i + (end - i) / 2);
+            i = end;
+        } else {
+            ++i;
+        }
+    }
+}
+
+- (void)recordCalibratedTouchAtRayIndex:(NSUInteger)rayIndex{
+    double distance = (double)touchDistanceSums_[rayIndex] / touchDistanceSums_[i];
+    double radians = device_.coverageDegrees * rayIndex / (2 * M_PI * touchDistanceCounts_.size());
+    CGPoint sensorPoint = CGPointMake(distance * cos(radians), distance * sin(radians));
+    abort(); // xxx Record sensorPoint in a vector, currentCalibrationPoint in another vector.
+    // xxx Check whether enough points are recorded.
+    // xxx If enough points are recorded, use dgels_ to compute affine transform.
 }
 
 @end
