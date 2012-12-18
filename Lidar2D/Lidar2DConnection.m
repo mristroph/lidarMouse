@@ -15,6 +15,7 @@
 static NSUInteger const kFirstRayStep = 44;
 static NSUInteger const kLastRayStep = 725;
 static double const kCoverageDegrees = 239.77;
+static double const kFirstRayOffsetDegrees = -30;
 
 NSString *const Lidar2DErrorDomain = @"Lidar2DErrorDomain";
 NSString *const Lidar2DErrorStatusKey = @"status";
@@ -70,6 +71,10 @@ static int const kReadTimeoutInMilliseconds = 1000;
 
 - (double)coverageDegrees {
     return kCoverageDegrees;
+}
+
+- (double)firstRayOffsetDegrees {
+    return kFirstRayOffsetDegrees;
 }
 
 #pragma mark - Connection details

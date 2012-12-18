@@ -26,6 +26,7 @@
 @property (nonatomic, readonly) NSString *serialNumber;
 @property (nonatomic, readonly) NSUInteger rayCount;
 @property (nonatomic, readonly) double coverageDegrees;
+@property (nonatomic, readonly) double firstRayOffsetDegrees;
 
 @end
 

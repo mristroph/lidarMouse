@@ -129,6 +129,10 @@ static NSString *dialinDevicePathForIOService(io_service_t service) {
     return connection_.coverageDegrees;
 }
 
+- (double)firstRayOffsetDegrees {
+    return connection_.firstRayOffsetDegrees;
+}
+
 #pragma mark - Lidar2DConnectionDelegate protocol
 
 - (void)connection:(Lidar2DConnection *)connection didFailWithError:(NSError *)error {

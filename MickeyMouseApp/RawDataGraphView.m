@@ -58,8 +58,8 @@
         NSRect bounds = self.bounds;
         CGContextTranslateCTM(gc, CGRectGetMidX(bounds), CGRectGetMidY(bounds));
 
-        CGFloat const indexToDegrees= 239.77 / levelCount;
-        CGFloat const baseDegrees = -30;
+        CGFloat const indexToDegrees= _device.coverageDegrees / levelCount;
+        CGFloat const baseDegrees = _device.firstRayOffsetDegrees;
         CGFloat const degreesToRadians = M_PI / 180;
         NSColor *redColor = [NSColor redColor];
         NSColor *greenColor = [NSColor greenColor];

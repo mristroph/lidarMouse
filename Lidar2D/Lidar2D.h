@@ -36,6 +36,9 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 // The size of the arc of coverage, in degrees.  The individual distances are evenly spaced around this arc.  This is the difference between the first distance angle and the last distance angle.  Only valid after `coverageDegrees` becomes true.
 @property (nonatomic, readonly) double coverageDegrees;
 
+// The offset in degrees of the first ray from horizontal to the right.
+@property (nonatomic, readonly) double firstRayOffsetDegrees;
+
 @end
 
 @protocol Lidar2DObserver
