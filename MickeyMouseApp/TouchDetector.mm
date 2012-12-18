@@ -331,7 +331,6 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
     double distance = (double)touchDistanceSums_[rayIndex] / touchDistanceCounts_[rayIndex];
     sensorPointsForTouchCalibration_.push_back([self sensorPointForRayIndex:rayIndex distance:distance]);
     screenPointsForTouchCalibration_.push_back(CGPointMake(currentCalibrationPoint_.x, currentCalibrationPoint_.y));
-    double radians = (2.0 * M_PI / 360.0) * (device_.firstRayOffsetDegrees + device_.coverageDegrees * (double)rayIndex / touchDistanceCounts_.size());
     if (sensorPointsForTouchCalibration_.size() >= kTouchCalibrationsNeeded) {
         [self computeSensorToScreenTransform];
     }
