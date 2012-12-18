@@ -332,7 +332,6 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
     sensorPointsForTouchCalibration_.push_back([self sensorPointForRayIndex:rayIndex distance:distance]);
     screenPointsForTouchCalibration_.push_back(CGPointMake(currentCalibrationPoint_.x, currentCalibrationPoint_.y));
     double radians = (2.0 * M_PI / 360.0) * (device_.firstRayOffsetDegrees + device_.coverageDegrees * (double)rayIndex / touchDistanceCounts_.size());
-    NSLog(@"touch calibrated: rayIndex=%lu radians=%f distance=%f sensorPoint=%@ screenPoint=%@", rayIndex, radians, distance, NSStringFromPoint(sensorPointsForTouchCalibration_.back()), NSStringFromPoint(screenPointsForTouchCalibration_.back()));
     if (sensorPointsForTouchCalibration_.size() >= kTouchCalibrationsNeeded) {
         [self computeSensorToScreenTransform];
     }
@@ -387,19 +386,10 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
     }
 
     sensorToScreenTransform_ = (CGAffineTransform){
-        .a = bx[0], .b = bx[3],
-        .c = bx[1], .d = bx[4],
-        .tx = bx[2], .ty = bx[5]
+        .a = bx[0], .b = bx[sampleCount + 0],
+        .c = bx[1], .d = bx[sampleCount + 1],
+        .tx = bx[2], .ty = bx[sampleCount + 2]
     };
-
-    NSLog(@"sensorToScreenTransform = %@", [NSValue valueWithBytes:&sensorToScreenTransform_ objCType:@encode(CGAffineTransform)]);
-    for (size_t i = 0; i < sampleCount; ++i) {
-        CGPoint sensorPoint = sensorPointsForTouchCalibration_[i];
-        CGPoint computedScreenPoint = [self screenPointForSensorPoint:sensorPoint];
-        CGPoint referenceScreenPoint = screenPointsForTouchCalibration_[i];
-        double error = hypot(computedScreenPoint.x - referenceScreenPoint.x, computedScreenPoint.y - referenceScreenPoint.y);
-        NSLog(@"    %@ -> %@; wanted %@; error=%f", NSStringFromPoint(sensorPoint), NSStringFromPoint(computedScreenPoint), NSStringFromPoint(referenceScreenPoint), error);
-    }
 }
 
 #pragma mark - Touch detection details
