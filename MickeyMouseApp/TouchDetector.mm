@@ -12,7 +12,7 @@ static Lidar2DDistance const kMaximumDistance = 5600;
 static NSUInteger const kReportsNeededForUntouchedFieldCalibration = 20;
 static NSUInteger const kTouchCalibrationsNeeded = 3;
 static NSUInteger const kReportsNeededForTouchCalibration = 20;
-static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = 15;
+static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeededForTouchCalibration;
 
 static BOOL isValidDistance(Lidar2DDistance distance) {
     return distance >= kMinimumDistance && distance <= kMaximumDistance;
@@ -296,6 +296,7 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
     __block NSUInteger touchesFound = 0;
     __block NSUInteger rayIndex;
     [self forEachSweepInTouchedRays:rayWasTouched do:^(NSUInteger middleRayIndex) {
+        NSLog(@"middleRayIndex=%lu", middleRayIndex);
         ++touchesFound;
         rayIndex = middleRayIndex;
     }];
