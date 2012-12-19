@@ -211,13 +211,13 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
     } else if (count == 1) {
         touchPoint_ = CGPointMake(points[0].x, [NSScreen mainScreen].frame.size.height - points[0].y);
         if (touchWasDown_) {
-            [self sendMouseEventWithType:kCGEventOtherMouseDragged];
+            [self sendMouseEventWithType:kCGEventLeftMouseDragged];
         } else {
-            [self sendMouseEventWithType:kCGEventOtherMouseDown];
+            [self sendMouseEventWithType:kCGEventLeftMouseDown];
             touchWasDown_ = YES;
         }
     } else if (touchWasDown_) {
-        [self sendMouseEventWithType:kCGEventOtherMouseUp];
+        [self sendMouseEventWithType:kCGEventLeftMouseUp];
         touchWasDown_ = NO;
     }
 }
