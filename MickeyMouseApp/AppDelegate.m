@@ -20,7 +20,7 @@
 #pragma mark - Public API
 
 + (AppDelegate *)theDelegate {
-    return [NSApplication sharedApplication].delegate;
+    return (AppDelegate *)[NSApplication sharedApplication].delegate;
 }
 
 @synthesize pointerTracksTouchesMenuItem = _pointerTracksTouchesMenuItem;
