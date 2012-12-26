@@ -48,7 +48,9 @@ static Lidar2DDistance correctedDistance(Lidar2DDistance distance) {
     vector<CGPoint> screenPointsForTouchCalibration_;
     
     CGPoint currentCalibrationPoint_;
-
+    
+    Lidar2DDistance lastDistance;
+    
     CGAffineTransform sensorToScreenTransform_;
 }
 
@@ -406,7 +408,7 @@ static BOOL isValidScreenPoint(CGPoint point) {
     vector<BOOL> rayWasTouched;
     [self computeTouchedRays:rayWasTouched forDetectionWithDistances:distances];
     __block vector<CGPoint> touchPoints;
-    [self forEachSweepInTouchedRays:rayWasTouched do:^(NSUInteger middleRayIndex) {
+    /*[self forEachSweepInTouchedRays:rayWasTouched do:^(NSUInteger middleRayIndex) {
         Lidar2DDistance distance = distances[middleRayIndex];
         CGPoint sensorPoint = [self sensorPointForRayIndex:middleRayIndex distance:distance];
         CGPoint screenPoint = [self screenPointForSensorPoint:sensorPoint];
@@ -414,6 +416,39 @@ static BOOL isValidScreenPoint(CGPoint point) {
             touchPoints.push_back(screenPoint);
         }
     }];
+    [observers_.proxy touchDetector:self didDetectTouches:touchPoints.size() atScreenPoints:touchPoints.data()];
+     */
+    
+    // Alternative implementation. Only accepts touches with at least 3 consequective touched rays; uses angle of middle ray and averaged distance of all rays except first and last.
+    float alpha = 0.3;
+    NSUInteger i = 0;
+    while (i < (rayWasTouched.size()-2)) {
+        if (rayWasTouched[i] && rayWasTouched[i+1] && rayWasTouched[i+2]) {
+            Lidar2DDistance totalDistance = 0;
+            ++i;
+            NSUInteger start = i;
+            do {
+                totalDistance += distances[i];
+                ++i;
+            } while (i < (rayWasTouched.size()+1) && rayWasTouched[i] && rayWasTouched[i+1]);
+            NSUInteger middleRayIndex = start + (i - start) / 2;
+            Lidar2DDistance averageDistance = (totalDistance/(i-start));
+            if(lastDistance > 0) {
+                lastDistance = alpha * averageDistance + (1.0-alpha)*lastDistance;
+            } else {
+                lastDistance = averageDistance;
+            }
+            CGPoint sensorPoint = [self sensorPointForRayIndex:middleRayIndex distance:lastDistance];
+            CGPoint screenPoint = [self screenPointForSensorPoint:sensorPoint];
+           if (isValidScreenPoint(screenPoint)) {
+                touchPoints.push_back(screenPoint);
+            }
+        }
+        ++i;
+    }
+    if(touchPoints.size() == 0) {
+        lastDistance = -1.0;
+    }
     [observers_.proxy touchDetector:self didDetectTouches:touchPoints.size() atScreenPoints:touchPoints.data()];
 }
 
