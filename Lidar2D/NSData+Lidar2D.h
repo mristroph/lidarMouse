@@ -11,6 +11,8 @@
 typedef float Lidar2DDistance;
 #define Lidar2DDistance_Invalid HUGE_VALF
 
+static inline BOOL isLidar2DDistanceValid(Lidar2DDistance distance) { return distance != Lidar2DDistance_Invalid; }
+
 @interface NSData (Lidar2D)
 
 @property (nonatomic, readonly) NSUInteger lidar2D_distanceCount;

@@ -169,7 +169,7 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
     (void)detector;
     [self logText:@"Finished calibrating untouched field"];
     [self updateInterfaceForCurrentState];
-    [detector getUntouchedFieldDistancesWithBlock:^(const uint32_t *distances, NSUInteger count) {
+    [detector getUntouchedFieldDistancesWithBlock:^(const Lidar2DDistance *distances, NSUInteger count) {
         graphView_.untouchedDistances = [NSData dataWithBytes:distances length:count * sizeof *distances];
     }];
 }
