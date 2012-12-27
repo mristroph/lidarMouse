@@ -9,6 +9,7 @@
 #import "TouchCalibration.h"
 #import "TouchThresholdCalibration.h"
 #import <vector>
+#include <vecLib/clapack.h>
 
 using std::vector;
 
