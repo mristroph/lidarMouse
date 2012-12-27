@@ -68,7 +68,7 @@ static NSUInteger const kReportsNeeded = 20;
 #pragma mark - Implementation details
 
 - (void)resetThresholdDistancesWithCount:(NSUInteger)count {
-    thresholdDistances_.assign(count, 0);
+    thresholdDistances_.assign(count, Lidar2DDistance_Invalid);
 }
 
 - (void)updateThresholdDistancesWithDistanceData:(NSData *)distanceData {
