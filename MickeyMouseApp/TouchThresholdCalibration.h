@@ -1,5 +1,5 @@
 //
-//  UntouchedFieldCalibration.h
+//  TouchThresholdCalibration.h
 //  mickeyMouse
 //
 //  Created by Rob Mayoff on 12/26/12.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface UntouchedFieldCalibration : NSObject
+@interface TouchThresholdCalibration : NSObject
 
 @property (nonatomic, readonly) BOOL ready;
 
@@ -22,6 +22,6 @@
 - (void)forEachTouchedSweepInDistanceData:(NSData *)data do:(void (^)(NSRange sweepRange))block;
 
 // FOR DEBUGGING ONLY
-- (void)getUntouchedFieldDistancesWithBlock:(void (^)(Lidar2DDistance const *distances, NSUInteger count))block;
+- (void)getTouchThresholdDistancesWithBlock:(void (^)(Lidar2DDistance const *distances, NSUInteger count))block;
 
 @end
