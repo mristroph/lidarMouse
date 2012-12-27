@@ -19,12 +19,11 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 @interface TouchCalibration ()
 // Use a property for KVO compliance.
 @property (nonatomic, readwrite) BOOL ready;
+@property (nonatomic, readwrite) CGPoint currentCalibrationScreenPoint;
 @end
 
 @implementation TouchCalibration {
     
-    CGPoint currentScreenPoint_;
-
     NSUInteger reportsReceived_;
 
     // Each element of `touchDistanceSums_` corresponds to one ray and is the sum of the valid distances reported for that ray since I started calibrating the current touch.
@@ -45,6 +44,7 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 @synthesize thresholdCalibration = _thresholdCalibration;
 @synthesize radiansPerRay = _radiansPerRay;
 @synthesize ready = _ready;
+@synthesize currentCalibrationScreenPoint = _currentCalibrationScreenPoint;
 
 - (void)reset {
     sensorPoints_.clear();
@@ -54,7 +54,8 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 }
 
 - (void)startCalibratingTouchAtScreenPoint:(CGPoint)screenPoint {
-    currentScreenPoint_ = screenPoint;
+    self.currentCalibrationScreenPoint = screenPoint;
+    self.ready = NO;
 }
 
 - (void)calibrateWithDistanceData:(NSData *)data {
@@ -99,12 +100,7 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 - (void)finishCalibratingTouchIfPossible {
     if (reportsReceived_ < kReportsNeeded)
         return;
-    TouchCalibrationResult result = [self addCalibratedPointIfPossible];
-    [_delegate didFinishCalibrationWithResult:result];
-    [self becomeReadyIfPossible];
-}
 
-- (TouchCalibrationResult)addCalibratedPointIfPossible {
     vector<Lidar2DDistance> averages;
     [self getAverageDistances:averages];
     NSData *averageData = [[NSData alloc] initWithBytes:averages.data() length:averages.size() * sizeof averages[0]];
@@ -115,13 +111,17 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
         rayIndex = sweepRange.location + sweepRange.length / 2;
     }];
 
-    if (touchesFound == 0)
-        return TouchCalibrationResult_NoTouchDetected;
-    else if (touchesFound > 1)
-        return TouchCalibrationResult_MultipleTouchesDetected;
-
-    [self recordTouchAtRayIndex:rayIndex distance:averages[rayIndex]];
-    return TouchCalibrationResult_Success;
+    if (touchesFound == 0) {
+        [self resumeReadyIfPossible];
+        [_delegate touchCalibrationDidFailWithNoTouches];
+    } else if (touchesFound > 1) {
+        [self resumeReadyIfPossible];
+        [_delegate touchCalibrationDidFailWithMultipleTouches];
+    } else {
+        [self recordTouchAtRayIndex:rayIndex distance:averages[rayIndex]];
+        [self becomeReadyIfPossible];
+        [_delegate touchCalibrationDidSucceed];
+    }
 }
 
 - (void)getAverageDistances:(vector<Lidar2DDistance> &)averages {
@@ -137,12 +137,18 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 
 - (void)recordTouchAtRayIndex:(NSUInteger)rayIndex distance:(Lidar2DDistance)distance {
     sensorPoints_.push_back([self sensorPointForRayIndex:rayIndex distance:distance]);
-    screenPoints_.push_back(CGPointMake(currentScreenPoint_.x, currentScreenPoint_.y));
+    screenPoints_.push_back(_currentCalibrationScreenPoint);
 }
 
 - (CGPoint)sensorPointForRayIndex:(NSUInteger)rayIndex distance:(Lidar2DDistance)distance {
     double radians = rayIndex * _radiansPerRay;
     return CGPointMake(distance * cos(radians), distance * sin(radians));
+}
+
+- (void)resumeReadyIfPossible {
+    if (sensorPoints_.size() >= kTouchesNeeded) {
+        self.ready = YES;
+    }
 }
 
 - (void)becomeReadyIfPossible {

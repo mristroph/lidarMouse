@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TouchDetectorAncillary.h"
 #import "NSData+Lidar2D.h"
 
 @protocol TouchCalibrationDelegate;
@@ -32,6 +31,8 @@
 // I prepare to calibrate a touch at the given screen position.
 - (void)startCalibratingTouchAtScreenPoint:(CGPoint)screenPoint;
 
+@property (nonatomic, readonly) CGPoint currentCalibrationScreenPoint;
+
 // I update my calibration data with the given distance data.  If this gives me enough data to calibrate the current touch, I do so and send `didFinishCalibrationWithResult:` to my delegate.  If, after doing so, I have calibrated enough touches, I set `ready` to `YES`.
 - (void)calibrateWithDistanceData:(NSData *)data;
 
@@ -42,6 +43,8 @@
 
 @protocol TouchCalibrationDelegate <NSObject>
 
-- (void)didFinishCalibrationWithResult:(TouchCalibrationResult)result;
+- (void)touchCalibrationDidFailWithNoTouches;
+- (void)touchCalibrationDidFailWithMultipleTouches;
+- (void)touchCalibrationDidSucceed;
 
 @end

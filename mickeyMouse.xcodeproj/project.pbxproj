@@ -203,7 +203,6 @@
 		31EF78E8168C15EB0099B65A /* TouchThresholdCalibration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = TouchThresholdCalibration.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		31FAEC5A168C276400FC4154 /* TouchCalibration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchCalibration.h; sourceTree = "<group>"; };
 		31FAEC5B168C276400FC4154 /* TouchCalibration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TouchCalibration.mm; sourceTree = "<group>"; };
-		31FAEC5D168C289300FC4154 /* TouchDetectorAncillary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TouchDetectorAncillary.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -578,7 +577,6 @@
 			children = (
 				31D72C0D167A754700230548 /* TouchDetector.h */,
 				31D72C0E167A754800230548 /* TouchDetector.mm */,
-				31FAEC5D168C289300FC4154 /* TouchDetectorAncillary.h */,
 				31EF78E7168C15EB0099B65A /* TouchThresholdCalibration.h */,
 				31EF78E8168C15EB0099B65A /* TouchThresholdCalibration.mm */,
 				31FAEC5A168C276400FC4154 /* TouchCalibration.h */,
