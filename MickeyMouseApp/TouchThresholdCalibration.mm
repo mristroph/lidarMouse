@@ -95,7 +95,7 @@ static NSUInteger const kReportsNeeded = 20;
 
 - (void)tweakThresholdDistances {
     for (auto p = thresholdDistances_.begin(); p != thresholdDistances_.end(); ++p) {
-        *p *= 0.90f;
+        *p *= 0.95f;
     }
 }
 
