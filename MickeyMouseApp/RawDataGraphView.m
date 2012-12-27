@@ -7,6 +7,7 @@
 //
 
 #import "Lidar2D.h"
+#import "NSData+Lidar2D.h"
 #import "RawDataGraphView.h"
 
 @interface RawDataGraphView () <Lidar2DObserver>
@@ -49,16 +50,16 @@
     if (_data.length == 0)
         return;
 
-    uint32_t const *levels = (uint32_t const *)_data.bytes;
-    uint32_t const *untouchedDistances = (uint32_t const *)_untouchedDistances.bytes;
-    CGFloat levelCount = _data.length / sizeof *levels;
+    Lidar2DDistance const *distances = _data.lidar2D_distances;
+    CGFloat distanceCount = _data.lidar2D_distanceCount;
+    Lidar2DDistance const *untouchedDistances = _untouchedDistances.lidar2D_distances;
 
     CGContextRef gc = [[NSGraphicsContext currentContext] graphicsPort];
     CGContextSaveGState(gc); {
         NSRect bounds = self.bounds;
         CGContextTranslateCTM(gc, CGRectGetMidX(bounds), CGRectGetMidY(bounds));
 
-        CGFloat const indexToDegrees= _device.coverageDegrees / levelCount;
+        CGFloat const indexToDegrees= _device.coverageDegrees / distanceCount;
         CGFloat const baseDegrees = _device.firstRayOffsetDegrees;
         CGFloat const degreesToRadians = M_PI / 180;
         NSColor *redColor = [NSColor redColor];
@@ -66,12 +67,8 @@
         NSColor *blueColor = [NSColor blueColor];
         __unsafe_unretained NSColor *currentColor = nil;
         
-        for (CGFloat i = 0; i < levelCount; ++i) {
-            CGFloat distance = levels[(int)i];
-            if (distance < 20 || distance > 5600) {
-                distance = UINT32_MAX;
-            }
-
+        for (CGFloat i = 0; i < distanceCount; ++i) {
+            CGFloat distance = distances[(int)i];
             CGFloat radius = distance / 4.0;
 
             __unsafe_unretained NSColor *desiredColor = nil;
@@ -103,8 +100,9 @@
     (void)device;
 }
 
-- (void)lidar2d:(Lidar2D *)device didReceiveDistances:(const Lidar2DDistance *)distances {
-    self.data = [NSData dataWithBytes:distances length:device.rayCount * sizeof *distances];
+- (void)lidar2d:(Lidar2D *)device didReceiveDistanceData:(NSData *)distanceData {
+    (void)device;
+    self.data = distanceData;
 }
 
 #pragma mark - Device connection details

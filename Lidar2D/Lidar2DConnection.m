@@ -9,6 +9,7 @@
 #import "Lidar2DConnection.h"
 #import "SCIP20Channel.h"
 #import "ByteChannel.h"
+#import "NSData+Lidar2D.h"
 #import <termios.h>
 
 // Hardcoded for URG-04LX.
@@ -200,12 +201,26 @@ static int const kReadTimeoutInMilliseconds = 1000;
 
 #pragma mark - Streaming data receiver details
 
+static Lidar2DDistance filteredDistanceForInteger(SCIP20IntegerDatum integerDatum) {
+    return (integerDatum < 20 || integerDatum > 5600) ? Lidar2DDistance_Invalid : (Lidar2DDistance)integerDatum;
+}
+
+static NSData *distanceDataForIntegerData(NSData *integerData) {
+    size_t count = integerData.length / sizeof(SCIP20IntegerDatum);
+    Lidar2DDistance distances[count];
+    SCIP20IntegerDatum const *integers = integerData.bytes;
+    for (size_t i = 0; i < count; ++i) {
+        distances[i] = filteredDistanceForInteger(integers[i]);
+    }
+    return [NSData dataWithBytes:distances length:sizeof distances];
+}
+
 - (void)q_receiveStreamingData {
     while (wantStreaming_) {
-        [channel_ receiveStreamingResponseWithDataEncodingLength:3 onResponse:^(NSString *command, NSString *status, NSUInteger timestamp, NSData *data) {
+        [channel_ receiveStreamingResponseWithDataEncodingLength:3 onResponse:^(NSString *command, NSString *status, NSUInteger timestamp, NSData *integerData) {
             (void)command; (void)timestamp;
             if ([self checkStatus:status isEqualToStatus:SCIP20Status_StreamingData]) {
-                [_delegate connection:self didReceiveDistances:data.bytes];
+                [_delegate connection:self didReceiveDistanceData:distanceDataForIntegerData(integerData)];
             } else {
                 wantStreaming_ = NO;
             }

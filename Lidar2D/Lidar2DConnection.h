@@ -34,7 +34,7 @@
 
 // I can send these on a private queue.  You must forward them to the main queue yourself.
 - (void)connection:(Lidar2DConnection *)connection didFailWithError:(NSError *)error;
-- (void)connection:(Lidar2DConnection *)connection didReceiveDistances:(Lidar2DDistance const *)distances;
+- (void)connection:(Lidar2DConnection *)connection didReceiveDistanceData:(NSData *)distanceData;
 
 @end
 
