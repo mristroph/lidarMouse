@@ -57,6 +57,7 @@
 		31EEC9A71673D82F00EEB995 /* Lidar2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9A61673D82E00EEB995 /* Lidar2D.m */; };
 		31EF78E5168BC3260099B65A /* NSData+Lidar2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EF78E4168BC3260099B65A /* NSData+Lidar2D.m */; };
 		31EF78E6168BC3260099B65A /* NSData+Lidar2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EF78E4168BC3260099B65A /* NSData+Lidar2D.m */; };
+		31EF78E9168C15EB0099B65A /* UntouchedFieldCalibration.mm in Sources */ = {isa = PBXBuildFile; fileRef = 31EF78E8168C15EB0099B65A /* UntouchedFieldCalibration.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -197,6 +198,8 @@
 		31EEC9A61673D82E00EEB995 /* Lidar2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lidar2D.m; sourceTree = "<group>"; };
 		31EF78E3168BC3260099B65A /* NSData+Lidar2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Lidar2D.h"; sourceTree = "<group>"; };
 		31EF78E4168BC3260099B65A /* NSData+Lidar2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Lidar2D.m"; sourceTree = "<group>"; };
+		31EF78E7168C15EB0099B65A /* UntouchedFieldCalibration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UntouchedFieldCalibration.h; sourceTree = "<group>"; };
+		31EF78E8168C15EB0099B65A /* UntouchedFieldCalibration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UntouchedFieldCalibration.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -571,6 +574,8 @@
 			children = (
 				31D72C0D167A754700230548 /* TouchDetector.h */,
 				31D72C0E167A754800230548 /* TouchDetector.mm */,
+				31EF78E7168C15EB0099B65A /* UntouchedFieldCalibration.h */,
+				31EF78E8168C15EB0099B65A /* UntouchedFieldCalibration.mm */,
 			);
 			name = TouchDetector;
 			sourceTree = "<group>";
@@ -662,7 +667,7 @@
 		31EEC8FD1672FB0100EEB995 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Rob Mayoff";
 			};
 			buildConfigurationList = 31EEC9001672FB0100EEB995 /* Build configuration list for PBXProject "mickeyMouse" */;
@@ -724,6 +729,7 @@
 				313F1500167E2505009E4A80 /* Lidar2DConnection.m in Sources */,
 				314DEBA616803EB20060CD61 /* TouchCalibrationTargetPanel.m in Sources */,
 				31EF78E6168BC3260099B65A /* NSData+Lidar2D.m in Sources */,
+				31EF78E9168C15EB0099B65A /* UntouchedFieldCalibration.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
