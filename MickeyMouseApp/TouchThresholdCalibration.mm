@@ -41,7 +41,7 @@ static NSUInteger const kReportsNeeded = 20;
     }
     [self updateThresholdDistancesWithDistanceData:data];
     ++reportsReceived_;
-    [self becomeReadyIfNeeded];
+    [self becomeReadyIfPossible];
 }
 
 - (void)forEachTouchedSweepInDistanceData:(NSData *)data do:(void (^)(NSRange))block {
@@ -82,7 +82,7 @@ static NSUInteger const kReportsNeeded = 20;
     }
 }
 
-- (void)becomeReadyIfNeeded {
+- (void)becomeReadyIfPossible {
     if (reportsReceived_ < kReportsNeeded)
         return;
     if (_ready) {
