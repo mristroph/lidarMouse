@@ -15,7 +15,7 @@
 // I throw away my calibration data and set `ready` to `NO`.
 - (void)reset;
 
-// I update my calibration data with the given distance data.  If, after doing so, I have enough calibration data, I set `ready` to `YES`.
+// I update my calibration data with the given distance data.  If, after doing so, I have enough calibration data, I set `ready` to `YES`.  I send
 - (void)calibrateWithDistanceData:(NSData *)data;
 
 // Scan the given distance data for each contiguous range of rays that has distances shorter than my calibrated distances.  Call `block` once for each such range.

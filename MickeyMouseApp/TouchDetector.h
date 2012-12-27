@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "NSData+Lidar2D.h"
+#import "TouchDetectorAncillary.h"
 
 typedef enum {
     TouchDetectorState_AwaitingTouchThresholdCalibration, // I need to calibrate my touch threshold parameters.  Tell the user to remove all obstructions (touches) from the sensitive area and then send me `calibrateTouchThreshold`.
@@ -16,12 +17,6 @@ typedef enum {
     TouchDetectorState_CalibratingTouch, // I am currently calibrating my touch-mapping parameters.  Tell the user to touch the point you sent me in the most recent `calibrateTouchAtPoint:` message.
     TouchDetectorState_DetectingTouches, //
 } TouchDetectorState;
-
-typedef enum {
-    TouchCalibrationResult_Success,
-    TouchCalibrationResult_NoTouchDetected,
-    TouchCalibrationResult_MultipleTouchesDetected
-} TouchCalibrationResult;
 
 @protocol TouchDetectorObserver;
 

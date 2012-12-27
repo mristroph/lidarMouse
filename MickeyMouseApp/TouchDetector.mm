@@ -4,12 +4,12 @@
 #import "Lidar2D.h"
 #import "NSData+Lidar2D.h"
 #import "TouchDetector.h"
+#import "TouchCalibration.h"
 #import "TouchThresholdCalibration.h"
 #import <vector>
 
 using std::vector;
 
-static NSUInteger const kReportsNeededForTouchThresholdCalibration = 20;
 static NSUInteger const kTouchCalibrationsNeeded = 3;
 static NSUInteger const kReportsNeededForTouchCalibration = 20;
 static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeededForTouchCalibration;
