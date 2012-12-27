@@ -56,6 +56,7 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 
 - (void)startCalibratingTouchAtScreenPoint:(CGPoint)screenPoint {
     self.currentCalibrationScreenPoint = screenPoint;
+    reportsReceived_ = 0;
     self.ready = NO;
 }
 
@@ -78,7 +79,6 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 - (void)resetTouchDistanceDataWithCount:(NSUInteger)count {
     distanceSums_.assign(count, 0);
     distanceCounts_.assign(count, 0);
-    reportsReceived_ = 0;
 }
 
 - (void)updateTouchDistancesWithDistanceData:(NSData *)data {
