@@ -74,8 +74,9 @@
             __unsafe_unretained NSColor *desiredColor = nil;
             if (thresholdDistances && distance < thresholdDistances[(int)i]) {
                 desiredColor = greenColor;
-            } else if (distance == UINT32_MAX) {
+            } else if (distance == Lidar2DDistance_Invalid) {
                 desiredColor = blueColor;
+                radius = 2000;
             } else {
                 desiredColor = redColor;
             }
