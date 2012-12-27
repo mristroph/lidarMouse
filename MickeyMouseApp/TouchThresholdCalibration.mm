@@ -55,6 +55,7 @@ static NSUInteger const kReportsNeeded = 20;
                 ++end;
             }
             block(NSMakeRange(begin, end - begin));
+            begin = end;
         } else {
             ++begin;
         }
