@@ -6,9 +6,6 @@
 //  Copyright (c) 2012 Rob Mayoff. All rights reserved.
 //
 
-typedef uint32_t Lidar2DDistance;
-#define Lidar2DDistance_MAX UINT32_MAX
-
 extern NSString *const Lidar2DErrorDomain;
 extern NSString *const Lidar2DErrorStatusKey;
 extern NSString *const Lidar2DErrorExpectedStatusKey;

@@ -55,6 +55,8 @@
 		31EEC99E1673367100EEB995 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31EEC99D1673367100EEB995 /* IOKit.framework */; };
 		31EEC9A416733A8600EEB995 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9A316733A8600EEB995 /* Application.m */; };
 		31EEC9A71673D82F00EEB995 /* Lidar2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EEC9A61673D82E00EEB995 /* Lidar2D.m */; };
+		31EF78E5168BC3260099B65A /* NSData+Lidar2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EF78E4168BC3260099B65A /* NSData+Lidar2D.m */; };
+		31EF78E6168BC3260099B65A /* NSData+Lidar2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EF78E4168BC3260099B65A /* NSData+Lidar2D.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -193,6 +195,8 @@
 		31EEC9A316733A8600EEB995 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
 		31EEC9A51673D82E00EEB995 /* Lidar2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lidar2D.h; sourceTree = "<group>"; };
 		31EEC9A61673D82E00EEB995 /* Lidar2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lidar2D.m; sourceTree = "<group>"; };
+		31EF78E3168BC3260099B65A /* NSData+Lidar2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Lidar2D.h"; sourceTree = "<group>"; };
+		31EF78E4168BC3260099B65A /* NSData+Lidar2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Lidar2D.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -277,8 +281,7 @@
 				312DD29B167E7A560066B81A /* DeviceController.xib */,
 				31D72B851676A23400230548 /* RawDataGraphView.h */,
 				31D72B861676A23400230548 /* RawDataGraphView.m */,
-				31D72C0D167A754700230548 /* TouchDetector.h */,
-				31D72C0E167A754800230548 /* TouchDetector.mm */,
+				31EF78E2168BC2A40099B65A /* TouchDetector */,
 				31D72BBE1676F01F00230548 /* DeviceControlWindow.h */,
 				31D72BBF1676F01F00230548 /* DeviceControlWindow.m */,
 				314DEBA416803EB20060CD61 /* TouchCalibrationTargetPanel.h */,
@@ -306,6 +309,7 @@
 				31EEC99A167333E500EEB995 /* Lidar2DManager.h */,
 				31EEC9A51673D82E00EEB995 /* Lidar2D.h */,
 				31D72C20167B364700230548 /* Lidar2DAncillary.h */,
+				31EF78E3168BC3260099B65A /* NSData+Lidar2D.h */,
 			);
 			name = "Public API";
 			sourceTree = "<group>";
@@ -324,6 +328,7 @@
 				31D72C1D167B331000230548 /* Lidar2DConnection.m */,
 				31D72C10167A865300230548 /* DqdObserverSet.h */,
 				31D72C11167A865300230548 /* DqdObserverSet.m */,
+				31EF78E4168BC3260099B65A /* NSData+Lidar2D.m */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -561,6 +566,15 @@
 			path = windowsexe;
 			sourceTree = "<group>";
 		};
+		31EF78E2168BC2A40099B65A /* TouchDetector */ = {
+			isa = PBXGroup;
+			children = (
+				31D72C0D167A754700230548 /* TouchDetector.h */,
+				31D72C0E167A754800230548 /* TouchDetector.mm */,
+			);
+			name = TouchDetector;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -709,6 +723,7 @@
 				31D72C12167A865300230548 /* DqdObserverSet.m in Sources */,
 				313F1500167E2505009E4A80 /* Lidar2DConnection.m in Sources */,
 				314DEBA616803EB20060CD61 /* TouchCalibrationTargetPanel.m in Sources */,
+				31EF78E6168BC3260099B65A /* NSData+Lidar2D.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,6 +740,7 @@
 				31D72B6316767A0C00230548 /* Dumper.m in Sources */,
 				31D72C1E167B331000230548 /* Lidar2DConnection.m in Sources */,
 				31D72C21167B3FF000230548 /* DqdObserverSet.m in Sources */,
+				31EF78E5168BC3260099B65A /* NSData+Lidar2D.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

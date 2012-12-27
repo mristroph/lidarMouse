@@ -7,6 +7,8 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 
 extern NSString *const SCIP20ErrorDomain;
 
+typedef uint16_t SCIP20IntegerDatum;
+
 typedef enum {
     SCIP20ErrorCode_Unknown,
     SCIP20ErrorCode_CommunicationFailed,

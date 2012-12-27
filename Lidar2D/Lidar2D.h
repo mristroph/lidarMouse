@@ -57,7 +57,7 @@ Copyright (c) 2012 Rob Mayoff. All rights reserved.
 // I finished disconnecting from the physical device.  You will stop receiving `lidar2D:didReceiveDistances:` messages very soon unless you send me `connect` again.
 - (void)lidar2dDidDisconnect:(Lidar2D *)device;
 
-// I received distance data from the device.  The `distances` array contains `device.rayCount` elements.
-- (void)lidar2d:(Lidar2D *)device didReceiveDistances:(Lidar2DDistance const *)distances;
+// I received distance data from the device.  Use the `NSData+Lidar2D` category to access the distance values.
+- (void)lidar2d:(Lidar2D *)device didReceiveDistanceData:(NSData *)distanceData;
 
 @end

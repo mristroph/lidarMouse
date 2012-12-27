@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NSData+Lidar2D.h"
 
 typedef enum {
     TouchDetectorState_AwaitingUntouchedFieldCalibration, // I need to calibrate my untouched-field parameters.  Tell the user to remove all obstructions (touches) from the sensitive area and then send me `calibrateUntouchedField`.
@@ -50,7 +51,7 @@ typedef enum {
 - (void)notifyObserverOfCurrentState:(id<TouchDetectorObserver>)observer;
 
 // For debugging.
-- (void)getUntouchedFieldDistancesWithBlock:(void (^)(uint32_t const *distances, NSUInteger count))block;
+- (void)getUntouchedFieldDistancesWithBlock:(void (^)(Lidar2DDistance const *distances, NSUInteger count))block;
 
 @end
 

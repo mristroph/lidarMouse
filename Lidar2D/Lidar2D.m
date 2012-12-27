@@ -7,6 +7,7 @@
 #import "Lidar2D.h"
 #import "Lidar2DConnection.h"
 #import "Lidar2D+Creation.h"
+#import "NSData+Lidar2D.h"
 #import <IOKit/serial/IOSerialKeys.h>
 #import <mach/mach_error.h>
 
@@ -142,11 +143,10 @@ static NSString *dialinDevicePathForIOService(io_service_t service) {
     });
 }
 
-- (void)connection:(Lidar2DConnection *)connection didReceiveDistances:(const Lidar2DDistance *)distances {
+- (void)connection:(Lidar2DConnection *)connection didReceiveDistanceData:(NSData *)distanceData {
     (void)connection;
-    NSData *data = [[NSData alloc] initWithBytes:distances length:connection.rayCount * sizeof *distances];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [observers_.proxy lidar2d:self didReceiveDistances:data.bytes];
+        [observers_.proxy lidar2d:self didReceiveDistanceData:distanceData];
     });
 }
 
