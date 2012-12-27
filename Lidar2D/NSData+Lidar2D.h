@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 
 typedef float Lidar2DDistance;
+
+// Note that some code relies on this being the largest possible value.
 #define Lidar2DDistance_Invalid HUGE_VALF
 
 static inline BOOL isLidar2DDistanceValid(Lidar2DDistance distance) { return distance != Lidar2DDistance_Invalid; }

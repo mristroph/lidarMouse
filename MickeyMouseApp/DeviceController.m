@@ -74,9 +74,9 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
     [self updateInterfaceForCurrentState];
 }
 
-- (IBAction)calibrateUntouchedFieldButtonWasPressed:(id)sender {
+- (IBAction)calibrateTouchThresholdButtonWasPressed:(id)sender {
     (void)sender;
-    [touchDetector_ startCalibratingUntouchedField];
+    [touchDetector_ startCalibratingTouchThreshold];
 }
 
 - (IBAction)calibrateTouchButtonWasPressed:(id)sender {
@@ -109,7 +109,7 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
 
     userInterfaceItemValidators_ = @{
     NSStringFromSelector(@selector(connectButtonWasPressed:)): ^{ return !device.isBusy && !device.isConnected; },
-    NSStringFromSelector(@selector(calibrateUntouchedFieldButtonWasPressed:)): ^{ return detector.canStartCalibratingUntouchedField; },
+    NSStringFromSelector(@selector(calibrateTouchThresholdButtonWasPressed:)): ^{ return detector.canStartCalibratingTouchThreshold; },
     NSStringFromSelector(@selector(calibrateTouchButtonWasPressed:)): ^{ return detector.canStartCalibratingTouchAtPoint; },
     NSStringFromSelector(@selector(disconnectButtonWasPressed:)): ^{ return !device.isBusy && device.isConnected; },
     NSStringFromSelector(@selector(pointerTracksTouchesButtonWasPressed:)): ^{ return YES; }
@@ -153,24 +153,24 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
 
 #pragma mark - TouchDetectorObserver protocol
 
-- (void)touchDetectorIsAwaitingUntouchedFieldCalibration:(TouchDetector *)detector {
+- (void)touchDetectorIsAwaitingTouchThresholdCalibration:(TouchDetector *)detector {
     (void)detector;
-    [self logText:@"Touch detector needs to calibrate untouched field; remove all obstructions from the sensitive area then click Calibrate Untouched Field"];
+    [self logText:@"Touch detector needs to calibrate touch thresholds; remove all obstructions from the sensitive area then click Calibrate Touch Thresholds"];
     [self updateInterfaceForCurrentState];
 }
 
-- (void)touchDetectorIsCalibratingUntouchedField:(TouchDetector *)detector {
+- (void)touchDetectorIsCalibratingTouchThreshold:(TouchDetector *)detector {
     (void)detector;
-    [self logText:@"Calibrating untouched field; do not obstruct the sensitive area"];
+    [self logText:@"Calibrating touch thresholds; do not obstruct the sensitive area"];
     [self updateInterfaceForCurrentState];
 }
 
-- (void)touchDetectorDidFinishCalibratingUntouchedField:(TouchDetector *)detector {
+- (void)touchDetectorDidFinishCalibratingTouchThreshold:(TouchDetector *)detector {
     (void)detector;
-    [self logText:@"Finished calibrating untouched field"];
+    [self logText:@"Finished calibrating touch thresholds"];
     [self updateInterfaceForCurrentState];
-    [detector getUntouchedFieldDistancesWithBlock:^(const Lidar2DDistance *distances, NSUInteger count) {
-        graphView_.untouchedDistances = [NSData dataWithBytes:distances length:count * sizeof *distances];
+    [detector getTouchThresholdDistancesWithBlock:^(const Lidar2DDistance *distances, NSUInteger count) {
+        graphView_.thresholdDistances = [NSData dataWithBytes:distances length:count * sizeof *distances];
     }];
 }
 

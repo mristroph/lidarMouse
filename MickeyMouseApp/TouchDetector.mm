@@ -2,13 +2,14 @@
 
 #import "DqdObserverSet.h"
 #import "Lidar2D.h"
-#import "TouchDetector.h"
 #import "NSData+Lidar2D.h"
+#import "TouchDetector.h"
+#import "TouchThresholdCalibration.h"
 #import <vector>
 
 using std::vector;
 
-static NSUInteger const kReportsNeededForUntouchedFieldCalibration = 20;
+static NSUInteger const kReportsNeededForTouchThresholdCalibration = 20;
 static NSUInteger const kTouchCalibrationsNeeded = 3;
 static NSUInteger const kReportsNeededForTouchCalibration = 20;
 static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeededForTouchCalibration;
@@ -19,13 +20,8 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 @implementation TouchDetector {
     Lidar2D *device_;
     DqdObserverSet *observers_;
-
     void (^distancesReportHandler_)(NSData *distanceData);
-
-    // Each element of `untouchedFieldDistances_` corresponds to one ray and is the minimum distance at which I consider that ray to be uninterrupted by a touch.
-    vector<Lidar2DDistance> untouchedFieldDistances_;
-
-    NSUInteger reportsReceivedForUntouchedFieldCalibration_;
+    TouchThresholdCalibration *touchThresholdCalibration_;
 
     // Each element of `touchDistanceSums_` corresponds to one ray and is the sum of the valid distances reported for that ray since I started calibrating the current touch.
     vector<Lidar2DDistance> touchDistanceSums_;
@@ -40,7 +36,7 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
     
     CGPoint currentCalibrationPoint_;
     
-    Lidar2DDistance lastDistance;
+    Lidar2DDistance touchDistance_;
     
     CGAffineTransform sensorToScreenTransform_;
 }
@@ -55,6 +51,7 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
     if ((self = [super init])) {
         device_ = device;
         [device addObserver:self];
+        touchThresholdCalibration_ = [[TouchThresholdCalibration alloc] init];
         [self setAppropriateStateBecauseCalibrationFinished];
     }
     return self;
@@ -62,23 +59,24 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 
 @synthesize state = _state;
 
-- (BOOL)canStartCalibratingUntouchedField {
+- (BOOL)canStartCalibratingTouchThreshold {
     return ![self isBusy] && device_.isConnected;
 }
 
-- (void)startCalibratingUntouchedField {
+- (void)startCalibratingTouchThreshold {
     [self requireNotBusy];
-    reportsReceivedForUntouchedFieldCalibration_ = 0;
-    self.state = TouchDetectorState_CalibratingUntouchedField;
+    [touchThresholdCalibration_ reset];
+    self.state = TouchDetectorState_CalibratingTouchThreshold;
 
     __weak TouchDetector *me = self;
     distancesReportHandler_ = ^(NSData *distanceData) {
-        [me calibrateUntouchedFieldWithDistanceData:distanceData];
+        TouchDetector *self = me;
+        [self calibrateTouchThresholdWithDistanceData:distanceData];
     };
 }
 
 - (BOOL)canStartCalibratingTouchAtPoint {
-    return ![self isBusy] && device_.isConnected && ![self needsUntouchedFieldCalibration];
+    return ![self isBusy] && device_.isConnected && ![self needsTouchThresholdCalibration];
 }
 
 - (void)startCalibratingTouchAtPoint:(CGPoint)point {
@@ -106,11 +104,11 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 
 - (void)notifyObserverOfCurrentState:(id<TouchDetectorObserver>)observer {
     switch (_state) {
-        case TouchDetectorState_AwaitingUntouchedFieldCalibration:
-            [observer touchDetectorIsAwaitingUntouchedFieldCalibration:self];
+        case TouchDetectorState_AwaitingTouchThresholdCalibration:
+            [observer touchDetectorIsAwaitingTouchThresholdCalibration:self];
             break;
-        case TouchDetectorState_CalibratingUntouchedField:
-            [observer touchDetectorIsCalibratingUntouchedField:self];
+        case TouchDetectorState_CalibratingTouchThreshold:
+            [observer touchDetectorIsCalibratingTouchThreshold:self];
             break;
         case TouchDetectorState_AwaitingTouchCalibration:
             [observer touchDetectorIsAwaitingTouchCalibration:self];
@@ -124,8 +122,8 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
     }
 }
 
-- (void)getUntouchedFieldDistancesWithBlock:(void (^)(Lidar2DDistance const *, NSUInteger))block {
-    block(untouchedFieldDistances_.data(), untouchedFieldDistances_.size());
+- (void)getTouchThresholdDistancesWithBlock:(void (^)(Lidar2DDistance const *, NSUInteger))block {
+    [touchThresholdCalibration_ getTouchThresholdDistancesWithBlock:block];
 }
 
 #pragma mark - Lidar2DObserver protocol
@@ -152,7 +150,7 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 }
 
 - (void)setAppropriateStateBecauseCalibrationFinished {
-    TouchDetectorState newState = [self needsUntouchedFieldCalibration] ? TouchDetectorState_AwaitingUntouchedFieldCalibration
+    TouchDetectorState newState = [self needsTouchThresholdCalibration] ? TouchDetectorState_AwaitingTouchThresholdCalibration
         : [self needsTouchCalibration] ? TouchDetectorState_AwaitingTouchCalibration
         : TouchDetectorState_DetectingTouches;
     if (newState != _state) {
@@ -166,8 +164,8 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 // When this returns YES, it means I'm doing something that reads from the device, so I can't start anything new that reads from the device.
 - (BOOL)isBusy {
     switch (_state) {
-        case TouchDetectorState_AwaitingUntouchedFieldCalibration: return NO;
-        case TouchDetectorState_CalibratingUntouchedField: return YES;
+        case TouchDetectorState_AwaitingTouchThresholdCalibration: return NO;
+        case TouchDetectorState_CalibratingTouchThreshold: return YES;
         case TouchDetectorState_AwaitingTouchCalibration: return NO;
         case TouchDetectorState_CalibratingTouch: return YES;
         case TouchDetectorState_DetectingTouches: return NO;
@@ -184,8 +182,8 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 - (NSString *)stateString {
 #define StateString(State) case TouchDetectorState_##State: return @#State
     switch (_state) {
-        StateString(AwaitingUntouchedFieldCalibration);
-        StateString(CalibratingUntouchedField);
+        StateString(AwaitingTouchThresholdCalibration);
+        StateString(CalibratingTouchThreshold);
         StateString(AwaitingTouchCalibration);
         StateString(CalibratingTouch);
         StateString(DetectingTouches);
@@ -193,52 +191,22 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 #undef StateString
 }
 
-#pragma mark - Untouched field calibration details
+#pragma mark - Touch threshold calibration details
 
-- (BOOL)needsUntouchedFieldCalibration {
-    return reportsReceivedForUntouchedFieldCalibration_ < kReportsNeededForUntouchedFieldCalibration;
+- (BOOL)needsTouchThresholdCalibration {
+    return !touchThresholdCalibration_.ready;
 }
 
-- (void)calibrateUntouchedFieldWithDistanceData:(NSData *)distanceData {
-    if (reportsReceivedForUntouchedFieldCalibration_ == 0) {
-        [self resetUntouchedFieldDistances];
-    } else if (reportsReceivedForUntouchedFieldCalibration_ == kReportsNeededForUntouchedFieldCalibration) {
-        [NSException raise:NSInternalInconsistencyException format:@"%s called with reportsReceivedForUntouchedFieldCalibration_ == %ld == kReportsNeededForUntouchedFieldCalibration", __func__, reportsReceivedForUntouchedFieldCalibration_];
-    }
-
-    [self updateUntouchedFieldDistancesWithReportedDistanceData:distanceData];
-    [self updateReportsReceivedForUntouchedFieldCalibration];
+- (void)calibrateTouchThresholdWithDistanceData:(NSData *)distanceData {
+    [touchThresholdCalibration_ calibrateWithDistanceData:distanceData];
+    [self stopCalibratingTouchThresholdIfReady];
 }
 
-- (void)resetUntouchedFieldDistances {
-    untouchedFieldDistances_.assign(device_.rayCount, Lidar2DDistance_Invalid);
-}
-
-- (void)updateUntouchedFieldDistancesWithReportedDistanceData:(NSData *)distanceData {
-    Lidar2DDistance const *distances = distanceData.lidar2D_distances;
-    for (NSUInteger i = 0, l = MIN(distanceData.lidar2D_distanceCount, untouchedFieldDistances_.size()); i < l; ++i) {
-        // Note: this depends on Lidar2DDistance_Invalid being very large.
-        untouchedFieldDistances_[i] = MIN(untouchedFieldDistances_[i], distances[i]);
-    }
-}
-
-- (void)updateReportsReceivedForUntouchedFieldCalibration {
-    ++reportsReceivedForUntouchedFieldCalibration_;
-    if (reportsReceivedForUntouchedFieldCalibration_ == kReportsNeededForUntouchedFieldCalibration) {
-        [self finishCalibratingUntouchedField];
-    }
-}
-
-- (void)finishCalibratingUntouchedField {
-    distancesReportHandler_ = nil;
-    [self tweakUntouchedFieldDistances];
-    [observers_.proxy touchDetectorDidFinishCalibratingUntouchedField:self];
-    [self setAppropriateStateBecauseCalibrationFinished];
-}
-
-- (void)tweakUntouchedFieldDistances {
-    for (auto p = untouchedFieldDistances_.begin(); p != untouchedFieldDistances_.end(); ++p) {
-        *p *= 0.90f;
+- (void)stopCalibratingTouchThresholdIfReady {
+    if (touchThresholdCalibration_.ready) {
+        distancesReportHandler_ = nil;
+        [observers_.proxy touchDetectorDidFinishCalibratingTouchThreshold:self];
+        [self setAppropriateStateBecauseCalibrationFinished];
     }
 }
 
@@ -252,7 +220,7 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
     if (reportsReceivedForTouchCalibration_ == 0) {
         [self resetTouchDistanceSums];
     } else if (reportsReceivedForTouchCalibration_ == kReportsNeededForTouchCalibration) {
-        [NSException raise:NSInternalInconsistencyException format:@"%s called with reportsReceivedForTouchCalibration_ == %ld == kReportsNeededForUntouchedFieldCalibration", __func__, reportsReceivedForTouchCalibration_];
+        [NSException raise:NSInternalInconsistencyException format:@"%s called with reportsReceivedForTouchCalibration_ == %ld == kReportsNeededForTouchThresholdCalibration", __func__, reportsReceivedForTouchCalibration_];
     }
 
     [self updateTouchDistancesWithReportedDistanceData:distanceData];
@@ -286,15 +254,13 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
 
 - (void)finishCalibratingTouch {
     distancesReportHandler_ = nil;
-
-    vector<BOOL> rayWasTouched;
-    [self computeTouchedRaysForCalibration:rayWasTouched];
+    NSData *averageDistanceData = [self touchCalibrationAverageDistanceData];
     __block NSUInteger touchesFound = 0;
     __block NSUInteger rayIndex;
-    [self forEachSweepInTouchedRays:rayWasTouched do:^(NSUInteger middleRayIndex) {
-        NSLog(@"middleRayIndex=%lu", middleRayIndex);
+    // Here I rely on Lidar2DDistance_Invalid being very large.
+    [touchThresholdCalibration_ forEachTouchedSweepInDistanceData:averageDistanceData do:^(NSRange sweepRange) {
         ++touchesFound;
-        rayIndex = middleRayIndex;
+        rayIndex = sweepRange.location + sweepRange.length / 2;
     }];
 
     if (touchesFound == 0) {
@@ -308,20 +274,17 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
     [self setAppropriateStateBecauseCalibrationFinished];
 }
 
-- (void)computeTouchedRaysForCalibration:(vector<BOOL> &)rayWasTouched {
-    NSUInteger l = MIN(touchDistanceSums_.size(), untouchedFieldDistances_.size());
-    rayWasTouched.clear();
-    rayWasTouched.reserve(l);
-    for (NSUInteger i = 0; i < l; ++i) {
-        BOOL wasTouched = NO;
-        if (touchDistanceCounts_[i] >= kDistancesNeededForRayToBeTreatedAsTouch) {
-            Lidar2DDistance averageDistance = touchDistanceSums_[i] / touchDistanceCounts_[i];
-            if (averageDistance < untouchedFieldDistances_[i]) {
-                wasTouched = YES;
-            }
-        }
-        rayWasTouched.push_back(wasTouched);
+- (NSData *)touchCalibrationAverageDistanceData {
+    vector<Lidar2DDistance> averages;
+    NSUInteger count = touchDistanceSums_.size();
+    averages.reserve(count);
+    for (NSUInteger i = 0; i < count; ++i) {
+        Lidar2DDistance distance = (touchDistanceCounts_[i] >= kDistancesNeededForRayToBeTreatedAsTouch)
+            ? touchDistanceSums_[i] / touchDistanceCounts_[i]
+            : Lidar2DDistance_Invalid;
+        averages.push_back(distance);
     }
+    return [NSData dataWithBytes:averages.data() length:count * sizeof averages[0]];
 }
 
 - (void)recordCalibratedTouchAtRayIndex:(NSUInteger)rayIndex{
@@ -399,10 +362,13 @@ static BOOL isValidScreenPoint(CGPoint point) {
 }
 
 - (void)detectTouchesWithDistanceData:(NSData *)distanceData {
-    vector<BOOL> rayWasTouched;
-    [self computeTouchedRays:rayWasTouched forDetectionWithDistanceData:distanceData];
     __block vector<CGPoint> touchPoints;
-    /*[self forEachSweepInTouchedRays:rayWasTouched do:^(NSUInteger middleRayIndex) {
+    Lidar2DDistance const *distances = distanceData.lidar2D_distances;
+
+#if 0
+
+    [touchThresholdCalibration_ forEachTouchedSweepInDistanceData:distanceData do:^(NSRange sweepRange) {
+        NSUInteger middleRayIndex = sweepRange.location + sweepRange.length / 2;
         Lidar2DDistance distance = distances[middleRayIndex];
         CGPoint sensorPoint = [self sensorPointForRayIndex:middleRayIndex distance:distance];
         CGPoint screenPoint = [self screenPointForSensorPoint:sensorPoint];
@@ -410,51 +376,41 @@ static BOOL isValidScreenPoint(CGPoint point) {
             touchPoints.push_back(screenPoint);
         }
     }];
-    [observers_.proxy touchDetector:self didDetectTouches:touchPoints.size() atScreenPoints:touchPoints.data()];
-     */
-    
-    // Alternative implementation. Only accepts touches with at least 3 consequective touched rays; uses angle of middle ray and averaged distance of all rays except first and last.
-    Lidar2DDistance const *distances = distanceData.lidar2D_distances;
-    float alpha = 0.3;
-    NSUInteger i = 0;
-    while (i < (rayWasTouched.size()-2)) {
-        if (rayWasTouched[i] && rayWasTouched[i+1] && rayWasTouched[i+2]) {
-            Lidar2DDistance totalDistance = 0;
-            ++i;
-            NSUInteger start = i;
-            do {
-                totalDistance += distances[i];
-                ++i;
-            } while (i < (rayWasTouched.size()+1) && rayWasTouched[i] && rayWasTouched[i+1]);
-            NSUInteger middleRayIndex = start + (i - start) / 2;
-            Lidar2DDistance averageDistance = (totalDistance/(i-start));
-            if(lastDistance > 0) {
-                lastDistance = alpha * averageDistance + (1.0-alpha)*lastDistance;
-            } else {
-                lastDistance = averageDistance;
-            }
-            CGPoint sensorPoint = [self sensorPointForRayIndex:middleRayIndex distance:lastDistance];
-            CGPoint screenPoint = [self screenPointForSensorPoint:sensorPoint];
-           if (isValidScreenPoint(screenPoint)) {
-                touchPoints.push_back(screenPoint);
-            }
-        }
-        ++i;
-    }
-    if(touchPoints.size() == 0) {
-        lastDistance = -1.0;
-    }
-    [observers_.proxy touchDetector:self didDetectTouches:touchPoints.size() atScreenPoints:touchPoints.data()];
-}
 
-- (void)computeTouchedRays:(vector<BOOL> &)rayWasTouched forDetectionWithDistanceData:(NSData *)distanceData {
-    Lidar2DDistance const *distances = distanceData.lidar2D_distances;
-    NSUInteger count = MIN(distanceData.lidar2D_distanceCount, untouchedFieldDistances_.size());
-    rayWasTouched.clear();
-    rayWasTouched.reserve(count);
-    for (NSUInteger i = 0; i < count; ++i) {
-        rayWasTouched.push_back(distances[i] < untouchedFieldDistances_[i]);
+#else
+
+    // Alternative implementation. Only accepts touches with at least 3 consecutive touched rays; uses angle of middle ray and averaged distance of all rays except first and last.
+    float currentDistanceWeight = 0.3;
+    [touchThresholdCalibration_ forEachTouchedSweepInDistanceData:distanceData do:^(NSRange sweepRange) {
+        if (sweepRange.length < 3)
+            return;
+        ++sweepRange.location;
+        sweepRange.length -= 2;
+        Lidar2DDistance sum = 0;
+        for (NSUInteger i = 0; i < sweepRange.length; ++i) {
+            sum += distances[sweepRange.location + i];
+        }
+        
+        NSUInteger middleRayIndex = sweepRange.location + sweepRange.length / 2;
+        Lidar2DDistance currentDistance = sum / sweepRange.length;
+        touchDistance_ = (touchDistance_ > 0)
+            ? currentDistanceWeight * currentDistance + (1.0 - currentDistanceWeight) * touchDistance_
+            : currentDistance;
+
+        CGPoint sensorPoint = [self sensorPointForRayIndex:middleRayIndex distance:touchDistance_];
+        CGPoint screenPoint = [self screenPointForSensorPoint:sensorPoint];
+        if (isValidScreenPoint(screenPoint)) {
+            touchPoints.push_back(screenPoint);
+        }
+    }];
+
+    if(touchPoints.size() == 0) {
+        touchDistance_ = -1.0;
     }
+
+#endif
+
+    [observers_.proxy touchDetector:self didDetectTouches:touchPoints.size() atScreenPoints:touchPoints.data()];
 }
 
 - (void)startDetectingTouches {
@@ -467,22 +423,6 @@ static BOOL isValidScreenPoint(CGPoint point) {
 }
 
 #pragma mark - Implementation details
-
-- (void)forEachSweepInTouchedRays:(vector<BOOL> const &)rayWasTouched do:(void (^)(NSUInteger middleRayIndex))block {
-    NSUInteger i = 0;
-    while (i < rayWasTouched.size()) {
-        if (rayWasTouched[i]) {
-            NSUInteger end = i + 1;
-            while (end < rayWasTouched.size() && rayWasTouched[end]) {
-                ++end;
-            }
-            block(i + (end - i) / 2);
-            i = end;
-        } else {
-            ++i;
-        }
-    }
-}
 
 - (CGPoint)sensorPointForRayIndex:(NSUInteger)rayIndex distance:(Lidar2DDistance)distance {
     double radians = (2.0 * M_PI / 360.0) * (device_.firstRayOffsetDegrees + device_.coverageDegrees * (double)rayIndex / touchDistanceCounts_.size());

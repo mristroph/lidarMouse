@@ -25,7 +25,7 @@
     [self connect];
 }
 
-@synthesize untouchedDistances = _untouchedDistances;
+@synthesize thresholdDistances = _thresholdDistances;
 @synthesize data = _data;
 
 - (void)setData:(NSData *)data {
@@ -52,7 +52,7 @@
 
     Lidar2DDistance const *distances = _data.lidar2D_distances;
     CGFloat distanceCount = _data.lidar2D_distanceCount;
-    Lidar2DDistance const *untouchedDistances = _untouchedDistances.lidar2D_distances;
+    Lidar2DDistance const *thresholdDistances = _thresholdDistances.lidar2D_distances;
 
     CGContextRef gc = [[NSGraphicsContext currentContext] graphicsPort];
     CGContextSaveGState(gc); {
@@ -72,7 +72,7 @@
             CGFloat radius = distance / 4.0;
 
             __unsafe_unretained NSColor *desiredColor = nil;
-            if (untouchedDistances && distance < untouchedDistances[(int)i]) {
+            if (thresholdDistances && distance < thresholdDistances[(int)i]) {
                 desiredColor = greenColor;
             } else if (distance == UINT32_MAX) {
                 desiredColor = blueColor;
