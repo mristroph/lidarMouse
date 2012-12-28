@@ -103,6 +103,7 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
 - (IBAction)resetCalibration:(id)sender {
     (void)sender;
     [touchDetector_ reset];
+    graphView_.thresholdDistances = nil;
     [self updateInterfaceForCurrentState];
 }
 
