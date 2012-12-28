@@ -40,7 +40,7 @@ using std::vector;
         touchCalibration_ = [[TouchCalibration alloc] init];
         touchCalibration_.delegate = self;
         touchCalibration_.thresholdCalibration = touchThresholdCalibration_;
-        if (YES) {
+        if (NO) {
             touchSelection_ = [[MiddleRayTouchSelection alloc] init];
         } else {
             touchSelection_ = [[EWMATouchSelection alloc] init];
