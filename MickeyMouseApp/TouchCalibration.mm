@@ -17,6 +17,9 @@ static NSUInteger const kTouchesNeeded = 3;
 static NSUInteger const kReportsNeeded = 20;
 static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeeded;
 
+static NSString *const kSensorPointsKey = @"sensorPoints";
+static NSString *const kScreenPointsKey = @"screenPoints";
+
 @interface TouchCalibration ()
 // Use a property for KVO compliance.
 @property (nonatomic, readwrite) BOOL ready;
@@ -74,7 +77,30 @@ static NSUInteger const kDistancesNeededForRayToBeTreatedAsTouch = kReportsNeede
     return CGPointApplyAffineTransform(sensorPoint, transform_);
 }
 
+- (id)dataPropertyList {
+    return @{
+        kSensorPointsKey: [NSData dataWithBytes:sensorPoints_.data() length:sensorPoints_.size() * sizeof sensorPoints_[0]],
+        kScreenPointsKey: [NSData dataWithBytes:screenPoints_.data() length:screenPoints_.size() * sizeof screenPoints_[0]]
+    };
+}
+
+- (void)restoreDataPropertyList:(id)plist {
+    NSData *sensorPointsData = plist[kSensorPointsKey];
+    NSData *screenPointsData = plist[kScreenPointsKey];
+    if (!sensorPointsData || !screenPointsData)
+        return;
+    [self restorePointsVector:sensorPoints_ withData:sensorPointsData];
+    [self restorePointsVector:screenPoints_ withData:screenPointsData];
+    [self becomeReadyIfPossible];
+}
+
 #pragma mark - Implementation details
+
+- (void)restorePointsVector:(vector<CGPoint> &)v withData:(NSData *)data {
+    CGPoint const *p = (CGPoint const *)data.bytes;
+    NSUInteger count = data.length / sizeof *p;
+    v.assign(p, p + count);
+}
 
 - (void)resetTouchDistanceDataWithCount:(NSUInteger)count {
     distanceSums_.assign(count, 0);

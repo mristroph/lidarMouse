@@ -39,6 +39,12 @@
 // I return the point in screen coordinates corresponding to the given sensor data. 
 - (CGPoint)screenPointForRayIndex:(NSUInteger)rayIndex distance:(Lidar2DDistance)distance;
 
+// My calibration data as a property list, suitable for passing to `updateWithDataPropertyList:`.
+- (id)dataPropertyList;
+
+// Restore my calibration data from `plist`, which must have been returned by `dataPropertyList`.
+- (void)restoreDataPropertyList:(id)plist;
+
 @end
 
 @protocol TouchCalibrationDelegate <NSObject>

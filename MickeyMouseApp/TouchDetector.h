@@ -53,9 +53,6 @@ typedef enum {
 // Notify `observer` of my current state, right now.
 - (void)notifyObserverOfCurrentState:(id<TouchDetectorObserver>)observer;
 
-// For debugging.
-- (void)getTouchThresholdDistancesWithBlock:(void (^)(Lidar2DDistance const *distances, NSUInteger count))block;
-
 @end
 
 @protocol TouchDetectorObserver <NSObject>
@@ -73,5 +70,8 @@ typedef enum {
 
 // Touch detection.
 - (void)touchDetector:(TouchDetector *)detector didDetectTouches:(NSUInteger)count atScreenPoints:(CGPoint const *)points;
+
+// For the raw data graph view.
+- (void)touchDetector:(TouchDetector *)detector didUpdateTouchThresholds:(Lidar2DDistance const *)thresholds count:(NSUInteger)count;
 
 @end
