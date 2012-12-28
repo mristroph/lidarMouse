@@ -10,7 +10,7 @@
 
 using std::vector;
 
-@interface TouchDetector () <Lidar2DObserver, TouchCalibrationDelegate>
+@interface TouchDetector () <Lidar2DObserver, TouchThresholdCalibrationDelegate, TouchCalibrationDelegate>
 @end
 
 @implementation TouchDetector {
@@ -35,10 +35,11 @@ using std::vector;
         device_ = device;
         [device addObserver:self];
         touchThresholdCalibration_ = [[TouchThresholdCalibration alloc] init];
+        touchThresholdCalibration_.delegate = self;
         touchCalibration_ = [[TouchCalibration alloc] init];
         touchCalibration_.delegate = self;
         touchCalibration_.thresholdCalibration = touchThresholdCalibration_;
-        [self setAppropriateStateBecauseCalibrationFinished];
+        [self setAppropriateNonBusyState];
     }
     return self;
 }
@@ -46,7 +47,7 @@ using std::vector;
 - (void)reset {
     [touchThresholdCalibration_ reset];
     [touchCalibration_ reset];
-    [self setAppropriateStateBecauseCalibrationFinished];
+    [self setAppropriateNonBusyState];
 }
 
 @synthesize state = _state;
@@ -114,16 +115,13 @@ using std::vector;
     }
 }
 
-- (void)getTouchThresholdDistancesWithBlock:(void (^)(Lidar2DDistance const *, NSUInteger))block {
-    [touchThresholdCalibration_ getTouchThresholdDistancesWithBlock:block];
-}
-
 #pragma mark - Lidar2DObserver protocol
 
 - (void)lidar2dDidConnect:(Lidar2D *)device {
     touchCalibration_.radiansPerRay = device.coverageDegrees * (2 * M_PI / 360.0);
     calibrationDataKey_ = [@"calibration-" stringByAppendingString:device.serialNumber];
     [self loadCalibrationData];
+    [self setAppropriateNonBusyState];
 }
 
 -  (void)lidar2DDidTerminate:(Lidar2D *)device {
@@ -148,7 +146,7 @@ using std::vector;
     }
 }
 
-- (void)setAppropriateStateBecauseCalibrationFinished {
+- (void)setAppropriateNonBusyState {
     TouchDetectorState newState =
         !touchThresholdCalibration_.ready ? TouchDetectorState_AwaitingTouchThresholdCalibration
         : !touchCalibration_.ready ? TouchDetectorState_AwaitingTouchCalibration
@@ -193,17 +191,23 @@ using std::vector;
 
 #pragma mark - Calibration data serialization
 
+static NSString *const kTouchThresholdKey = @"touchThreshold";
+static NSString *const kTouchKey = @"touch";
+
 - (void)loadCalibrationData {
+    NSDictionary *plist = [[NSUserDefaults standardUserDefaults] valueForKey:calibrationDataKey_];
+    if (plist) {
+        [touchThresholdCalibration_ restoreDataPropertyList:plist[kTouchThresholdKey]];
+        [touchCalibration_ restoreDataPropertyList:plist[kTouchKey]];
+    }
 }
 
 - (void)saveCalibrationData {
-    id plist = [self calibrationPropertyList];
+    NSDictionary *plist = @{
+        kTouchThresholdKey: [touchThresholdCalibration_ dataPropertyList],
+        kTouchKey: [touchCalibration_ dataPropertyList]
+    };
     [[NSUserDefaults standardUserDefaults] setValue:plist forKey:calibrationDataKey_];
-}
-
-- (id)calibrationPropertyList {
-    NSLog(@"%s xxx", __func__);
-    return nil;
 }
 
 #pragma mark - Touch threshold calibration details
@@ -217,8 +221,13 @@ using std::vector;
     if (touchThresholdCalibration_.ready) {
         distancesReportHandler_ = nil;
         [observers_.proxy touchDetectorDidFinishCalibratingTouchThreshold:self];
-        [self setAppropriateStateBecauseCalibrationFinished];
+        [self setAppropriateNonBusyState];
     }
+}
+
+- (void)touchThresholdCalibration:(TouchThresholdCalibration *)calibration didUpdateThresholds:(const Lidar2DDistance *)thresholds count:(NSUInteger)count {
+    (void)calibration;
+    [observers_.proxy touchDetector:self didUpdateTouchThresholds:thresholds count:count];
 }
 
 #pragma mark - Touch calibration details
@@ -242,7 +251,7 @@ using std::vector;
 - (void)stopCalibratingTouchWithResult:(TouchCalibrationResult)result {
     distancesReportHandler_ = nil;
     [observers_.proxy touchDetector:self didFinishCalibratingTouchAtPoint:touchCalibration_.currentCalibrationScreenPoint withResult:result];
-    [self setAppropriateStateBecauseCalibrationFinished];
+    [self setAppropriateNonBusyState];
 }
 
 #pragma mark - Touch detection details

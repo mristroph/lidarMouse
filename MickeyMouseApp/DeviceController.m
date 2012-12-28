@@ -103,7 +103,6 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
 - (IBAction)resetCalibration:(id)sender {
     (void)sender;
     [touchDetector_ reset];
-    graphView_.thresholdDistances = nil;
     [self updateInterfaceForCurrentState];
 }
 
@@ -177,9 +176,6 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
     (void)detector;
     [self logText:@"Finished calibrating touch thresholds"];
     [self updateInterfaceForCurrentState];
-    [detector getTouchThresholdDistancesWithBlock:^(const Lidar2DDistance *distances, NSUInteger count) {
-        graphView_.thresholdDistances = [NSData dataWithBytes:distances length:count * sizeof *distances];
-    }];
 }
 
 - (void)touchDetectorIsAwaitingTouchCalibration:(TouchDetector *)detector {
@@ -230,10 +226,9 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
     }
 }
 
-- (void)sendMouseEventWithType:(CGEventType)type {
-    CGEventRef event = CGEventCreateMouseEvent(NULL, type, touchPoint_, kCGMouseButtonLeft);
-    CGEventPost(kCGHIDEventTap, event);
-    CFRelease(event);
+- (void)touchDetector:(TouchDetector *)detector didUpdateTouchThresholds:(const Lidar2DDistance *)thresholds count:(NSUInteger)count {
+    (void)detector;
+    graphView_.thresholdDistances = (count > 0) ? [NSData dataWithBytes:thresholds length:count * sizeof *thresholds] : nil;
 }
 
 #pragma mark - Window title details
@@ -243,6 +238,12 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
 }
 
 #pragma mark - Implementation details
+
+- (void)sendMouseEventWithType:(CGEventType)type {
+    CGEventRef event = CGEventCreateMouseEvent(NULL, type, touchPoint_, kCGMouseButtonLeft);
+    CGEventPost(kCGHIDEventTap, event);
+    CFRelease(event);
+}
 
 - (void)updateInterfaceForCurrentState {
     [controlWindow_.toolbar validateVisibleItems];

@@ -13,6 +13,8 @@
 using std::vector;
 
 static NSUInteger const kReportsNeeded = 20;
+static NSString *const kThresholdDistancesKey = @"distances";
+static NSString *const kReadyKey = @"ready";
 
 @interface TouchThresholdCalibration ()
 
@@ -28,6 +30,7 @@ static NSUInteger const kReportsNeeded = 20;
 
 #pragma mark - Package API
 
+@synthesize delegate = _delegate;
 @synthesize ready = _ready;
 
 - (void)reset {
@@ -66,10 +69,44 @@ static NSUInteger const kReportsNeeded = 20;
     block(thresholdDistances_.data(), thresholdDistances_.size());
 }
 
+- (id)dataPropertyList {
+    if (_ready) {
+        return @{
+            kReadyKey: @YES,
+            kThresholdDistancesKey: [NSData dataWithBytes:thresholdDistances_.data() length:thresholdDistances_.size() * sizeof thresholdDistances_[0]]
+        };
+    } else {
+        return @{ kReadyKey: @NO };
+    }
+}
+
+- (void)restoreDataPropertyList:(id)plist {
+    NSNumber *readyWrapper = plist[kReadyKey];
+    if (!readyWrapper)
+        return;
+    BOOL ready = readyWrapper.boolValue;
+    if (ready) {
+        NSData *distanceData = plist[kThresholdDistancesKey];
+        Lidar2DDistance const *distances = distanceData.lidar2D_distances;
+        thresholdDistances_.assign(distances, distances + distanceData.lidar2D_distanceCount);
+        [self notifyDelegateOfCurrentThresholds];
+    }
+    self.ready = ready;
+}
+
 #pragma mark - Implementation details
+
+- (void)notifyDelegateOfCurrentThresholds {
+    [_delegate touchThresholdCalibration:self didUpdateThresholds:thresholdDistances_.data() count:thresholdDistances_.size()];
+}
+
+- (void)notifyDelegateOfNoThresholds {
+    [_delegate touchThresholdCalibration:self didUpdateThresholds:NULL count:0];
+}
 
 - (void)resetThresholdDistancesWithCount:(NSUInteger)count {
     thresholdDistances_.assign(count, Lidar2DDistance_Invalid);
+    [self notifyDelegateOfNoThresholds];
 }
 
 - (void)updateThresholdDistancesWithDistanceData:(NSData *)distanceData {
@@ -90,6 +127,7 @@ static NSUInteger const kReportsNeeded = 20;
         [NSException raise:NSInternalInconsistencyException format:@"%@ received too many reports", self];
     }
     [self tweakThresholdDistances];
+    [self notifyDelegateOfCurrentThresholds];
     self.ready = YES; // Use accessor for KVO
 }
 
