@@ -185,11 +185,25 @@ static NSString *const kScreenPointsKey = @"screenPoints";
     self.ready = YES;
 }
 
+static void dumpPoints(vector<CGPoint> const &points) {
+    NSMutableString *string = [@"{" mutableCopy];
+    NSString *separator = @"";
+    for (auto p: points) {
+        [string appendString:separator];
+        [string appendString:NSStringFromPoint(p)];
+        separator = @",";
+    }
+    [string appendString:@"}"];
+    NSLog(@"%@", string);
+}
+
 - (void)computeTransform {
     static char kNoTranspose = 'N';
 
     // LAPACK on Mac only supports column-major order.
 
+    NSLog(@"sensorPoints:"); dumpPoints(sensorPoints_);
+    NSLog(@"screenPoints:"); dumpPoints(screenPoints_);
     size_t sampleCount = sensorPoints_.size();
     
     vector<__CLPK_doublereal> a(sampleCount * 3);
@@ -238,6 +252,8 @@ static NSString *const kScreenPointsKey = @"screenPoints";
         .c = bx[1], .d = bx[sampleCount + 1],
         .tx = bx[2], .ty = bx[sampleCount + 2]
     };
+
+    NSLog(@"transform=%@", [NSValue valueWithBytes:&transform_ objCType:@encode(CGAffineTransform)]);
 }
 
 @end
