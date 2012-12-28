@@ -172,6 +172,28 @@
 							<bool key="NSToolbarIsUserRemovable">YES</bool>
 							<int key="NSToolbarItemVisibilityPriority">0</int>
 						</object>
+						<object class="NSToolbarItem" key="E899F504-8BCD-4CFF-9E03-475858B74899" id="683405681">
+							<object class="NSMutableString" key="NSToolbarItemIdentifier">
+								<characters key="NS.bytes">E899F504-8BCD-4CFF-9E03-475858B74899</characters>
+							</object>
+							<string key="NSToolbarItemLabel">Reset Calibration</string>
+							<string key="NSToolbarItemPaletteLabel">Reset Calibration</string>
+							<string key="NSToolbarItemToolTip"/>
+							<nil key="NSToolbarItemView"/>
+							<object class="NSCustomResource" key="NSToolbarItemImage">
+								<string key="NSClassName">NSImage</string>
+								<string key="NSResourceName">reset</string>
+							</object>
+							<nil key="NSToolbarItemTarget"/>
+							<nil key="NSToolbarItemAction"/>
+							<string key="NSToolbarItemMinSize">{0, 0}</string>
+							<string key="NSToolbarItemMaxSize">{0, 0}</string>
+							<bool key="NSToolbarItemEnabled">YES</bool>
+							<bool key="NSToolbarItemAutovalidates">YES</bool>
+							<int key="NSToolbarItemTag">-1</int>
+							<bool key="NSToolbarIsUserRemovable">YES</bool>
+							<int key="NSToolbarItemVisibilityPriority">0</int>
+						</object>
 						<object class="NSToolbarFlexibleSpaceItem" key="NSToolbarFlexibleSpaceItem" id="858311301">
 							<string key="NSToolbarItemIdentifier">NSToolbarFlexibleSpaceItem</string>
 							<string key="NSToolbarItemLabel"/>
@@ -233,7 +255,7 @@
 							</object>
 						</object>
 					</dictionary>
-					<array key="NSToolbarIBAllowedItems">
+					<array class="NSMutableArray" key="NSToolbarIBAllowedItems">
 						<reference ref="901207582"/>
 						<reference ref="668509036"/>
 						<reference ref="204410201"/>
@@ -241,9 +263,11 @@
 						<reference ref="367242431"/>
 						<reference ref="858311301"/>
 						<reference ref="315756072"/>
+						<reference ref="683405681"/>
 					</array>
 					<array key="NSToolbarIBDefaultItems">
 						<reference ref="901207582"/>
+						<reference ref="683405681"/>
 						<reference ref="668509036"/>
 						<reference ref="204410201"/>
 						<reference ref="315756072"/>
@@ -508,7 +532,6 @@ wGw</bytes>
 									<string key="NSFrame">{{204, 1}, {15, 275}}</string>
 									<reference key="NSSuperview" ref="224238207"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:83</string>
 									<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 									<reference key="NSTarget" ref="224238207"/>
@@ -699,6 +722,14 @@ wGw</bytes>
 						<reference key="destination" ref="668509036"/>
 					</object>
 					<int key="connectionID">130</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">resetCalibration:</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="683405681"/>
+					</object>
+					<int key="connectionID">132</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1006,6 +1037,7 @@ wGw</bytes>
 							<reference ref="204410201"/>
 							<reference ref="33507782"/>
 							<reference ref="315756072"/>
+							<reference ref="683405681"/>
 						</array>
 						<reference key="parent" ref="1005"/>
 					</object>
@@ -1115,6 +1147,11 @@ wGw</bytes>
 						<reference key="object" ref="315756072"/>
 						<reference key="parent" ref="1061614180"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">131</int>
+						<reference key="object" ref="683405681"/>
+						<reference key="parent" ref="1061614180"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -1144,6 +1181,7 @@ wGw</bytes>
 				<string key="126.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="126.designableToolbarItemIdentifier">pointerTracksTouches</string>
 				<boolean value="YES" key="126.toolbarItem.selectable"/>
+				<string key="131.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<array class="NSMutableArray" key="2.IBNSViewMetadataConstraints">
 					<reference ref="372770766"/>
 					<reference ref="1017941621"/>
@@ -1189,7 +1227,7 @@ wGw</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">130</int>
+			<int key="maxID">132</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1204,6 +1242,69 @@ wGw</bytes>
 				<object class="IBPartialClassDescription">
 					<string key="className">DeviceController</string>
 					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="calibrateTouchButtonWasPressed:">id</string>
+						<string key="calibrateTouchThresholdButtonWasPressed:">id</string>
+						<string key="connectButtonWasPressed:">id</string>
+						<string key="disconnectButtonWasPressed:">id</string>
+						<string key="pointerTracksTouchesButtonWasPressed:">id</string>
+						<string key="resetCalibration:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="calibrateTouchButtonWasPressed:">
+							<string key="name">calibrateTouchButtonWasPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="calibrateTouchThresholdButtonWasPressed:">
+							<string key="name">calibrateTouchThresholdButtonWasPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="connectButtonWasPressed:">
+							<string key="name">connectButtonWasPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="disconnectButtonWasPressed:">
+							<string key="name">disconnectButtonWasPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="pointerTracksTouchesButtonWasPressed:">
+							<string key="name">pointerTracksTouchesButtonWasPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="resetCalibration:">
+							<string key="name">resetCalibration:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="controlWindow_">DeviceControlWindow</string>
+						<string key="graphView_">RawDataGraphView</string>
+						<string key="logView_">NSTextView</string>
+						<string key="touchCalibrationPanel_">NSPanel</string>
+						<string key="touchCalibrationTargetView_">NSView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="controlWindow_">
+							<string key="name">controlWindow_</string>
+							<string key="candidateClassName">DeviceControlWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="graphView_">
+							<string key="name">graphView_</string>
+							<string key="candidateClassName">RawDataGraphView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="logView_">
+							<string key="name">logView_</string>
+							<string key="candidateClassName">NSTextView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="touchCalibrationPanel_">
+							<string key="name">touchCalibrationPanel_</string>
+							<string key="candidateClassName">NSPanel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="touchCalibrationTargetView_">
+							<string key="name">touchCalibrationTargetView_</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/DeviceController.h</string>
@@ -1247,6 +1348,7 @@ wGw</bytes>
 			<string key="connect">{48, 48}</string>
 			<string key="disconnect">{48, 48}</string>
 			<string key="pointerTracksTouches">{48, 48}</string>
+			<string key="reset">{48, 48}</string>
 			<string key="touchCalibrationTarget">{48, 48}</string>
 		</dictionary>
 		<bool key="IBDocument.UseAutolayout">YES</bool>

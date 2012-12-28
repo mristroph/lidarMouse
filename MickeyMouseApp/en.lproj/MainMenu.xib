@@ -353,6 +353,15 @@
 									<reference key="NSOnImage" ref="35465992"/>
 									<reference key="NSMixedImage" ref="502551668"/>
 								</object>
+								<object class="NSMenuItem" id="756244069">
+									<reference key="NSMenu" ref="670362375"/>
+									<string key="NSTitle">Reset Calibration</string>
+									<string type="base64-UTF8" key="NSKeyEquiv">CA</string>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
 								<object class="NSMenuItem" id="393397992">
 									<reference key="NSMenu" ref="670362375"/>
 									<string key="NSTitle">Calibrate Touch Thresholds</string>
@@ -699,6 +708,14 @@
 						<reference key="destination" ref="393397992"/>
 					</object>
 					<int key="connectionID">562</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">resetCalibration:</string>
+						<reference key="source" ref="1014"/>
+						<reference key="destination" ref="756244069"/>
+					</object>
+					<int key="connectionID">565</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1048,6 +1065,7 @@
 							<reference ref="62137123"/>
 							<reference ref="357505526"/>
 							<reference ref="820144090"/>
+							<reference ref="756244069"/>
 						</array>
 						<reference key="parent" ref="130495286"/>
 					</object>
@@ -1084,6 +1102,11 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">555</int>
 						<reference key="object" ref="820144090"/>
+						<reference key="parent" ref="670362375"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">563</int>
+						<reference key="object" ref="756244069"/>
 						<reference key="parent" ref="670362375"/>
 					</object>
 				</array>
@@ -1139,6 +1162,7 @@
 				<string key="554.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="555.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="56.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="563.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="57.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="58.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="73.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1150,7 +1174,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">562</int>
+			<int key="maxID">565</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

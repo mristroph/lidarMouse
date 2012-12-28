@@ -59,6 +59,7 @@
 		31EF78E6168BC3260099B65A /* NSData+Lidar2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EF78E4168BC3260099B65A /* NSData+Lidar2D.m */; };
 		31EF78E9168C15EB0099B65A /* TouchThresholdCalibration.mm in Sources */ = {isa = PBXBuildFile; fileRef = 31EF78E8168C15EB0099B65A /* TouchThresholdCalibration.mm */; };
 		31FAEC5C168C276400FC4154 /* TouchCalibration.mm in Sources */ = {isa = PBXBuildFile; fileRef = 31FAEC5B168C276400FC4154 /* TouchCalibration.mm */; };
+		31FAEC62168D1A6F00FC4154 /* reset.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 31FAEC61168D1A6F00FC4154 /* reset.pdf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -203,6 +204,7 @@
 		31EF78E8168C15EB0099B65A /* TouchThresholdCalibration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = TouchThresholdCalibration.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		31FAEC5A168C276400FC4154 /* TouchCalibration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchCalibration.h; sourceTree = "<group>"; };
 		31FAEC5B168C276400FC4154 /* TouchCalibration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TouchCalibration.mm; sourceTree = "<group>"; };
+		31FAEC61168D1A6F00FC4154 /* reset.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = reset.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,6 +248,7 @@
 		31B41F8316803A0D00C04CC0 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				31FAEC61168D1A6F00FC4154 /* reset.pdf */,
 				314DEBAA168100360060CD61 /* pointerTracksTouches.pdf */,
 				31B41F8016803A0100C04CC0 /* touchCalibrationTarget.pdf */,
 				312DD2A3167E907A0066B81A /* connect.pdf */,
@@ -710,6 +713,7 @@
 				312DD2A6167E907A0066B81A /* disconnect.pdf in Resources */,
 				31B41F8116803A0100C04CC0 /* touchCalibrationTarget.pdf in Resources */,
 				314DEBAB168100360060CD61 /* pointerTracksTouches.pdf in Resources */,
+				31FAEC62168D1A6F00FC4154 /* reset.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

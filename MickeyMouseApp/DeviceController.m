@@ -100,6 +100,11 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
     [self updateInterfaceForCurrentState];
 }
 
+- (IBAction)resetCalibration:(id)sender {
+    (void)sender;
+    abort(); // xxx
+}
+
 #pragma mark - Toolbar and menu item validation
 
 - (void)initUserInterfaceItemValidators {
@@ -112,7 +117,8 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
     NSStringFromSelector(@selector(calibrateTouchThresholdButtonWasPressed:)): ^{ return detector.canStartCalibratingTouchThreshold; },
     NSStringFromSelector(@selector(calibrateTouchButtonWasPressed:)): ^{ return detector.canStartCalibratingTouchAtPoint; },
     NSStringFromSelector(@selector(disconnectButtonWasPressed:)): ^{ return !device.isBusy && device.isConnected; },
-    NSStringFromSelector(@selector(pointerTracksTouchesButtonWasPressed:)): ^{ return YES; }
+    NSStringFromSelector(@selector(pointerTracksTouchesButtonWasPressed:)): ^{ return YES; },
+    NSStringFromSelector(@selector(resetCalibration:)): ^{ return !device.isConnected || detector.canStartCalibratingTouchAtPoint || detector.canStartCalibratingTouchThreshold; }
     };
 }
 
