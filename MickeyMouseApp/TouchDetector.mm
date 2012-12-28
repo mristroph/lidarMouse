@@ -118,7 +118,7 @@ using std::vector;
 #pragma mark - Lidar2DObserver protocol
 
 - (void)lidar2dDidConnect:(Lidar2D *)device {
-    touchCalibration_.radiansPerRay = device.coverageDegrees * (2 * M_PI / 360.0);
+    touchCalibration_.radiansPerRay = device.coverageDegrees * (2 * M_PI / 360.0) / device.rayCount;
     calibrationDataKey_ = [@"calibration-" stringByAppendingString:device.serialNumber];
     [self loadCalibrationData];
     [self setAppropriateNonBusyState];
