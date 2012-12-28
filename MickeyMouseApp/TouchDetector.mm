@@ -42,6 +42,12 @@ using std::vector;
     return self;
 }
 
+- (void)reset {
+    [touchThresholdCalibration_ reset];
+    [touchCalibration_ reset];
+    [self setAppropriateStateBecauseCalibrationFinished];
+}
+
 @synthesize state = _state;
 
 - (BOOL)canStartCalibratingTouchThreshold {

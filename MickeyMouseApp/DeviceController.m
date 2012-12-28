@@ -102,7 +102,8 @@ static NSString *const kPointerTracksTouchesItemIdentifier = @"pointerTracksTouc
 
 - (IBAction)resetCalibration:(id)sender {
     (void)sender;
-    abort(); // xxx
+    [touchDetector_ reset];
+    [self updateInterfaceForCurrentState];
 }
 
 #pragma mark - Toolbar and menu item validation

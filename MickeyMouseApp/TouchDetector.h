@@ -29,6 +29,9 @@ typedef enum {
 
 - (id)initWithDevice:(Lidar2D *)device;
 
+// I throw away all my existing calibration data and return to `TouchDetectorState_AwaitingTouchThresholdCalibration`.
+- (void)reset;
+
 @property (nonatomic, readonly) TouchDetectorState state;
 
 // This is YES when you can send me `startCalibratingTouchThreshold`.  I check my state and whether the device is connected.
