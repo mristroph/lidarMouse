@@ -1,7 +1,9 @@
 //  Copyright (c) 2012 Rob Mayoff. All rights reserved.
 
 #import "DqdObserverSet.h"
+#import "EWMATouchSelection.h"
 #import "Lidar2D.h"
+#import "MiddleRayTouchSelection.h"
 #import "NSData+Lidar2D.h"
 #import "TouchCalibration.h"
 #import "TouchDetector.h"
@@ -15,13 +17,12 @@ using std::vector;
 
 @implementation TouchDetector {
     Lidar2D *device_;
+    NSString *calibrationDataKey_;
     DqdObserverSet *observers_;
     void (^distancesReportHandler_)(NSData *distanceData);
     TouchThresholdCalibration *touchThresholdCalibration_;
+    TouchSelection *touchSelection_;
     TouchCalibration *touchCalibration_;
-    NSString *calibrationDataKey_;
-    
-    Lidar2DDistance touchDistance_;
 }
 
 #pragma mark - Public API
@@ -39,6 +40,12 @@ using std::vector;
         touchCalibration_ = [[TouchCalibration alloc] init];
         touchCalibration_.delegate = self;
         touchCalibration_.thresholdCalibration = touchThresholdCalibration_;
+        if (YES) {
+            touchSelection_ = [[MiddleRayTouchSelection alloc] init];
+        } else {
+            touchSelection_ = [[EWMATouchSelection alloc] init];
+        }
+        touchSelection_.thresholdCalibration = touchThresholdCalibration_;
         [self setAppropriateNonBusyState];
     }
     return self;
@@ -266,52 +273,12 @@ static BOOL isValidScreenPoint(CGPoint point) {
 
 - (void)detectTouchesWithDistanceData:(NSData *)distanceData {
     __block vector<CGPoint> touchPoints;
-    Lidar2DDistance const *distances = distanceData.lidar2D_distances;
-
-#if 0
-
-    [touchThresholdCalibration_ forEachTouchedSweepInDistanceData:distanceData do:^(NSRange sweepRange) {
-        NSUInteger middleRayIndex = sweepRange.location + sweepRange.length / 2;
-        Lidar2DDistance distance = distances[middleRayIndex];
-        CGPoint sensorPoint = [self sensorPointForRayIndex:middleRayIndex distance:distance];
-        CGPoint screenPoint = [self screenPointForSensorPoint:sensorPoint];
+    [touchSelection_ forEachTouchInDistanceData:distanceData do:^(NSUInteger rayIndex, Lidar2DDistance distance) {
+        CGPoint screenPoint = [touchCalibration_ screenPointForRayIndex:rayIndex distance:distance];
         if (isValidScreenPoint(screenPoint)) {
             touchPoints.push_back(screenPoint);
         }
     }];
-
-#else
-
-    // Alternative implementation. Only accepts touches with at least 3 consecutive touched rays; uses angle of middle ray and averaged distance of all rays except first and last.
-    float currentDistanceWeight = 0.3;
-    [touchThresholdCalibration_ forEachTouchedSweepInDistanceData:distanceData do:^(NSRange sweepRange) {
-        if (sweepRange.length < 3)
-            return;
-        ++sweepRange.location;
-        sweepRange.length -= 2;
-        Lidar2DDistance sum = 0;
-        for (NSUInteger i = 0; i < sweepRange.length; ++i) {
-            sum += distances[sweepRange.location + i];
-        }
-        
-        NSUInteger middleRayIndex = sweepRange.location + sweepRange.length / 2;
-        Lidar2DDistance currentDistance = sum / sweepRange.length;
-        touchDistance_ = (touchDistance_ > 0)
-            ? currentDistanceWeight * currentDistance + (1.0 - currentDistanceWeight) * touchDistance_
-            : currentDistance;
-
-        CGPoint screenPoint = [touchCalibration_ screenPointForRayIndex:middleRayIndex distance:touchDistance_];
-        if (isValidScreenPoint(screenPoint)) {
-            touchPoints.push_back(screenPoint);
-        }
-    }];
-
-    if(touchPoints.size() == 0) {
-        touchDistance_ = -1.0;
-    }
-
-#endif
-
     [observers_.proxy touchDetector:self didDetectTouches:touchPoints.size() atScreenPoints:touchPoints.data()];
 }
 

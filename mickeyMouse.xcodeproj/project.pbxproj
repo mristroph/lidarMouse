@@ -60,6 +60,9 @@
 		31EF78E9168C15EB0099B65A /* TouchThresholdCalibration.mm in Sources */ = {isa = PBXBuildFile; fileRef = 31EF78E8168C15EB0099B65A /* TouchThresholdCalibration.mm */; };
 		31FAEC5C168C276400FC4154 /* TouchCalibration.mm in Sources */ = {isa = PBXBuildFile; fileRef = 31FAEC5B168C276400FC4154 /* TouchCalibration.mm */; };
 		31FAEC62168D1A6F00FC4154 /* reset.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 31FAEC61168D1A6F00FC4154 /* reset.pdf */; };
+		31FAEC98168E4BF400FC4154 /* TouchSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 31FAEC97168E4BF400FC4154 /* TouchSelection.m */; };
+		31FAEC9B168E4DDA00FC4154 /* MiddleRayTouchSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 31FAEC9A168E4DDA00FC4154 /* MiddleRayTouchSelection.m */; };
+		31FAEC9E168E54F100FC4154 /* EWMATouchSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 31FAEC9D168E54F100FC4154 /* EWMATouchSelection.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -205,6 +208,12 @@
 		31FAEC5A168C276400FC4154 /* TouchCalibration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchCalibration.h; sourceTree = "<group>"; };
 		31FAEC5B168C276400FC4154 /* TouchCalibration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TouchCalibration.mm; sourceTree = "<group>"; };
 		31FAEC61168D1A6F00FC4154 /* reset.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = reset.pdf; sourceTree = "<group>"; };
+		31FAEC96168E4BF400FC4154 /* TouchSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchSelection.h; sourceTree = "<group>"; };
+		31FAEC97168E4BF400FC4154 /* TouchSelection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchSelection.m; sourceTree = "<group>"; };
+		31FAEC99168E4DDA00FC4154 /* MiddleRayTouchSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiddleRayTouchSelection.h; sourceTree = "<group>"; };
+		31FAEC9A168E4DDA00FC4154 /* MiddleRayTouchSelection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiddleRayTouchSelection.m; sourceTree = "<group>"; };
+		31FAEC9C168E54F100FC4154 /* EWMATouchSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWMATouchSelection.h; sourceTree = "<group>"; };
+		31FAEC9D168E54F100FC4154 /* EWMATouchSelection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWMATouchSelection.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -584,6 +593,12 @@
 				31EF78E8168C15EB0099B65A /* TouchThresholdCalibration.mm */,
 				31FAEC5A168C276400FC4154 /* TouchCalibration.h */,
 				31FAEC5B168C276400FC4154 /* TouchCalibration.mm */,
+				31FAEC96168E4BF400FC4154 /* TouchSelection.h */,
+				31FAEC97168E4BF400FC4154 /* TouchSelection.m */,
+				31FAEC99168E4DDA00FC4154 /* MiddleRayTouchSelection.h */,
+				31FAEC9A168E4DDA00FC4154 /* MiddleRayTouchSelection.m */,
+				31FAEC9C168E54F100FC4154 /* EWMATouchSelection.h */,
+				31FAEC9D168E54F100FC4154 /* EWMATouchSelection.m */,
 			);
 			name = TouchDetector;
 			sourceTree = "<group>";
@@ -740,6 +755,9 @@
 				31EF78E6168BC3260099B65A /* NSData+Lidar2D.m in Sources */,
 				31EF78E9168C15EB0099B65A /* TouchThresholdCalibration.mm in Sources */,
 				31FAEC5C168C276400FC4154 /* TouchCalibration.mm in Sources */,
+				31FAEC98168E4BF400FC4154 /* TouchSelection.m in Sources */,
+				31FAEC9B168E4DDA00FC4154 /* MiddleRayTouchSelection.m in Sources */,
+				31FAEC9E168E54F100FC4154 /* EWMATouchSelection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
