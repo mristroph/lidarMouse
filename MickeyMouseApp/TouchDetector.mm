@@ -19,6 +19,7 @@ using std::vector;
     void (^distancesReportHandler_)(NSData *distanceData);
     TouchThresholdCalibration *touchThresholdCalibration_;
     TouchCalibration *touchCalibration_;
+    NSString *calibrationDataKey_;
     
     Lidar2DDistance touchDistance_;
 }
@@ -121,6 +122,8 @@ using std::vector;
 
 - (void)lidar2dDidConnect:(Lidar2D *)device {
     touchCalibration_.radiansPerRay = device.coverageDegrees * (2 * M_PI / 360.0);
+    calibrationDataKey_ = [@"calibration-" stringByAppendingString:device.serialNumber];
+    [self loadCalibrationData];
 }
 
 -  (void)lidar2DDidTerminate:(Lidar2D *)device {
@@ -140,6 +143,7 @@ using std::vector;
 - (void)setState:(TouchDetectorState)state {
     if (_state != state) {
         _state = state;
+        [self saveCalibrationData];
         [self notifyObserverOfCurrentState:observers_.proxy];
     }
 }
@@ -185,6 +189,21 @@ using std::vector;
         StateString(DetectingTouches);
     }
 #undef StateString
+}
+
+#pragma mark - Calibration data serialization
+
+- (void)loadCalibrationData {
+}
+
+- (void)saveCalibrationData {
+    id plist = [self calibrationPropertyList];
+    [[NSUserDefaults standardUserDefaults] setValue:plist forKey:calibrationDataKey_];
+}
+
+- (id)calibrationPropertyList {
+    NSLog(@"%s xxx", __func__);
+    return nil;
 }
 
 #pragma mark - Touch threshold calibration details
