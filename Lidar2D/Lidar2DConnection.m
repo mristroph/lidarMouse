@@ -12,11 +12,11 @@
 #import "NSData+Lidar2D.h"
 #import <termios.h>
 
-// Hardcoded for URG-04LX.
-static NSUInteger const kFirstRayStep = 44;
-static NSUInteger const kLastRayStep = 725;
-static double const kCoverageDegrees = 239.77;
-static double const kFirstRayOffsetDegrees = -30;
+// Hardcoded for UTM-30LX
+static NSUInteger const kFirstRayStep = 0;
+static NSUInteger const kLastRayStep = 1080;
+static double const kCoverageDegrees = 270.25;
+static double const kFirstRayOffsetDegrees = -45.125;
 
 NSString *const Lidar2DErrorDomain = @"Lidar2DErrorDomain";
 NSString *const Lidar2DErrorStatusKey = @"status";
